@@ -1,7 +1,6 @@
 MongoMapper.config = { 
   Rails.env => { 'uri' => ENV['MONGOHQ_URL'] || 
-                          'mongodb://localhost/test' } }
+                          'mongodb://test:test@staff.mongohq.com:10003/app2029342' } }
 
 MongoMapper.connect(Rails.env)
-
-#MongoMapper.database = "app2029342"
+#MongoMapper.database = "test"
