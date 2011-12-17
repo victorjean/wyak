@@ -6,7 +6,9 @@ gem 'rails', '3.1.3'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-
+gem 'nifty-generators'
+gem 'mongo_mapper'
+gem 'bson_ext'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -34,3 +36,4 @@ group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
 end
+gem "mocha", :group => :test
