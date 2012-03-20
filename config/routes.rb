@@ -1,7 +1,9 @@
 Wyak::Application.routes.draw do
-  resources :categories
+  
 
   resources :items
+  resources :players
+  resources :rosters
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

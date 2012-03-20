@@ -42,10 +42,13 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.1.3)
+    domain_name (0.5.2)
+      unf (~> 0.0.3)
     erubis (2.7.0)
     execjs (1.2.12)
       multi_json (~> 1.0)
     hike (1.2.1)
+    hpricot (0.8.6)
     i18n (0.6.0)
     jquery-rails (1.0.19)
       railties (~> 3.0)
@@ -55,6 +58,14 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    mechanize (2.3)
+      domain_name (~> 0.5, >= 0.5.1)
+      mime-types (~> 1.17, >= 1.17.2)
+      net-http-digest_auth (~> 1.1, >= 1.1.1)
+      net-http-persistent (~> 2.5, >= 2.5.2)
+      nokogiri (~> 1.4)
+      ntlm-http (~> 0.1, >= 0.1.1)
+      webrobots (~> 0.0, >= 0.0.9)
     metaclass (0.0.1)
     mime-types (1.17.2)
     mocha (0.10.0)
@@ -66,7 +77,11 @@ GEM
       activesupport (~> 3.0)
       plucky (~> 0.4.0)
     multi_json (1.0.4)
+    net-http-digest_auth (1.2)
+    net-http-persistent (2.5.2)
     nifty-generators (0.4.6)
+    nokogiri (1.5.2-x86-mingw32)
+    ntlm-http (0.1.1)
     plucky (0.4.3)
       mongo (~> 1.3)
     polyglot (0.3.3)
@@ -118,6 +133,10 @@ GEM
     uglifier (1.1.0)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
+    unf (0.0.5)
+      unf_ext
+    unf_ext (0.0.4-x86-mingw32)
+    webrobots (0.0.13)
 
 PLATFORMS
   x86-mingw32
@@ -125,7 +144,9 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   coffee-rails (~> 3.1.1)
+  hpricot
   jquery-rails
+  mechanize
   mocha
   mongo_mapper
   nifty-generators
