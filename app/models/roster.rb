@@ -4,6 +4,7 @@ class Roster
   key :team_type, String, :require=>true
   key :league_id, String, :required=>true
   key :team_id, String, :required=>true
+  key :season_id, String
   key :order, Integer, :numeric => true
   key :pos_text, String
   key :slot_number, String

@@ -6,6 +6,7 @@ class Team
   key :team_type, String, :required => true
   key :league_name,String
   key :team_name, String
+  key :daily_auto, Boolean, :default=>true
   belongs_to :auth_info
   belongs_to :user_info
   

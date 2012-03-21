@@ -12,6 +12,7 @@ class Player
   key :action, String, :default=>""
   key :priority, Integer, :default => 0
   key :assign_slot, String
+  key :current_slot, String
   key :eligible_slot, Array
   key :player_set, Boolean, :default=>false
   key :current_date, Date

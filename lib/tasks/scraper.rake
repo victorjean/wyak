@@ -10,11 +10,30 @@ namespace :scraper do
 end
 
 namespace :scraper do
+  desc "Fetch espn team"
+  task :espn => :environment do
+    team_parse = Team.find_by_league_id("130711")
+    parse_espn_team(team_parse, true)
+    
+  end
+end
+
+namespace :scraper do
   desc "Fetch yahoo team from scratch"
   task :yahoofull => :environment do
     user_info = UserInfo.find_by_email("victor.jean@gmail.com")
     
     load_yahoo_first_time(user_info)
+    
+  end
+end
+
+namespace :scraper do
+  desc "Fetch espn team from scratch"
+  task :espnfull => :environment do
+    user_info = UserInfo.find_by_email("victor.jean@gmail.com")
+    
+    load_espn_first_time(user_info)
     
   end
 end
@@ -27,7 +46,7 @@ namespace :scraper do
     puts Roster.all(:pos_text.ne=>BENCH_POSITION).length
     puts Roster.all(:pos_text=>BENCH_POSITION).length
     
-    roster_list = Roster.all
+    roster_list = Roster.all(:league_id=>'130711')
     roster_list.each do |item|
       if (item.player.nil?)
         puts item.pos_text + " - NONE"
