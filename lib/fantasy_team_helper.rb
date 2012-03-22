@@ -17,10 +17,14 @@ YAHOO_URL = "http://127.0.0.1:3000/yahoo.htm"
 YAHOO_BASEBALL_PAGE_URL = "http://baseball.fantasysports.yahoo.com/b1/"
 ESPN_BASEBALL_PAGE_URL = "http://games.espn.go.com/flb/tools/editmyteams"
 
+ESPN_LINEUP_SET_URL = "http://games.espn.go.com/flb/pnc/saveRoster?"
+
 ESPN_BASEBALL_LEAGUE_URL = "http://games.espn.go.com/flb/clubhouse?pnc=on&seasonId=#{Date.today.year}&leagueId="
 
 YAHOO_LOGIN_URL = "https://login.yahoo.com/config/login"
 ESPN_LOGIN_URL = "http://games.espn.go.com/flb/signin"
+
+STATUS_NO_GAME = 'N'
 
 YAHOO_AUTH_TYPE = 'Y'
 ESPN_AUTH_TYPE = 'E'
@@ -36,12 +40,15 @@ BENCH_PITCHER_TYPE = 'P'
 
 BENCH_POSITION = 'BN'
 ESPN_BENCH_POSITION = 'Bench'
+ESPN_DL_SLOT = '17'
+DL_POSITION = 'DL'
 
 def parse_yahoo_team(team, first_time)
   @rosterHash = {}
   @rosterPlayerHash = {}
   @playerHash = {}
   @dbplayerHash = {}
+  @currentRosterAssignHash = {}
   @total_players = 0
   
   puts "Parsing yahoo league id - #{team.league_id} for team id - #{team.team_id} team name - #{team.team_name}"
@@ -51,12 +58,36 @@ def parse_yahoo_team(team, first_time)
   end
   
   agent = authenticate_yahoo(team.auth_info)
-  puts 'Finished Authentication'
+ 
   
-  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
+  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-05")
   #page = agent.get(YAHOO_URL)
   
   document = Hpricot(page.parser.to_s)
+  
+  puts 'Get Current Roster Assigned Hash'
+  count = 0
+  document.search("td[@class=pos first]").each do |position|
+      #Save Position Data
+      count += 1
+      pos_data = position.inner_html.strip
+      @currentRosterAssignHash[count] = pos_data
+  end
+  
+  puts 'Getting Status Information'
+  #Get Positions from Drop Down
+  count = 0
+  statusHash = {}
+  document.search("td[@class=gametime]").each do |item|
+    count+=1
+    statusHash[count] = item.inner_text.strip
+    
+    if (item.inner_text.strip.length == 1)
+      statusHash[count] = STATUS_NO_GAME
+    else
+      statusHash[count] = item.inner_text.strip
+    end
+  end
   
   puts 'Getting Player Position Information'
   #Get Positions from Drop Down
@@ -180,7 +211,11 @@ def parse_yahoo_team(team, first_time)
       @player.eligible_pos = positionHash[count]
       @player.position_text = position_elig
       @player.team_name = team_name
+      @player.current_slot = @currentRosterAssignHash[count]
+      @player.game_status = statusHash[count]
+      @player.game_today = (statusHash[count] != STATUS_NO_GAME )
       @player.save
+      
       
       @playerHash[yahoo_id] = @player
       @rosterPlayerHash[count] = @player
@@ -246,29 +281,34 @@ def assign_players_bench(team)
 end
 
 def authenticate_yahoo(auth)
-  puts 'Starting Yahoo Authentication...'
-  agent = Mechanize.new
-  agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-  page = agent.get(YAHOO_LOGIN_URL)
-  form = page.form_with(:id => "login_form")
-  form['login'] = auth.login
-  form['passwd'] = auth.pass
-  agent.submit form
-  
-  agent
+  if (@agent.nil?)
+    puts 'Starting Yahoo Authentication...'
+    @agent = Mechanize.new
+    @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = @agent.get(YAHOO_LOGIN_URL)
+    form = page.form_with(:id => "login_form")
+    form['login'] = auth.login
+    form['passwd'] = auth.pass
+    @agent.submit form
+    puts 'Finished Authentication'
+  end
+  @agent
 end
 
 def authenticate_espn(auth)
-  puts 'Starting ESPN Authentication...'
-  agent = Mechanize.new
-  agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-  page = agent.get(ESPN_LOGIN_URL)
-  form = page.form_with(:name => "loginForm")
-  form['username'] = auth.login
-  form['password'] = auth.pass
-  agent.submit form
   
-  agent
+  if (@agent.nil?)
+    puts 'Starting ESPN Authentication...'
+    @agent = Mechanize.new
+    @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = @agent.get(ESPN_LOGIN_URL)
+    form = page.form_with(:name => "loginForm")
+    form['username'] = auth.login
+    form['password'] = auth.pass
+    @agent.submit form
+    puts 'Finished Authentication'
+  end
+  @agent
 end
 
 def load_yahoo_first_time(user_info)
@@ -478,7 +518,8 @@ def parse_espn_team(team, first_time)
   @rosterPlayerHash = {}
   @playerHash = {}
   @dbplayerHash = {}
-  
+  @teamHash = {}
+  @statusHash = {}
   
   puts "Parsing espn league id - #{team.league_id} for team id - #{team.team_id} team name - #{team.team_name}"
   if (team.team_type != ESPN_AUTH_TYPE)
@@ -487,7 +528,7 @@ def parse_espn_team(team, first_time)
   end
   
   agent = authenticate_espn(team.auth_info)
-  puts 'Finished Authentication'
+  
   
   page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id)
   #page = agent.get('http://127.0.0.1:3000/espnempty.htm')
@@ -496,12 +537,30 @@ def parse_espn_team(team, first_time)
   document = Hpricot(page.parser.to_s)
   
   #Get Team Hash
-  @teamHash = {}
-  puts = 'Get Team Hash Table for Player'
+  
+  playerNameHash = {}
+  count = 0
+  puts = 'Get Team Hash Table for Players'
   document.search("td[@class=playertablePlayerName]").each do |item|
+    count += 1
     player_name = item.search("a").first.inner_html.strip
     @teamHash[player_name] = item.inner_html.split(',')[1].strip[0..2].upcase
+    playerNameHash[count] = player_name
   end
+  
+  count = 0
+  puts = 'Get Game Status for Players'
+  document.search("td[@class=gameStatusDiv]").each do |item|
+    count += 1
+    
+    if (item.search("a").first.nil?)
+      @statusHash[playerNameHash[count]] = STATUS_NO_GAME
+    else  
+      @statusHash[playerNameHash[count]] = item.search("a").first.inner_html.strip
+    end 
+  end
+
+
   
   roster_str = []
   player_str = []
@@ -684,6 +743,8 @@ def parse_espn_team(team, first_time)
       @player.eligible_pos = textPosArray
       @player.position_text = pos_text
       @player.team_name = @teamHash[full_name]
+      @player.game_status = @statusHash[full_name]
+      @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
       @player.save
       #puts @player.inspect
       @playerHash[espn_id] = @player
@@ -717,8 +778,76 @@ def parse_espn_team(team, first_time)
   
 end
 
+def set_yahoo_default(team, agent)
+  #update team in database
+  parse_yahoo_team(team, false)
+  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
+  set_yahoo_lineup(team, player_list)  
+end
 
+def set_espn_default(team, agent)
+  #update team in database
+  parse_espn_team(team, false)
+  
+  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )  
+  set_espn_lineup(team, player_list)  
+  
+end
 
+def set_yahoo_lineup(team,player_list)
+  agent = authenticate_yahoo(team.auth_info)
+  
+  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
+  doc = Hpricot(page.parser.to_s)
+  crumb_value = doc.search("input[@name=crumb]").first.get_attribute("value").strip
+  ret_classic_mode = doc.search("input[@id=ret-classic]").first.to_s  
+  ret_mode = 'classic'
+  
+  if (ret_classic_mode.index('checked').nil?)
+    ret_mode = 'dnd'
+  end
+  
+  postHash = {}
+  postHash['date'] = Date.today.strftime('%Y-%m-%d')   
+  postHash['ret'] = ret_mode
+  postHash['crumb'] = crumb_value
+  #postHash['jsubmit'] = 'submit changes'
+  
+  player_list.each do |item|
+    
+    if (item.current_slot == DL_POSITION)
+      postHash[item.yahoo_id] = DL_POSITION
+    else
+      postHash[item.yahoo_id] = item.assign_pos
+    end
+    
+  end
+  
+  page = agent.post(YAHOO_BASEBALL_PAGE_URL+"#{team.league_id}/#{team.team_id}/editroster",postHash)
+  puts 'done posting'
+end
+
+def set_espn_lineup(team,player_list)
+  
+  agent = authenticate_espn(team.auth_info)
+  
+  set_lineup_str = ''
+  postHash = {}
+  
+  player_list.each do |item|
+    
+    if (item.current_slot != ESPN_DL_SLOT && item.assign_slot != item.current_slot)
+      set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+    end
+  end
+  puts set_lineup_str.chop
+  
+  agent.post(ESPN_LINEUP_SET_URL+"leagueId=32280&teamId=7&scoringPeriodId=1&returnSm=true&trans="+set_lineup_str.chop, postHash)
+  
+  
+  puts 'done posting'
+
+end
 
 def open_url(url, retry_count = 5)
   begin
@@ -753,5 +882,7 @@ def open_url(url, retry_count = 5)
       raise ee
     end
   end
+  
+
 end
 

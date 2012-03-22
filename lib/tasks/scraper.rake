@@ -12,8 +12,28 @@ end
 namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
-    team_parse = Team.find_by_league_id("130711")
-    parse_espn_team(team_parse, true)
+    team_parse = Team.find_by_league_id("32280")
+    parse_espn_team(team_parse, false)
+    
+  end
+end
+
+namespace :scraper do
+  desc "Start Yahoo Team"
+  task :yahoostart => :environment do
+    team_parse = Team.find_by_league_id("77729")
+    agent = authenticate_yahoo(team_parse.auth_info)
+    set_yahoo_default(team_parse, agent)
+    
+  end
+end
+
+namespace :scraper do
+  desc "Start ESPN Team"
+  task :espnstart => :environment do
+    team_parse = Team.find_by_league_id("32280")
+    agent = authenticate_espn(team_parse.auth_info)
+    set_espn_default(team_parse, agent)
     
   end
 end
