@@ -31,9 +31,9 @@ end
 namespace :scraper do
   desc "Start ESPN Team"
   task :espnstart => :environment do
-    team_parse = Team.find_by_league_id("32280")
-    agent = authenticate_espn(team_parse.auth_info)
-    set_espn_default(team_parse, agent)
+    team_parse = Team.find_by_league_id("130711")
+    
+    set_espn_default(team_parse)
     
   end
 end

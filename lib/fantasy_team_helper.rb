@@ -61,8 +61,8 @@ def parse_yahoo_team(team, first_time)
   agent = authenticate_yahoo(team.auth_info)
  
   
-  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-06")
-  #page = agent.get(YAHOO_URL)
+  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
+  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-07")
   
   document = Hpricot(page.parser.to_s)
   
@@ -145,7 +145,7 @@ def parse_yahoo_team(team, first_time)
       @roster.order = count
       @roster.pos_text = pos_data
       @roster.pos_type = player_type
-      @roster.slot_number = "0"
+      @roster.slot_number = pos_data
       @roster.save
       
       @rosterHash[count] = @roster
@@ -164,7 +164,7 @@ def parse_yahoo_team(team, first_time)
       @roster.order = count
       @roster.pos_text = BENCH_POSITION
       @roster.pos_type = BENCH_PITCHER_TYPE
-      @roster.slot_number = "0"
+      @roster.slot_number = BENCH_POSITION
       @roster.save
       extra_bench_number -= 1
     end while extra_bench_number > 0
@@ -344,7 +344,7 @@ def load_yahoo_teams(user_info)
   
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,YAHOO_AUTH_TYPE)
   agent = authenticate_yahoo(auth_user)
-  puts 'Finished Authentication'
+  
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)
@@ -389,7 +389,7 @@ def load_espn_teams(user_info)
   
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,ESPN_AUTH_TYPE)
   agent = authenticate_espn(auth_user)
-  puts 'Finished Authentication'
+  
   
   page = agent.get(ESPN_BASEBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)
@@ -533,6 +533,8 @@ def parse_espn_team(team, first_time)
   
   
   page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id)
+  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=9")
+  
   #page = agent.get('http://127.0.0.1:3000/espnempty.htm')
   #page = agent.get('http://127.0.0.1:3000/espn.htm')
   
@@ -659,6 +661,7 @@ def parse_espn_team(team, first_time)
       @roster.pos_type = BENCH_PITCHER_TYPE
       @roster.slot_number = @posToSlotHash[BENCH_POSITION]
       @roster.save
+      @rosterHash[count] = @roster
       extra_bench_number -= 1
     end while extra_bench_number > 0
   
@@ -782,7 +785,7 @@ end
 
 def print_player_list(player_list)
   player_list.each do |item|
-    puts "#{item.assign_pos} - #{item.full_name} - #{item.player_set}"
+    puts "#{item.assign_pos} - #{item.full_name} - #{item.player_set} - #{item.assign_slot}"
   end
 end
 
@@ -826,7 +829,7 @@ end
 
 def set_eligible_player_in_roster(player, roster_list)
   roster_list.each do |item|
-    if (!item.leave_empty && !player.eligible_slot.index(item.pos_text).nil?)
+    if (!item.leave_empty && !player.eligible_slot.index(item.slot_number).nil?)
       item.elig_players.push(player)
     end
   end
@@ -932,16 +935,18 @@ def set_yahoo_default(team)
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
   player_list = player_assignment_daily(player_list, roster_list)
-  #set_yahoo_lineup(team, player_list)  
+  set_yahoo_lineup(team, player_list)  
 end
 
-def set_espn_default(team, agent)
+def set_espn_default(team)
   #update team in database
   parse_espn_team(team, false)
+  #Get roster list where position is not bench and dl and empty 
+  roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
+  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
-  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )  
+  player_list = player_assignment_daily(player_list, roster_list)
   set_espn_lineup(team, player_list)  
-  
 end
 
 def set_yahoo_lineup(team,player_list)
@@ -964,12 +969,19 @@ def set_yahoo_lineup(team,player_list)
   #postHash['jsubmit'] = 'submit changes'
   
   player_list.each do |item|
-    
+    #ignore any player in DL position
     if (item.current_slot == DL_POSITION)
       postHash[item.yahoo_id] = DL_POSITION
-    else
+    #start batters only if team batters active
+    elsif (team.daily_auto_batter && item.position_text.index('P').nil?)
       postHash[item.yahoo_id] = item.assign_pos
+    #start pitchers only if team pitchers active
+    elsif(team.daily_auto_pitcher && !item.position_text.index('P').nil?)
+      postHash[item.yahoo_id] = item.assign_pos
+    else
+      postHash[item.yahoo_id] = item.current_slot
     end
+    
     
   end
   
@@ -987,12 +999,20 @@ def set_espn_lineup(team,player_list)
   player_list.each do |item|
     
     if (item.current_slot != ESPN_DL_SLOT && item.assign_slot != item.current_slot)
-      set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+      #start batters only if team batters active
+      if (team.daily_auto_batter && item.position_text.index('P').nil?)
+        set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+      end
+      #start pitchers only if team pitchers active
+      if (team.daily_auto_pitcher && !item.position_text.index('P').nil?)
+        set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+      end
+      
     end
   end
   puts set_lineup_str.chop
   
-  agent.post(ESPN_LINEUP_SET_URL+"leagueId=32280&teamId=7&scoringPeriodId=1&returnSm=true&trans="+set_lineup_str.chop, postHash)
+  agent.post(ESPN_LINEUP_SET_URL+"leagueId=#{team.league_id}&teamId=#{team.team_id}&scoringPeriodId=1&returnSm=true&trans="+set_lineup_str.chop, postHash)
   
   
   puts 'done posting'
