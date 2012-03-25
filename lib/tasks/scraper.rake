@@ -22,8 +22,8 @@ namespace :scraper do
   desc "Start Yahoo Team"
   task :yahoostart => :environment do
     team_parse = Team.find_by_league_id("77729")
-    agent = authenticate_yahoo(team_parse.auth_info)
-    set_yahoo_default(team_parse, agent)
+   
+    set_yahoo_default(team_parse)
     
   end
 end

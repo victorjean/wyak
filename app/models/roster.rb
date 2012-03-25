@@ -1,7 +1,7 @@
 class Roster
   include MongoMapper::Document
   
-  key :team_type, String, :require=>true
+  key :team_type, String, :required=>true
   key :league_id, String, :required=>true
   key :team_id, String, :required=>true
   key :season_id, String
@@ -10,6 +10,7 @@ class Roster
   key :slot_number, String
   key :pos_type, String
   key :leave_empty, Boolean, :default=>false
+  key :elig_players, Array
   one :player
   
   before_update :set_player_update

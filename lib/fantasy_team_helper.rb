@@ -40,6 +40,7 @@ BENCH_PITCHER_TYPE = 'P'
 
 BENCH_POSITION = 'BN'
 ESPN_BENCH_POSITION = 'Bench'
+ESPN_BENCH_SLOT = '16'
 ESPN_DL_SLOT = '17'
 DL_POSITION = 'DL'
 
@@ -60,7 +61,7 @@ def parse_yahoo_team(team, first_time)
   agent = authenticate_yahoo(team.auth_info)
  
   
-  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-05")
+  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-06")
   #page = agent.get(YAHOO_URL)
   
   document = Hpricot(page.parser.to_s)
@@ -209,6 +210,7 @@ def parse_yahoo_team(team, first_time)
       @player.yahoo_id = yahoo_id
       @player.full_name = full_name
       @player.eligible_pos = positionHash[count]
+      @player.eligible_slot = positionHash[count]
       @player.position_text = position_elig
       @player.team_name = team_name
       @player.current_slot = @currentRosterAssignHash[count]
@@ -778,11 +780,159 @@ def parse_espn_team(team, first_time)
   
 end
 
-def set_yahoo_default(team, agent)
+def print_player_list(player_list)
+  player_list.each do |item|
+    puts "#{item.assign_pos} - #{item.full_name} - #{item.player_set}"
+  end
+end
+
+def print_roster_list(roster_list)
+  roster_list.each do |item|
+    puts "#{item.pos_text} - #{item.leave_empty} - #{item.elig_players.length}"
+    
+  end
+end
+
+def assign_player_position(roster_list)
+    #loop through roster and for elig_players size = 1, assign  
+    #else use priority to assign and re-loop until elig_players size = 0
+    #roster_list = roster_list.sort{|x,y| x.elig_players.length<=>y.elig_players.length}
+    roster_list = roster_list.sort_by{|x| [x.elig_players.length, x.order]}
+    roster_list.each do |item|
+      if (item.elig_players.length == 1 && item.leave_empty == false)
+        puts "assign player #{item.elig_players[0].full_name} to #{item.pos_text} - #{item}"
+        item.elig_players[0].assign_pos = item.pos_text
+        item.elig_players[0].assign_slot = item.slot_number
+        item.elig_players[0].player_set = true
+        item.leave_empty = true
+        item.elig_players = []
+        return true
+      end
+      if (item.elig_players.length > 1 && item.leave_empty == false)
+        #start highest priority player
+        item.elig_players.sort!{|x,y| x.priority<=>y.priority}
+        puts "length #{item.elig_players.length} - assign player #{item.elig_players[0].full_name} to #{item.pos_text} - #{item}"
+        item.elig_players[0].assign_pos = item.pos_text
+        item.elig_players[0].assign_slot = item.slot_number
+        item.elig_players[0].player_set = true
+        item.leave_empty = true
+        item.elig_players = []
+        return true
+      end
+    end
+    
+    false  
+end
+
+def set_eligible_player_in_roster(player, roster_list)
+  roster_list.each do |item|
+    if (!item.leave_empty && !player.eligible_slot.index(item.pos_text).nil?)
+      item.elig_players.push(player)
+    end
+  end
+end
+
+def set_player_in_roster(player, roster_list)
+  roster_list.each do |item|
+    #puts "|#{item.pos_text}| - |#{player.assign_pos}|"
+    if (!item.leave_empty && player.assign_pos == item.pos_text)
+      item.leave_empty = true
+      return
+    end
+    #DL Slots Set to Leave Empty
+    if (item.pos_text == DL_POSITION)
+      item.leave_empty = true
+    end
+    
+  end
+end
+
+def player_assignment_daily(player_list, roster_list)
+  #apply daily algorithm for setting player lineup
+  
+  #any player in the DL spot don't move
+  player_list.each do |item|
+    if ((item.current_slot == DL_POSITION || item.current_slot == ESPN_DL_SLOT) && !item.player_set)
+      item.player_set = true
+      item.assign_pos = DL_POSITION
+      item.assign_slot = ESPN_DL_SLOT
+    end
+  end
+  
+  #set any player with always start to player_set true
+  player_list.each do |item|
+    if (item.action == ALWAYS_START_OPTION && !item.player_set)
+      item.player_set = true
+    end
+  end
+  
+  #set any player with never start to player_set true and bench
+  player_list.each do |item|
+    if (item.action == NEVER_START_OPTION && !item.player_set)
+      item.assign_pos = BENCH_POSITION
+      item.assign_slot = ESPN_BENCH_SLOT
+      item.player_set = true
+    end
+  end
+  
+  #if no game today set to BENCH and player_set true
+  player_list.each do |item|
+    if (!item.game_today && !item.player_set)
+      item.assign_pos = BENCH_POSITION
+      item.assign_slot = ESPN_BENCH_SLOT
+      item.player_set = true
+    end
+  end
+  
+  #for default starter player_set true
+  player_list.each do |item|
+    if (item.action == DEFAULT_START_OPTION && !item.player_set)
+      item.player_set = true
+    end
+  end
+  
+  #set roster spots as filled from player list
+  player_list.each do |player|
+    if (player.assign_pos != BENCH_POSITION && player.player_set)
+      set_player_in_roster(player, roster_list)
+    end
+  end
+  
+  #loop through open roster spots until all spot are filled
+  not_all_zero = true
+  begin
+    #clear roster slots of playera
+    roster_list.each do |item|
+      item.elig_players = []
+    end
+    
+    #assign available & eligible players to available roster slots
+    #sort by priority
+    player_list.sort_by!{|x| [x.priority]}
+    player_list.each do |player|
+      if (!player.player_set)
+        set_eligible_player_in_roster(player, roster_list)
+      end
+    end
+    
+    not_all_zero = assign_player_position(roster_list)
+  end while not_all_zero
+
+  
+  #print_roster_list(roster_list)
+  print_player_list(player_list)
+  player_list
+end
+
+def set_yahoo_default(team)
   #update team in database
   parse_yahoo_team(team, false)
+  #Get roster list where position is not bench and dl and empty 
+  roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
-  set_yahoo_lineup(team, player_list)  
+  
+  player_list = player_assignment_daily(player_list, roster_list)
+  #set_yahoo_lineup(team, player_list)  
 end
 
 def set_espn_default(team, agent)
