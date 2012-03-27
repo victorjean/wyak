@@ -52,6 +52,12 @@ def parse_yahoo_team(team, first_time)
   @currentRosterAssignHash = {}
   @total_players = 0
   
+  #If Team empty reload entire team set first_time true
+  if (team.empty_team) 
+    first_time = true
+  end
+    
+  puts "Loading team Data First Time = #{first_time}"
   puts "Parsing yahoo league id - #{team.league_id} for team id - #{team.team_id} team name - #{team.team_name}"
   if (team.team_type != YAHOO_AUTH_TYPE)
     puts 'YAHOO Parser - Incorrect Team Type Passed Into Method'
@@ -62,7 +68,7 @@ def parse_yahoo_team(team, first_time)
  
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
-  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-07")
+  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-03-28")
   
   document = Hpricot(page.parser.to_s)
   
@@ -151,10 +157,10 @@ def parse_yahoo_team(team, first_time)
       @rosterHash[count] = @roster
     end
     #Create Extra Roster Bench Slots as Place Holders
-    extra_bench_number = @total_players - bench_count
+    extra_bench_number = @total_players - bench_count + 2
     puts "Total Players - #{@total_players}"
     puts "Bench Count - #{bench_count}"
-    puts "Create Extra - #{extra_bench_number}"
+    puts "Create Extra + 2BN - #{extra_bench_number}"
     begin
       count += 1
       @roster = Roster.new
@@ -248,6 +254,16 @@ def parse_yahoo_team(team, first_time)
   
   end #End Else Statement
   
+  #Check if players are empty
+  if (@rosterPlayerHash.length == 0 && first_time)
+    team.empty_team = true
+    team.save
+  end
+  if (@rosterPlayerHash.length != 0 && first_time)
+    team.empty_team = false
+    team.save
+  end
+  
 end
 
 def get_player_by_roster_slot(roster_slot)
@@ -283,7 +299,7 @@ def assign_players_bench(team)
 end
 
 def authenticate_yahoo(auth)
-  if (@agent.nil?)
+  if (@agent.nil? || @current_auth_id != auth._id)
     puts 'Starting Yahoo Authentication...'
     @agent = Mechanize.new
     @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -293,13 +309,14 @@ def authenticate_yahoo(auth)
     form['passwd'] = auth.pass
     @agent.submit form
     puts 'Finished Authentication'
+    @current_auth_id = auth._id
   end
   @agent
 end
 
 def authenticate_espn(auth)
   
-  if (@agent.nil?)
+  if (@agent.nil? || @current_auth_id != auth._id)
     puts 'Starting ESPN Authentication...'
     @agent = Mechanize.new
     @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -309,6 +326,7 @@ def authenticate_espn(auth)
     form['password'] = auth.pass
     @agent.submit form
     puts 'Finished Authentication'
+    @current_auth_id = auth._id
   end
   @agent
 end
@@ -523,6 +541,13 @@ def parse_espn_team(team, first_time)
   @teamHash = {}
   @statusHash = {}
   
+  #If Team empty reload entire team set first_time true
+  if (team.empty_team) 
+    first_time = true
+  end
+    
+  puts "Loading team Data First Time = #{first_time}"
+  
   puts "Parsing espn league id - #{team.league_id} for team id - #{team.team_id} team name - #{team.team_name}"
   if (team.team_type != ESPN_AUTH_TYPE)
     puts 'ESPN Parser - Incorrect Team Type Passed Into Method'
@@ -646,10 +671,10 @@ def parse_espn_team(team, first_time)
       @rosterHash[count] = @roster
     end
     #Create Extra Roster Bench Slots as Place Holders
-    extra_bench_number = @total_players - bench_count
+    extra_bench_number = @total_players - bench_count + 2
     puts "Total Players - #{@total_players}"
     puts "Bench Count - #{bench_count}"
-    puts "Create Extra - #{extra_bench_number}"
+    puts "Create Extra + 2BN - #{extra_bench_number}"
     begin
       count += 1
       @roster = Roster.new
@@ -781,6 +806,16 @@ def parse_espn_team(team, first_time)
   
   end #End Else Statement
   
+  
+  #Check if players are empty
+  if (@rosterPlayerHash.length == 0 && first_time)
+    team.empty_team = true
+    team.save
+  end
+  if (@rosterPlayerHash.length != 0 && first_time)
+    team.empty_team = false
+    team.save
+  end
 end
 
 def print_player_list(player_list)

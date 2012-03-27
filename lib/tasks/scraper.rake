@@ -1,10 +1,37 @@
 require "fantasy_team_helper"
 
+
+#This is the cron/scheduler task used to set daily lineups
+namespace :scraper do
+  desc "Start All Teams Daily to Default Player Lineup With Games"
+  task :dailystart => :environment do
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where( :empty_team=>false, :$or => [
+    {:daily_auto_batter => true},
+    {:daily_auto_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      
+      if (team.team_type == ESPN_AUTH_TYPE)
+         puts 'ESPN ESPN DEFAULT '+team.league_name + '-' + team.league_id
+         set_espn_default(team)
+         
+      end
+      if (team.team_type == YAHOO_AUTH_TYPE)
+         puts 'YAHOO YAHOO DEFAULT '+team.league_name + '-' + team.league_id
+         set_yahoo_default(team)
+      end  
+    end
+    
+  end
+end
+
+
 namespace :scraper do
   desc "Fetch yahoo team"
   task :yahoo => :environment do
-    team_parse = Team.find_by_league_id("77729")
-    parse_yahoo_team(team_parse, false)
+    team_parse = Team.find_by_league_id("21947")
+    parse_yahoo_team(team_parse, true)
     
   end
 end
@@ -13,7 +40,7 @@ namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
     team_parse = Team.find_by_league_id("32280")
-    parse_espn_team(team_parse, false)
+    parse_espn_team(team_parse, true)
     
   end
 end
@@ -21,7 +48,7 @@ end
 namespace :scraper do
   desc "Start Yahoo Team"
   task :yahoostart => :environment do
-    team_parse = Team.find_by_league_id("77729")
+    team_parse = Team.find_by_league_id("21947")
    
     set_yahoo_default(team_parse)
     
