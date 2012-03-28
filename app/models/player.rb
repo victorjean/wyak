@@ -10,6 +10,7 @@ class Player
   key :eligible_pos, Array
   key :game_status, String, :default=>"TBD"
   key :game_today, Boolean, :default=>false
+  key :in_lineup, Boolean, :default=>false
   key :action, String, :default=>""
   key :priority, Integer, :default => 0
   key :assign_slot, String

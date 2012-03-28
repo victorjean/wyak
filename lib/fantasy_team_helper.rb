@@ -34,6 +34,7 @@ ALWAYS_START_OPTION = 'A'
 DEFAULT_START_OPTION = 'D'
 BENCH_START_OPTION = 'B'
 NEVER_START_OPTION = 'N'
+PROB_PITCHER_START_OPTION = 'P'
 
 BENCH_BATTER_TYPE = 'B'
 BENCH_PITCHER_TYPE = 'P'
@@ -68,7 +69,7 @@ def parse_yahoo_team(team, first_time)
  
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
-  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-03-28")
+  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-03-29")
   
   document = Hpricot(page.parser.to_s)
   
@@ -85,7 +86,7 @@ def parse_yahoo_team(team, first_time)
   #Get Positions from Drop Down
   count = 0
   statusHash = {}
-  document.search("td[@class=gametime]").each do |item|
+  document.search("td[@class=opp]").each do |item|
     count+=1
     statusHash[count] = item.inner_text.strip
     
@@ -222,6 +223,7 @@ def parse_yahoo_team(team, first_time)
       @player.current_slot = @currentRosterAssignHash[count]
       @player.game_status = statusHash[count]
       @player.game_today = (statusHash[count] != STATUS_NO_GAME )
+      @player.in_lineup = (!statusHash[count].index('^').nil?)
       @player.save
       
       
@@ -559,7 +561,7 @@ def parse_espn_team(team, first_time)
   
   
   page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id)
-  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=9")
+  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=2")
   
   #page = agent.get('http://127.0.0.1:3000/espnempty.htm')
   #page = agent.get('http://127.0.0.1:3000/espn.htm')
@@ -569,6 +571,7 @@ def parse_espn_team(team, first_time)
   #Get Team Hash
   
   playerNameHash = {}
+  playerInLineupHash = {}
   count = 0
   puts = 'Get Team Hash Table for Players'
   document.search("td[@class=playertablePlayerName]").each do |item|
@@ -576,6 +579,14 @@ def parse_espn_team(team, first_time)
     player_name = item.search("a").first.inner_html.strip
     @teamHash[player_name] = item.inner_html.split(',')[1].strip[0..2].upcase
     playerNameHash[count] = player_name
+    #Check Here for PP or S for ESPN item.search("strong") check nil
+    status_tag = item.search("strong").first
+    if (status_tag.nil?)
+      playerInLineupHash[player_name] = false
+    else
+      #Check here for ! mark or P for real time for now set to TRUE
+      playerInLineupHash[player_name] = true
+    end
   end
   
   count = 0
@@ -775,6 +786,7 @@ def parse_espn_team(team, first_time)
       @player.position_text = pos_text
       @player.team_name = @teamHash[full_name]
       @player.game_status = @statusHash[full_name]
+      @player.in_lineup = playerInLineupHash[full_name]
       @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
       @player.save
       #puts @player.inspect
@@ -923,9 +935,18 @@ def player_assignment_daily(player_list, roster_list)
     end
   end
   
-  #for default starter player_set true
+  #if not probable pitcher today set to BENCH and player_set true
   player_list.each do |item|
-    if (item.action == DEFAULT_START_OPTION && !item.player_set)
+    if (item.action == PROB_PITCHER_START_OPTION && !item.in_lineup && !item.player_set)
+      item.assign_pos = BENCH_POSITION
+      item.assign_slot = ESPN_BENCH_SLOT
+      item.player_set = true
+    end
+  end
+  
+  #for default starter player and assigned to position set true
+  player_list.each do |item|
+    if (item.action == DEFAULT_START_OPTION && item.assign_pos != BENCH_POSITION && !item.player_set)
       item.player_set = true
     end
   end

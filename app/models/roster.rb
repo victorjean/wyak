@@ -27,19 +27,17 @@ class Roster
         
     #Auto Populate if Action is Empty
     if (self.player.action == "")
-      if (self.player.assign_pos == BENCH_POSITION)
-        self.player.action = BENCH_START_OPTION
-      else
+     
         self.player.action = DEFAULT_START_OPTION
-      end
+      
     end
     
     #If Player Bench Make Sure Action is set Correctly
-    if (self.player.assign_pos == BENCH_POSITION && (self.player.action == ALWAYS_START_OPTION || self.player.action == DEFAULT_START_OPTION))
-      self.player.action = BENCH_START_OPTION
+    if (self.player.assign_pos == BENCH_POSITION && (self.player.action == ALWAYS_START_OPTION ))
+      self.player.action = DEFAULT_START_OPTION
     end
     
-    if (self.player.assign_pos != BENCH_POSITION && (self.player.action == NEVER_START_OPTION || self.player.action == BENCH_START_OPTION))
+    if (self.player.assign_pos != BENCH_POSITION && (self.player.action == NEVER_START_OPTION ))
       self.player.action = DEFAULT_START_OPTION
     end
 
