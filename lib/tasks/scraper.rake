@@ -11,7 +11,7 @@ namespace :scraper do
     {:daily_auto_pitcher => true}]).sort(:auth_info_id.desc)
     
     team_list.each do |team|
-      
+      begin  
       if (team.team_type == ESPN_AUTH_TYPE)
          puts 'ESPN ESPN DEFAULT '+team.league_name + '-' + team.league_id
          set_espn_default(team)
@@ -20,6 +20,55 @@ namespace :scraper do
       if (team.team_type == YAHOO_AUTH_TYPE)
          puts 'YAHOO YAHOO DEFAULT '+team.league_name + '-' + team.league_id
          set_yahoo_default(team)
+      end
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+      end  
+    end
+    
+  end
+end
+
+#This is the cron/scheduler task used to set daily lineups for yahoo teams
+namespace :scraper do
+  desc "Start All Teams Daily to Default Player Lineup With Games"
+  task :dailystartyahoo => :environment do
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where(:team_type=>YAHOO_AUTH_TYPE, :empty_team=>false, :$or => [
+    {:daily_auto_batter => true},
+    {:daily_auto_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      begin  
+      
+         puts 'YAHOO YAHOO DEFAULT '+team.league_name + '-' + team.league_id
+         set_yahoo_default(team)
+      
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+      end  
+    end
+    
+  end
+end
+
+#This is the cron/scheduler task used to set daily lineups for ESPN
+namespace :scraper do
+  desc "Start All Teams Daily to Default Player Lineup With Games"
+  task :dailystartespn => :environment do
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where(:team_type=>ESPN_AUTH_TYPE, :empty_team=>false, :$or => [
+    {:daily_auto_batter => true},
+    {:daily_auto_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      begin  
+      
+         puts 'ESPN ESPN DEFAULT '+team.league_name + '-' + team.league_id
+         set_espn_default(team)
+      
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
       end  
     end
     

@@ -239,17 +239,18 @@ def parse_yahoo_team(team, first_time)
       @rosterHash[counter].save
     end
   else
-  
-    puts 'Remove Players No Longer on Team From DB'
-    @dbplayerHash.keys.each do |yid|
-      if (@playerHash[yid].nil?)
-        puts 'Deleting - ' + @dbplayerHash[yid].inspect 
-        @dbplayerHash[yid].destroy
+    #If Roster Player Hash Empty or No Players, then don't delete
+    #May be a authentication error
+    if (@playerHash.length != 0)  
+      puts 'Remove Players No Longer on Team From DB'
+      @dbplayerHash.keys.each do |yid|
+        if (@playerHash[yid].nil?)
+          puts 'Deleting - ' + @dbplayerHash[yid].inspect 
+          @dbplayerHash[yid].destroy
+        end
       end
+      assign_players_bench(team)
     end
-    
-    
-    assign_players_bench(team)
     
   
   end #End Else Statement
@@ -791,18 +792,18 @@ def parse_espn_team(team, first_time)
       @rosterHash[counter].save
     end
   else
-  
-    puts 'Remove Players No Longer on Team From DB'
-    @dbplayerHash.keys.each do |yid|
-      if (@playerHash[yid].nil?)
-        puts 'Deleting - ' + @dbplayerHash[yid].inspect 
-        @dbplayerHash[yid].destroy
+    #If Roster Player Hash Empty or No Players, then don't delete
+    #May be a authentication error
+    if (@playerHash.length != 0)
+      puts 'Remove Players No Longer on Team From DB'
+      @dbplayerHash.keys.each do |yid|
+        if (@playerHash[yid].nil?)
+          puts 'Deleting - ' + @dbplayerHash[yid].inspect 
+          @dbplayerHash[yid].destroy
+        end
       end
+      assign_players_bench(team)
     end
-    
-    
-    assign_players_bench(team)
-    
   
   end #End Else Statement
   
