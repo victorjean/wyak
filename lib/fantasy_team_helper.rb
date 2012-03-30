@@ -73,6 +73,18 @@ def parse_yahoo_team(team, first_time)
   
   document = Hpricot(page.parser.to_s)
   
+  #Get Crumb and Ret Type Information Used for Setting Lineup
+  crumbHash = {}
+  crumb_value = document.search("input[@name=crumb]").first.get_attribute("value").strip
+  ret_classic_mode = document.search("input[@id=ret-classic]").first.to_s  
+  ret_mode = 'classic'
+  if (ret_classic_mode.index('checked').nil?)
+    ret_mode = 'dnd'
+  end
+  crumbHash['crumb_value']=crumb_value
+  crumbHash['ret_mode']=ret_mode
+  
+  
   puts 'Get Current Roster Assigned Hash'
   count = 0
   document.search("td[@class=pos first]").each do |position|
@@ -267,6 +279,9 @@ def parse_yahoo_team(team, first_time)
     team.save
   end
   
+  #Return Crumb Info to Set Lineup
+  crumbHash
+  
 end
 
 def get_player_by_roster_slot(roster_slot)
@@ -310,9 +325,15 @@ def authenticate_yahoo(auth)
     form = page.form_with(:id => "login_form")
     form['login'] = auth.login
     form['passwd'] = auth.pass
-    @agent.submit form
-    puts 'Finished Authentication'
+    page = @agent.submit form
+    puts 'Finished Authentication Post'
     @current_auth_id = auth._id
+    #puts page.uri.to_s
+    #Throw Exception if Authentication Fails
+    if (page.uri.to_s.index('verify').nil?)
+      @agent = nil
+      raise 'Authentication Failed for YAHOO ID - '+auth.login 
+    end
   end
   @agent
 end
@@ -327,9 +348,15 @@ def authenticate_espn(auth)
     form = page.form_with(:name => "loginForm")
     form['username'] = auth.login
     form['password'] = auth.pass
-    @agent.submit form
-    puts 'Finished Authentication'
+    page = @agent.submit form
+    puts 'Finished Authentication Post'
     @current_auth_id = auth._id
+    #puts page.uri.to_s
+    #Throw Exception if Authentication Fails
+    if (!page.uri.to_s.index('secureRedirect').nil?)
+      @agent = nil
+      raise 'Authentication Failed for ESPN ID - '+auth.login 
+    end
   end
   @agent
 end
@@ -605,12 +632,22 @@ def parse_espn_team(team, first_time)
   
   roster_str = []
   player_str = []
+  
   document.search("script").each do |script|
     if(!script.inner_html.to_s.index('createSlot').nil?)
       roster_str = script.inner_html.to_s.split('rosterManager.createSlot')
       player_str = script.inner_html.to_s.split('rosterManager.createPlayer')
     end
   end
+  
+  #get scoring period id to post espn lineup
+  
+  currentScoringPeriodId = '1'
+  scoringPeriodTag = document.search("input[@name=scoringPeriodId]")
+  if(!scoringPeriodTag.first.nil?)
+    currentScoringPeriodId = scoringPeriodTag.first.get_attribute("value").strip
+  end
+  
   
   bench_count = 0
   parsed_roster_list = Array.new
@@ -829,6 +866,8 @@ def parse_espn_team(team, first_time)
     team.empty_team = false
     team.save
   end
+  #return value
+  currentScoringPeriodId
 end
 
 def print_player_list(player_list)
@@ -986,43 +1025,33 @@ end
 
 def set_yahoo_default(team)
   #update team in database
-  parse_yahoo_team(team, false)
+  crumbHash = parse_yahoo_team(team, false)
   #Get roster list where position is not bench and dl and empty 
   roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
   player_list = player_assignment_daily(player_list, roster_list)
-  set_yahoo_lineup(team, player_list)  
+  set_yahoo_lineup(team, player_list, crumbHash)  
 end
 
 def set_espn_default(team)
   #update team in database
-  parse_espn_team(team, false)
+  scoring_period_id = parse_espn_team(team, false)
   #Get roster list where position is not bench and dl and empty 
   roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
   player_list = player_assignment_daily(player_list, roster_list)
-  set_espn_lineup(team, player_list)  
+  set_espn_lineup(team, player_list, scoring_period_id)  
 end
 
-def set_yahoo_lineup(team,player_list)
+def set_yahoo_lineup(team,player_list,crumbHash)
   agent = authenticate_yahoo(team.auth_info)
-  
-  page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
-  doc = Hpricot(page.parser.to_s)
-  crumb_value = doc.search("input[@name=crumb]").first.get_attribute("value").strip
-  ret_classic_mode = doc.search("input[@id=ret-classic]").first.to_s  
-  ret_mode = 'classic'
-  
-  if (ret_classic_mode.index('checked').nil?)
-    ret_mode = 'dnd'
-  end
-  
+    
   postHash = {}
   postHash['date'] = Date.today.strftime('%Y-%m-%d')   
-  postHash['ret'] = ret_mode
-  postHash['crumb'] = crumb_value
+  postHash['ret'] = crumbHash['ret_mode']
+  postHash['crumb'] = crumbHash['crumb_value']
   #postHash['jsubmit'] = 'submit changes'
   
   player_list.each do |item|
@@ -1046,7 +1075,7 @@ def set_yahoo_lineup(team,player_list)
   puts 'done posting'
 end
 
-def set_espn_lineup(team,player_list)
+def set_espn_lineup(team,player_list,scoring_period_id)
   
   agent = authenticate_espn(team.auth_info)
   
@@ -1069,7 +1098,7 @@ def set_espn_lineup(team,player_list)
   end
   puts set_lineup_str.chop
   
-  agent.post(ESPN_LINEUP_SET_URL+"leagueId=#{team.league_id}&teamId=#{team.team_id}&scoringPeriodId=1&returnSm=true&trans="+set_lineup_str.chop, postHash)
+  agent.post(ESPN_LINEUP_SET_URL+"leagueId=#{team.league_id}&teamId=#{team.team_id}&scoringPeriodId=#{scoring_period_id}&returnSm=true&trans="+set_lineup_str.chop, postHash)
   
   
   puts 'done posting'
