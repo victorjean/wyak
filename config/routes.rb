@@ -2,9 +2,21 @@ Wyak::Application.routes.draw do
   
 
   resources :items
-  resources :players
-  resources :rosters
-
+  resources :teams
+  resources :user do
+    collection do
+    get 'login'
+    post 'login'
+    get 'signup'
+    post 'signup'
+    get 'welcome'
+    get 'logout'
+    get 'change_password'
+    post 'change_password'
+    end
+  end
+  
+  root :to => 'user#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -1,0 +1,70 @@
+<h2>Welcome to RotoStarter</h3>
+
+
+<TABLE cellpadding="0" cellspacing="1">
+	<thead>
+		<tr valign="bottom"  class="greybg" >
+		<th colspan="1" align="left">ESPN Teams</th>
+		<th colspan="3" align="right"><a>Add Teams</a>&nbsp;|&nbsp;<a>Refresh Team List</a></th>
+		<tr>
+		<tr valign="bottom"  >
+			<th align="left" width="40%">League Name</th>
+			<th align="left" width="40%">Team Name</th>
+			<th align="left" width="10%">Start Batters</th>
+			<th align="left" width="10%">Start Pitchers</th>
+		</tr>
+	</thead>
+	<tbody>
+		<%- @espn_teams.each do |team| -%>
+		<tr valign="bottom"  >
+			<td><%=team.league_name%></td>
+			<td><%=team.team_name%></td>
+			<td align="center"><%= check_box('batter', 'daily_auto_batter', options = {:index => team._id, 
+:checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
+			<td align="center"><%= check_box('pitcher', 'daily_auto_pitcher', options = {:index => team._id, 
+:checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
+		</tr>
+		<%- end -%>
+		<%- if (@espn_teams.length == 0) -%>
+		<tr  >
+		<td  colspan="4" align="center" >
+				No Teams Added - Click Add Teams							
+		</td>
+		</tr>
+		<%- end -%>		
+	</tbody>
+</TABLE>
+<BR><BR><BR>
+<TABLE cellpadding="0" cellspacing="1">
+	<thead>
+		<tr valign="bottom"  class="greybg" >
+		<th colspan="1" align="left">Yahoo Teams</th>
+		<th colspan="3" align="right"><a>Add Teams</a>&nbsp;|&nbsp;<a>Refresh Team List</a></th>
+		<tr>
+		<tr valign="bottom"  >
+			<th align="left" width="40%">League Name</th>
+			<th align="left" width="40%">Team Name</th>
+			<th align="left" width="10%">Start Batters</th>
+			<th align="left" width="10%">Start Pitchers</th>
+		</tr>
+	</thead>
+	<tbody>
+		<%- @yahoo_teams.each do |team| -%>
+		<tr valign="bottom"  >
+			<td><%=team.league_name%></td>
+			<td><%=team.team_name%></td>
+			<td align="center"><%= check_box('batter', 'daily_auto_batter', options = {:index => team._id, 
+:checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
+			<td align="center"><%= check_box('pitcher', 'daily_auto_pitcher', options = {:index => team._id, 
+:checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
+		</tr>
+		<%- end -%>
+		<%- if (@yahoo_teams.length == 0) -%>
+		<tr  >
+		<td  colspan="4" align="center" >
+				No Teams Added - Click Add Teams							
+		</td>
+		</tr>
+		<%- end -%>		
+	</tbody>
+</TABLE>

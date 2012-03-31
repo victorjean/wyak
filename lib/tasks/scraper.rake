@@ -97,7 +97,7 @@ end
 namespace :scraper do
   desc "Start Yahoo Team"
   task :yahoostart => :environment do
-    team_parse = Team.find_by_league_id("77729")
+    team_parse = Team.find_by_league_id("116135")
    
     set_yahoo_default(team_parse)
     

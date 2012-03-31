@@ -14,6 +14,15 @@
       <% end %>
       <%= content_tag :h1, yield(:title) if show_title? %>
       <%= yield %>
+      <BR>
+      	<%-if (session[:user].nil?)-%>
+      	<%= link_to 'Login', :action => 'login' %> &nbsp;| &nbsp;
+      	<%= link_to 'Register', :action => 'signup' %> &nbsp;| &nbsp;
+      	<%-else-%>
+      	<%=session[:user]%>  &nbsp;| &nbsp;
+      	<%-end-%>
+      	<%= link_to "Logout", :controller => "user", :action => "logout" %>
     </div>
+    
   </body>
 </html>
