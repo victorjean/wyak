@@ -1,11 +1,11 @@
 <h2>Welcome to RotoStarter</h3>
 
-
+<%= form_tag do %>
 <TABLE cellpadding="0" cellspacing="1">
 	<thead>
 		<tr valign="bottom"  class="greybg" >
 		<th colspan="1" align="left">ESPN Teams</th>
-		<th colspan="3" align="right"><a>Add Teams</a>&nbsp;|&nbsp;<a>Refresh Team List</a></th>
+		<th colspan="3" align="right"><a>Add Teams</a></th>
 		<tr>
 		<tr valign="bottom"  >
 			<th align="left" width="40%">League Name</th>
@@ -19,9 +19,9 @@
 		<tr valign="bottom"  >
 			<td><%=team.league_name%></td>
 			<td><%=team.team_name%></td>
-			<td align="center"><%= check_box('batter', 'daily_auto_batter', options = {:index => team._id, 
+			<td align="center"><%= check_box('batter', team._id, options = { 
 :checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
-			<td align="center"><%= check_box('pitcher', 'daily_auto_pitcher', options = {:index => team._id, 
+			<td align="center"><%= check_box('pitcher', team._id, options = { 
 :checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
 		</tr>
 		<%- end -%>
@@ -39,7 +39,7 @@
 	<thead>
 		<tr valign="bottom"  class="greybg" >
 		<th colspan="1" align="left">Yahoo Teams</th>
-		<th colspan="3" align="right"><a>Add Teams</a>&nbsp;|&nbsp;<a>Refresh Team List</a></th>
+		<th colspan="3" align="right"><a>Add Teams</a></th>
 		<tr>
 		<tr valign="bottom"  >
 			<th align="left" width="40%">League Name</th>
@@ -53,9 +53,9 @@
 		<tr valign="bottom"  >
 			<td><%=team.league_name%></td>
 			<td><%=team.team_name%></td>
-			<td align="center"><%= check_box('batter', 'daily_auto_batter', options = {:index => team._id, 
+			<td align="center"><%= check_box('batter', team._id, options = { 
 :checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
-			<td align="center"><%= check_box('pitcher', 'daily_auto_pitcher', options = {:index => team._id, 
+			<td align="center"><%= check_box('pitcher', team._id, options = { 
 :checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
 		</tr>
 		<%- end -%>
@@ -68,3 +68,7 @@
 		<%- end -%>		
 	</tbody>
 </TABLE>
+<BR>
+<%= submit_tag("Submit Changes") %>
+
+<% end %>

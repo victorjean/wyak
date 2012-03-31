@@ -7,6 +7,7 @@ class UserInfo
   key :pass, String, :required => true
   key :salt, String, :required => true
   key :login_count, Integer, :default=>0
+  key :subscribed, Boolean, :default=>false
   many :teams
   
   timestamps!
