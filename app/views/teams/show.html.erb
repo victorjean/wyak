@@ -1,0 +1,170 @@
+<% priority_count = 0%>
+<%= link_to "Team Dashboard", :controller => "teams", :action => "index" %> |
+<a href="/teams/showbatters?id=<%=@team._id%>">Manage Batters</a> | 
+<a href="/teams/showpitchers?id=<%=@team._id%>">Manage Pitchers</a>
+<%= form_tag '/teams/set_lineup', options = {:id => 'set_lineup'} do%>
+<table align=center cellpadding="0" cellspacing="0" border="0">		
+    <tr><td colspan="7" class="LineupHeader"><br>Starting Lineup for <%=@team.team_name%> in League <%=@team.league_name%></td></tr>
+    <tr>
+    	<td class="LineupHeaderTiny">Position</td>
+    	<td class="LineupHeaderTiny">Player</td>
+    	<td class="LineupHeaderTiny"></td>
+    	<td class="LineupHeaderTiny">Start Position</td>
+    	<td class="LineupHeaderTiny">Start Frequency</td>
+    	<td class="LineupHeaderTiny"></td>
+    	<td class="LineupHeaderTiny">Profile</td>
+    </tr>
+    <%- @roster_list.each do |roster| -%>
+    <%- if (roster.pos_text != BENCH_POSITION )-%>
+    <tr>
+        <td class="LineupTopEdgeBold"><%=roster.pos_text%></td>
+        <td class="LineupTop">
+        	<%- if (roster.player.nil?)-%>
+        	[ EMPTY SLOT ]
+        	<%-else-%>
+        	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<%-end-%>
+       	</td>
+        <td class="LineupTop"></td>
+        <%- if (!roster.player.nil?)-%>
+    		<td class="LineupTop">
+    		<select name="poselect[<%=roster.player._id%>]" class="LineupSelect">
+    			<%- roster.player.eligible_pos.each do |p|-%>
+    			<OPTION value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<%-end-%>
+    		</select>
+        	</td>
+    		<td class="LineupTop"><select class="LineupSelect" name="freqselect[<%=roster.player._id%>]">
+    		<option  value="A" <%=(roster.player.action=='A')?'selected':''%>>Always</option>
+    		<option  value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
+    		<%if(@pitch)%><option  value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
+    		</select>
+    		</td>
+    	<%-else-%>
+    	    <td class="LineupTop" colspan="2">
+    	    	<%= check_box('empty', roster._id, options = { 
+:checked => roster.leave_empty}, checked_value = "1", unchecked_value = "0") %>
+    	    
+        	Leave Slot Empty<br />
+        	</td>	
+    	<%-end-%>        
+        <td class="LineupTop"></td>        
+        <td class="LineupTopEdge"><img src="/images/stats_button.gif" alt="StatsIcon"></td>
+    </tr>
+    <%-end-%>
+    <%-end-%>
+            <tr>
+        <td class="LineupBotEdgeBold"></td>
+        <td class="LineupBot"></td>
+        <td class="LineupBot"></td>
+    	<td class="LineupBot">
+        	</td>
+    	<td class="LineupBot">
+    		</td>        
+        <td class="LineupBot">
+        	</td>       
+        <td class="LineupBotEdge"></td>
+    </tr> 
+    <tr><td colspan="7" class="LineupHeader"><br>Bench Priority</td></tr>
+    <tr>
+    	<td class="LineupHeaderTiny">Position</td>
+    	<td class="LineupHeaderTiny">Player</td>
+    	<td class="LineupHeaderTiny"></td>
+    	<td class="LineupHeaderTiny">Start Position</td>
+    	<td class="LineupHeaderTiny">Start Frequency</td>
+    	<td class="LineupHeaderTiny">Bench Priority</td>
+    	<td class="LineupHeaderTiny">Profile</td>
+    </tr>
+    <%
+     
+    @bench_player_array.each do |roster| 
+    %>
+    <% if (!roster.player.nil?  && roster.pos_text == BENCH_POSITION)
+    	priority_count += 1
+    %>
+    <tr>
+        <td class="LineupTopEdgeBold"><%=roster.pos_text%></td>
+        <td class="LineupTop">
+        
+        	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        
+       	</td>
+        <td class="LineupTop"></td>
+        
+    		<td class="LineupTop">
+    		<select name="poselect[<%=roster.player._id%>]" class="LineupSelect">
+    			<%- roster.player.eligible_pos.each do |p|-%>
+    			<OPTION value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<%-end-%>
+    		</select>
+        	</td>
+    		<td class="LineupTop"><select class="LineupSelect" name="freqselect[<%=roster.player._id%>]">
+    		
+    		<option  value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
+    		<%if(@pitch)%><option  value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
+    		<option  value="N" <%=(roster.player.action=='N')?'selected':''%>>Never</option>
+    		</select>
+    		</td>
+    		</td>	
+    	        
+        <td class="LineupTop"><select class="LineupSelect" name="priorityselect[<%=roster.player._id%>]">
+				<%- @bench_array.each do |p|-%>
+    			<OPTION value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
+    			<%-end-%>
+    		
+			</select>
+			</td>        
+        <td class="LineupTopEdge"><img src="/images/stats_button.gif" alt="StatsIcon"></td>
+    </tr>
+    <%-end-%>
+    <%-end-%>
+        <tr >
+        <td class="LineupBotEdgeBold"></td>
+        <td class="LineupBot"></td>
+        <td class="LineupBot"></td>
+    	<td class="LineupBot">
+        	</td>
+    	<td class="LineupBot">
+    		</td>        
+        <td class="LineupBot">
+        	</td>       
+        <td class="LineupBotEdge"></td>
+    </tr>    
+    </table>
+    <INPUT type="hidden" name="id" value="<%=@team._id%>">
+    <button type="button" onclick="submitLineup()">Submit</button>
+    <span id="status_span"></span>
+<%end%>
+
+<SCRIPT>
+function submitLineup() {
+	//document.forms[0].action = 'set_lineup';
+	//document.forms[0].submit();
+	$('set_lineup').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	
+	$('status_span').innerHTML = "Submitting Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+}
+
+function successFunc(response){
+	
+	if (response.responseText == 'true') window.location.reload();
+	else {
+	    var container = $('status_span');    
+    	container.update('Could not set lineup. Please try again later.');
+		}
+    
+}
+
+function failureFunc(response){
+
+    var container = $('status_span');
+    
+    container.update('System error could not set lineup. Please try again later.');
+    
+}
+
+</SCRIPT>

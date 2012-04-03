@@ -29,8 +29,8 @@ Updating Teams <%= image_tag '/images/refresh-animated.gif' %>
 	<tbody>
 		<%- @espn_teams.each do |team| -%>
 		<tr valign="bottom"  >
-			<td><%=team.league_name%></td>
-			<td><%=team.team_name%></td>
+			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.league_name%></a></td>
+			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></td>
 			<td align="center"><%= check_box('batter', team._id, options = { 
 :checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
 			<td align="center"><%= check_box('pitcher', team._id, options = { 
@@ -63,8 +63,8 @@ Updating Teams <%= image_tag '/images/refresh-animated.gif' %>
 	<tbody>
 		<%- @yahoo_teams.each do |team| -%>
 		<tr valign="bottom"  >
-			<td><%=team.league_name%></td>
-			<td><%=team.team_name%></td>
+			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.league_name%></a></td>
+			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></td>
 			<td align="center"><%= check_box('batter', team._id, options = { 
 :checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
 			<td align="center"><%= check_box('pitcher', team._id, options = { 

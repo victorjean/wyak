@@ -936,6 +936,23 @@ def set_player_in_roster(player, roster_list)
   end
 end
 
+def assign_player_in_roster(player, roster_list)
+  roster_list.each do |item|
+    if (item.player.nil? && player.assign_pos == item.pos_text)
+      item.player = player
+      return
+    end
+  end
+  #if no room for player, assign to bench
+  player.assign_pos = BENCH_POSITION 
+  roster_list.each do |item|
+    if (item.player.nil? && player.assign_pos == item.pos_text)
+      item.player = player
+      return
+    end
+  end
+end
+
 def player_assignment_daily(player_list, roster_list)
   #apply daily algorithm for setting player lineup
   

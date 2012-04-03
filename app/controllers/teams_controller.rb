@@ -2,7 +2,7 @@ require "fantasy_team_helper"
 
 class TeamsController < ApplicationController
     
-  before_filter :login_required, :only=>['index', 'show', 'create']
+  before_filter :login_required, :only=>['index', 'show', 'create', 'set_lineup']
   
   def index
     four_hours = 4*60*60
@@ -69,16 +69,118 @@ class TeamsController < ApplicationController
     render :action => 'index'
   end
 
-  def show
-    #@roster_list = team_type, league_id, team_id get actual team page
+  def showbatters
+    bench_count = 0
+    @team = Team.find(params[:id])
+    @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_BATTER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    @bench_array = []
+    @bench_player_array = []
+    roster_bench_list = Roster.where(:pos_text=>BENCH_POSITION,:pos_type=>BENCH_BATTER_TYPE, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    roster_bench_list.each do |roster|
+      if (!roster.player.nil? )
+        bench_count += 1
+        @bench_array.push(bench_count)
+        @bench_player_array.push(roster)
+      end 
+    end
+    @bench_player_array = @bench_player_array.sort_by{|x| [x.player.priority]} 
+    @pitch = false
+    render :action => 'show'
   end
 
-  def edit
-
+  def showpitchers
+    bench_count = 0
+    @team = Team.find(params[:id])
+    @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_PITCHER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    @bench_array = []
+    @bench_player_array = []
+    roster_bench_list = Roster.where(:pos_text=>BENCH_POSITION,:pos_type=>BENCH_PITCHER_TYPE, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    roster_bench_list.each do |roster|
+      if (!roster.player.nil? )
+        bench_count += 1
+        @bench_array.push(bench_count)
+        @bench_player_array.push(roster)
+      end 
+    end
+    @bench_player_array = @bench_player_array.sort_by{|x| [x.player.priority]} 
+    @pitch = true
+    render :action => 'show'
   end
-
-  def update
+  
+  def set_lineup
+    player_hash = {}
+    roster_hash = {}
+    @success = true
+    begin
+    @team = Team.find(params[:id])
+    @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    @roster_list.each do |roster|
+      roster_hash[roster._id.to_s] = roster
+      if (!roster.player.nil?)
+        player_hash[roster.player._id.to_s] = roster.player
+      end
+    end
     
+    #Update roster leave empty attribute
+    roster_settings = params[:empty]
+    if (!roster_settings.nil?)
+      roster_settings.each do |r|
+        oid = r.index.next 
+        roster_hash[oid].leave_empty = (params[:empty][oid] == '1')
+      end
+    end
+    #Update Start Option
+    start_settings = params[:freqselect]
+    if (!start_settings.nil?)
+      start_settings.each do |r|
+        oid = r.index.next 
+        player_hash[oid].action = params[:freqselect][oid]
+      end
+    end
+    #Update Priority Option
+    
+    priority_settings = params[:priorityselect]
+    if (!priority_settings.nil?)
+      priority_settings.each do |r|
+        oid = r.index.next 
+        player_hash[oid].priority = params[:priorityselect][oid].to_i
+      end
+    end
+    #Update Assigned Roster Position
+    
+    pos_settings = params[:poselect]
+    if (!pos_settings.nil?)
+      pos_settings.each do |r|
+        oid = r.index.next 
+        player_hash[oid].assign_pos = params[:poselect][oid]
+      end
+    end
+    #Remove Player from Roster
+    @roster_list.each do |roster|
+      if (!roster.player.nil?)
+        roster.player = nil
+      end
+    end
+    #Assign Players to Roster
+    player_hash.values.each do |p|
+      assign_player_in_roster(p, @roster_list)
+    end
+    
+    rescue => msg
+      @success = false
+      logger.error("ERROR OCCURED while Updating Team Lineup #{@team.league_id} - (#{msg})")
+    end
+    
+    
+    #Save All Roster Information
+    if (@success)
+      @roster_list.each do |roster|
+        roster.save!
+      end
+    end
+    
+    
+    render(:partial => 'loading')    
   end
   
   def update_all

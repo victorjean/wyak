@@ -1,0 +1,200 @@
+/* @override http://www.macrabbit.Lineupom/cssedit/welcome/2.5/welcome.Lineupss */
+
+body {
+	margin-top:0;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:0;
+	height:auto;
+	background-color: #5A4A42;
+/*	font: normal normal 10px Arial, Helvetica, sans-serif;*/
+	
+	font: normal 12px Eurostile;
+}
+
+#container {
+    background-color: #FFFFFF;
+    border: 1px solid black;
+    margin: 20px auto 0;
+    padding: 20px 40px;
+    width: 75%;
+
+}
+
+.Dash {
+	color: #5A4A42;
+	font: 12px Eurostile;
+}
+
+.DashTagline {
+	color: #5A4A42;
+	font: bold 14px Eurostile;
+}
+
+.DashRight {
+	color: #5A4A42;
+	font: 12px Eurostile;
+	text-align: right;
+}
+
+.DashHeader {
+	color: #00AEEF;
+	font: bold 16px Eurostile;
+}
+
+.DashSubHeader {
+	color: #5A4A42;
+	font: bold 12px Eurostile;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+
+.LineupSelect {
+	border: 1px solid #333;
+	font-size: 8px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-variant: normal;
+}	
+
+.LineupOption {
+	background:green;
+	font-size: 8px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-variant: normal;
+}	
+
+
+.LineupHeader {
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font: small-caps bold 16px Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+.LineupHeaderTiny {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font: small-caps bold 8px Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+.LineupTopEdgeBold {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-left-width:1px;
+	border-right-width:1px;
+	border-top-width:1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-weight: bold;
+	font-size: 120%;
+	font-variant: normal;
+}
+
+.LineupTopEdge {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-left-width:1px;
+	border-right-width:1px;
+	border-top-width:1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-variant: normal;
+	font-size: 10px;
+}
+
+.LineupTop {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-top-width:1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-variant: normal;
+	font-size: 10px;
+}
+
+.LineupBotEdge {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-top-width:1px;
+	border-bottom-width: 1px;
+	border-left-width:1px;
+	border-right-width:1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-variant: normal;
+	font-size: 10px;
+}
+
+.LineupRightEdge {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+/*	border-top-width:1px;
+	border-bottom-width: 1px;
+	border-left-width:1px;
+	border-right-width:1px; */
+	border-left-width:1px;	
+	border-style:solid;
+	border-color:#00AEEF;
+	font-variant: normal;
+	font-size: 10px;
+}
+
+.LineupBotEdgeBold {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-weight: bold;
+	font-size: 120%;
+	font-variant: normal;
+}
+
+.LineupBot {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: solid 0 #060; 
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-style:solid;
+	border-color:#00AEEF;
+	font-variant: normal;
+	font-size: 10px;
+}
+
+
+
+

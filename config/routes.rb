@@ -5,8 +5,11 @@ Wyak::Application.routes.draw do
   resources :teams do
     collection do
       get 'update_all'
+      get 'showbatters'
+      get 'showpitchers'
       get 'manage'
       post 'manage'
+      post 'set_lineup'
     end
   end
   resources :user do

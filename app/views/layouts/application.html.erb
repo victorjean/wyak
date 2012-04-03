@@ -5,6 +5,7 @@
 
     <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag "application" %>
+    <%= stylesheet_link_tag '/stylesheets/style' %>
     <script src="/javascripts/prototype.js" type="text/javascript"></script>
     <script src="/javascripts/window.js" type="text/javascript"></script>
     <script src="/javascripts/jquery.js" type="text/javascript"></script>
@@ -24,6 +25,7 @@
       <%= content_tag :h1, yield(:title) if show_title? %>
       <%= yield %>
       <BR>
+      	
       	<%-if (session[:user].nil?)-%>
       	<%= link_to 'Login', :action => 'login' %> &nbsp;| &nbsp;
       	<%= link_to 'Register', :action => 'signup' %> &nbsp;| &nbsp;
@@ -32,6 +34,7 @@
       	<%-end-%>
       	<%= link_to "Logout", :controller => "user", :action => "logout" %>
     </div>
+    
     
   </body>
 </html>

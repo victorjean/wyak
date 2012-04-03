@@ -16,6 +16,13 @@ class Roster
   before_update :set_player_update
   private 
   def set_player_update
+    #Set Position Type to either PITCHER or BATTER
+    if (self.pos_text.index(BENCH_PITCHER_TYPE).nil?)
+      self.pos_type = BENCH_BATTER_TYPE
+    else
+      self.pos_type = BENCH_PITCHER_TYPE 
+    end
+    
     #If player is nil skip
     if (self.player.nil?)
       return
@@ -24,12 +31,14 @@ class Roster
     #Set Assigned Position and Slot to Player Object
     self.player.assign_pos = self.pos_text
     self.player.assign_slot = self.slot_number
-        
+    self.leave_empty = false    
     #Auto Populate if Action is Empty
     if (self.player.action == "")
-     
         self.player.action = DEFAULT_START_OPTION
-      
+    end
+    #If Player is not on Bench set priority to Zero
+    if (self.player.assign_pos != BENCH_POSITION)
+      self.player.priority = 0
     end
     
     #If Player Bench Make Sure Action is set Correctly
@@ -42,12 +51,15 @@ class Roster
     end
 
     
+    
     #Set Position Type to either PITCHER or BATTER
     if (self.player.position_text.index(BENCH_PITCHER_TYPE).nil?)
       self.pos_type = BENCH_BATTER_TYPE
     else
       self.pos_type = BENCH_PITCHER_TYPE 
     end
+    
+    
     
     self.player.save
     
