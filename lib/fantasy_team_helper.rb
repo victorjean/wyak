@@ -324,7 +324,7 @@ def authenticate_yahoo(auth)
     page = @agent.get(YAHOO_LOGIN_URL)
     form = page.form_with(:id => "login_form")
     form['login'] = auth.login
-    form['passwd'] = auth.pass
+    form['passwd'] = auth.get_pass
     page = @agent.submit form
     puts 'Finished Authentication Post'
     @current_auth_id = auth._id
@@ -339,7 +339,6 @@ def authenticate_yahoo(auth)
 end
 
 def authenticate_espn(auth)
-  
   if (@agent.nil? || @current_auth_id != auth._id)
     puts 'Starting ESPN Authentication...'
     @agent = Mechanize.new
@@ -347,7 +346,7 @@ def authenticate_espn(auth)
     page = @agent.get(ESPN_LOGIN_URL)
     form = page.form_with(:name => "loginForm")
     form['username'] = auth.login
-    form['password'] = auth.pass
+    form['password'] = auth.get_pass
     page = @agent.submit form
     puts 'Finished Authentication Post'
     @current_auth_id = auth._id

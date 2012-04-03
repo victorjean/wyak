@@ -13,4 +13,6 @@ class Team
   belongs_to :auth_info
   belongs_to :user_info
   
+  timestamps!
+  
 end

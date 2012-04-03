@@ -2,7 +2,13 @@ Wyak::Application.routes.draw do
   
 
   resources :items
-  resources :teams
+  resources :teams do
+    collection do
+      get 'update_all'
+      get 'manage'
+      post 'manage'
+    end
+  end
   resources :user do
     collection do
     get 'login'

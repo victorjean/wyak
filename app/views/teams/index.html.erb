@@ -1,11 +1,23 @@
+<%= content_for :body_attributes, "onload='update_function();'" %>
+
+<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
+
+
+
 <h2>Welcome to RotoStarter</h3>
 
+<div id="updating">
+<%-if (@update)-%>	
+Updating Teams <%= image_tag '/images/refresh-animated.gif' %>
+<%-end-%>
+</div>
 <%= form_tag do %>
 <TABLE cellpadding="0" cellspacing="1">
 	<thead>
-		<tr valign="bottom"  class="greybg" >
+		<tr valign="bottom"  >
 		<th colspan="1" align="left">ESPN Teams</th>
-		<th colspan="3" align="right"><a>Add Teams</a></th>
+		<th colspan="3" align="right"><a href="javascript:teamWindow('ESPN')"><%=(@espn_teams.length == 0)?'Add':'Manage'%> Teams</a></th>
 		<tr>
 		<tr valign="bottom"  >
 			<th align="left" width="40%">League Name</th>
@@ -39,7 +51,7 @@
 	<thead>
 		<tr valign="bottom"  class="greybg" >
 		<th colspan="1" align="left">Yahoo Teams</th>
-		<th colspan="3" align="right"><a>Add Teams</a></th>
+		<th colspan="3" align="right"><a href="javascript:teamWindow('YAHOO')"><%=(@yahoo_teams.length == 0)?'Add':'Manage'%> Teams</a></th>
 		<tr>
 		<tr valign="bottom"  >
 			<th align="left" width="40%">League Name</th>
@@ -72,3 +84,103 @@
 <%= submit_tag("Submit Changes") %>
 
 <% end %>
+
+
+
+<SCRIPT>
+
+function update_function(){
+	<%-if (@update)-%>	
+	updateTeams();
+	<%-end-%>
+}
+
+
+function teamWindow(type) {
+Dialog.alert({url: "/teams/manage?teamType="+type, options: {method: 'get'}}, 
+            { width:540, okLabel: "Close"});
+            
+}
+
+function reload_team(){
+	
+	if (!confirm('Are you sure you want to reload all teams?  You will lose all player roster settings if you continue.')) return;
+	
+	$('manageAction').value = "R";
+	$('manage_team').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	$('team_popup').style.textAlign = "center";
+	$('team_popup').innerHTML = "<H3>Loading Team Information <IMAGE SRC=\"/images/refresh-animated.gif\"></H3>"
+
+}
+
+function submit_team(){
+	
+	
+	if (($('current_user').value != '')&&($('current_user').value != $('userid').value)){
+		if (!confirm('Are you sure you want to change user id?  You will lose all player roster settings and reload new teams if you continue.')) return;
+	}
+	
+	//Check User ID and Password Fields
+	$('userid').disabled = false;
+	if (($('userid').value == '') || ($('pass').value == '')){
+		alert('User ID Field and/or Password Field can not be empty!')
+		return;
+	}
+	
+	$('manageAction').value = "U";
+	$('manage_team').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	$('team_popup').style.textAlign = "center";
+	$('team_popup').innerHTML = "<H3>Loading Team Information <IMAGE SRC=\"/images/refresh-animated.gif\"></H3>"
+
+}
+
+
+function successFunc(response){
+	
+	if (response.responseText == 'true') window.location = "/teams";
+	else {
+	    var container = $('team_popup');    
+    	container.update('Could not load team information.  Check ID / Password and try again.');
+		}
+    
+}
+
+function failureFunc(response){
+
+    var container = $('team_popup');
+    
+    container.update('Error while loading information.  Please try again later.');
+    
+}
+  
+function updateTeams() {
+	
+	
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: '',
+        cache: false,
+        async: true, 
+        url: '/teams/update_all',
+        success: function(html) {
+			
+            $j("#updating").html(html);
+            //new Popup('popup_gamelog','popup_link_gamelog',{position:'center',trigger:'click'})
+			//$('popup_gamelog').popup.show();
+        },
+        error: function () {
+			
+        },
+        complete: function () {
+			
+        }
+    });
+}
+</SCRIPT>
