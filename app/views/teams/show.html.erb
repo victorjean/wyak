@@ -118,6 +118,37 @@
     </tr>
     <%-end-%>
     <%-end-%>
+    <%@dl_list.each do |player| %>     
+    <%if(@pitch && !player.position_text.index('P').nil?)%> 
+    <tr>
+        <td class="LineupTopEdgeBold">DL</td>
+        <td class="LineupTop"><%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="LineupTop"></td>
+    	<td class="LineupTop">
+        	</td>
+    	<td class="LineupTop">
+    		</td>        
+        <td class="LineupTop">
+        	</td>       
+        <td class="LineupTopEdge"></td>
+    </tr>
+	<%end%>
+	<%if(!@pitch && player.position_text.index('P').nil?)%> 
+    <tr>
+        <td class="LineupTopEdgeBold">DL</td>
+        <td class="LineupTop"><%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="LineupTop"></td>
+    	<td class="LineupTop">
+        	</td>
+    	<td class="LineupTop">
+    		</td>        
+        <td class="LineupTop">
+        	</td>       
+        <td class="LineupTopEdge"></td>
+    </tr>
+	<%end%>
+	   
+	<%end%>    
         <tr >
         <td class="LineupBotEdgeBold"></td>
         <td class="LineupBot"></td>
@@ -129,14 +160,49 @@
         <td class="LineupBot">
         	</td>       
         <td class="LineupBotEdge"></td>
-    </tr>    
+    </tr>
+
+       
     </table>
+    
     <INPUT type="hidden" name="id" value="<%=@team._id%>">
     <button type="button" onclick="submitLineup()">Submit</button>
+    <button type="button" onclick="refreshLineup()">Refresh</button>
     <span id="status_span"></span>
 <%end%>
 
+<%= form_tag '/teams/refresh_lineup', options = {:id => 'refresh_lineup'} do%>
+<INPUT type="hidden" name="id" value="<%=@team._id%>">
+<%end%>
 <SCRIPT>
+function refreshLineup() {
+	$('refresh_lineup').request({
+	    onSuccess: successLine,
+  		onFailure:  failureLine
+	});
+	
+	$('status_span').innerHTML = "Refreshing Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+}
+
+function successLine(response){
+	
+	if (response.responseText == 'true') window.location.reload();
+	else {
+	    var container = $('status_span');    
+    	container.update('Could not refresh lineup. Please try again later.');
+		}
+    
+}
+
+function failureLine(response){
+
+    var container = $('status_span');
+    
+    container.update('System error could not refresh lineup. Please try again later.');
+    
+}
+
 function submitLineup() {
 	//document.forms[0].action = 'set_lineup';
 	//document.forms[0].submit();

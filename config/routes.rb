@@ -10,6 +10,7 @@ Wyak::Application.routes.draw do
       get 'manage'
       post 'manage'
       post 'set_lineup'
+      post 'refresh_lineup'
     end
   end
   resources :user do

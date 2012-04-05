@@ -69,7 +69,7 @@ def parse_yahoo_team(team, first_time)
  
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id)
-  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-03-29")
+  #page = agent.get(YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id+"?date=2012-04-05")
   
   document = Hpricot(page.parser.to_s)
   
@@ -118,8 +118,9 @@ def parse_yahoo_team(team, first_time)
     count += 1
     posArray = Array.new
     posdropdown = item.search("option")
-    
-    if (posdropdown.length != 0)
+    posinput = item.search("input")
+    #check in case roster spot is empty need to validate drop down or input in edit td
+    if (posdropdown.length != 0 || posinput != 0)
       @total_players+=1
     end
     
@@ -170,10 +171,10 @@ def parse_yahoo_team(team, first_time)
       @rosterHash[count] = @roster
     end
     #Create Extra Roster Bench Slots as Place Holders
-    extra_bench_number = @total_players - bench_count + 2
+    extra_bench_number = @total_players - bench_count + 4
     puts "Total Players - #{@total_players}"
     puts "Bench Count - #{bench_count}"
-    puts "Create Extra + 2BN - #{extra_bench_number}"
+    puts "Create Extra + 4BN - #{extra_bench_number}"
     begin
       count += 1
       @roster = Roster.new
@@ -228,8 +229,10 @@ def parse_yahoo_team(team, first_time)
       @player.team_id = team.team_id
       @player.yahoo_id = yahoo_id
       @player.full_name = full_name
+      if(positionHash[count].length != 0)
       @player.eligible_pos = positionHash[count]
       @player.eligible_slot = positionHash[count]
+      end
       @player.position_text = position_elig
       @player.team_name = team_name
       @player.current_slot = @currentRosterAssignHash[count]
@@ -238,6 +241,9 @@ def parse_yahoo_team(team, first_time)
       @player.in_lineup = (!statusHash[count].index('^').nil?)
       @player.save
       
+      if (@player.current_slot == DL_POSITION)
+        @player.roster_id = nil  
+      end
       
       @playerHash[yahoo_id] = @player
       @rosterPlayerHash[count] = @player
@@ -248,10 +254,15 @@ def parse_yahoo_team(team, first_time)
   #First Time Assign Players to Roster Positions
   if (first_time)
     puts 'First Time Assigning Players to Roster Positions'
+    #Assign Only if Roster Position is not DL
     @rosterHash.keys.each do |counter|
+      if(@rosterHash[counter].pos_text != DL_POSITION)
       @rosterHash[counter].player = @rosterPlayerHash[counter]
       @rosterHash[counter].save
+      end
     end
+    puts 'DL Players Assign to Bench'
+    assign_players_bench(team)
   else
     #If Roster Player Hash Empty or No Players, then don't delete
     #May be a authentication error
@@ -305,7 +316,7 @@ def assign_players_bench(team)
         benchHash[count] = bench
       end
     end
-    puts 'Assign New Player to Empty Bench Slot'
+    puts 'Assign New Player or DL to Empty Bench Slot'
     count = 0
     @rosterPlayerHash.keys.each do |counter|
       if (@rosterPlayerHash[counter].roster_id.nil?)
@@ -719,10 +730,10 @@ def parse_espn_team(team, first_time)
       @rosterHash[count] = @roster
     end
     #Create Extra Roster Bench Slots as Place Holders
-    extra_bench_number = @total_players - bench_count + 2
+    extra_bench_number = @total_players - bench_count + 4
     puts "Total Players - #{@total_players}"
     puts "Bench Count - #{bench_count}"
-    puts "Create Extra + 2BN - #{extra_bench_number}"
+    puts "Create Extra + 4BN - #{extra_bench_number}"
     begin
       count += 1
       @roster = Roster.new
@@ -825,7 +836,11 @@ def parse_espn_team(team, first_time)
       @player.in_lineup = playerInLineupHash[full_name]
       @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
       @player.save
-      #puts @player.inspect
+      
+      if (@player.current_slot == ESPN_DL_SLOT)
+        @player.roster_id = nil  
+      end
+      
       @playerHash[espn_id] = @player
       @rosterPlayerHash[count] = @player
     end
@@ -835,10 +850,12 @@ def parse_espn_team(team, first_time)
   if (first_time)
     puts 'First Time Assigning Players to Roster Positions'
     @rosterHash.keys.each do |counter|
-      #puts @rosterHash[counter].slot_number
+      if (@rosterHash[counter].slot_number != ESPN_DL_SLOT)
       @rosterHash[counter].player = get_player_by_roster_slot(@rosterHash[counter].slot_number)
       @rosterHash[counter].save
+      end
     end
+    assign_players_bench(team)
   else
     #If Roster Player Hash Empty or No Players, then don't delete
     #May be a authentication error
@@ -877,7 +894,7 @@ end
 
 def print_roster_list(roster_list)
   roster_list.each do |item|
-    puts "#{item.pos_text} - #{item.leave_empty} - #{item.elig_players.length}"
+    puts "#{item.pos_text}(#{item.slot_number}) - #{item.leave_empty} - #{item.elig_players.length} - #{item.pos_type}"
     
   end
 end
@@ -911,6 +928,20 @@ def assign_player_position(roster_list)
     end
     
     false  
+end
+
+def set_assigned_player_in_empty_roster(player, roster_list)
+  if (player.team_name == 'true')
+    roster_list.each do |item|
+      if (player.temp_pos == item.pos_text && !item.leave_empty && item.pos_text != DL_POSITION)
+           player.assign_slot = player.temp_slot
+           player.assign_pos = player.temp_pos
+           item.leave_empty = true
+           
+           return
+      end
+    end
+  end
 end
 
 def set_eligible_player_in_roster(player, roster_list)
@@ -984,6 +1015,13 @@ def player_assignment_daily(player_list, roster_list)
   #if no game today set to BENCH and player_set true
   player_list.each do |item|
     if (!item.game_today && !item.player_set)
+      #set :team_name temp field to indicate player was assigned to fill
+      #empty spots if there are no bench players to fill that slot
+      if (item.assign_pos != BENCH_POSITION)
+        item.team_name = 'true'
+        item.temp_pos = item.assign_pos
+        item.temp_slot = item.assign_slot
+      end
       item.assign_pos = BENCH_POSITION
       item.assign_slot = ESPN_BENCH_SLOT
       item.player_set = true
@@ -1035,7 +1073,7 @@ def player_assignment_daily(player_list, roster_list)
 
   
   #print_roster_list(roster_list)
-  print_player_list(player_list)
+  #print_player_list(player_list)
   player_list
 end
 
@@ -1047,6 +1085,12 @@ def set_yahoo_default(team)
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
   player_list = player_assignment_daily(player_list, roster_list)
+  
+  #try to set assigned players into roster spots that are still empty
+  player_list.each do |p|
+    set_assigned_player_in_empty_roster(p, roster_list)
+  end
+  
   set_yahoo_lineup(team, player_list, crumbHash)  
 end
 
@@ -1058,6 +1102,12 @@ def set_espn_default(team)
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
   
   player_list = player_assignment_daily(player_list, roster_list)
+  
+  #try to set assigned players into roster spots that are still empty
+  player_list.each do |p|
+    set_assigned_player_in_empty_roster(p, roster_list)
+  end
+  
   set_espn_lineup(team, player_list, scoring_period_id)  
 end
 

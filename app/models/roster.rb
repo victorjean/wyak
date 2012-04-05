@@ -16,6 +16,7 @@ class Roster
   before_update :set_player_update
   private 
   def set_player_update
+    
     #Set Position Type to either PITCHER or BATTER
     if (self.pos_text.index(BENCH_PITCHER_TYPE).nil?)
       self.pos_type = BENCH_BATTER_TYPE

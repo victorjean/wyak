@@ -73,11 +73,13 @@ class TeamsController < ApplicationController
     bench_count = 0
     @team = Team.find(params[:id])
     @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_BATTER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    @dl_list = Player.where(:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id,
+    :$or => [{:current_slot => DL_POSITION},{:current_slot => ESPN_DL_SLOT}]).all
     @bench_array = []
     @bench_player_array = []
     roster_bench_list = Roster.where(:pos_text=>BENCH_POSITION,:pos_type=>BENCH_BATTER_TYPE, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
     roster_bench_list.each do |roster|
-      if (!roster.player.nil? )
+      if (!roster.player.nil? && (roster.player.current_slot != DL_POSITION && roster.player.current_slot != ESPN_DL_SLOT) )
         bench_count += 1
         @bench_array.push(bench_count)
         @bench_player_array.push(roster)
@@ -92,11 +94,13 @@ class TeamsController < ApplicationController
     bench_count = 0
     @team = Team.find(params[:id])
     @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_PITCHER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
+    @dl_list = Player.where(:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id,
+    :$or => [{:current_slot => DL_POSITION},{:current_slot => ESPN_DL_SLOT}]).all
     @bench_array = []
     @bench_player_array = []
     roster_bench_list = Roster.where(:pos_text=>BENCH_POSITION,:pos_type=>BENCH_PITCHER_TYPE, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
     roster_bench_list.each do |roster|
-      if (!roster.player.nil? )
+      if (!roster.player.nil? && (roster.player.current_slot != DL_POSITION && roster.player.current_slot != ESPN_DL_SLOT) )
         bench_count += 1
         @bench_array.push(bench_count)
         @bench_player_array.push(roster)
@@ -181,6 +185,24 @@ class TeamsController < ApplicationController
     
     
     render(:partial => 'loading')    
+  end
+  
+  def refresh_lineup
+    @success = true
+    begin
+      team_parse = Team.find(params[:id])
+      if (team_parse.team_type == YAHOO_AUTH_TYPE)
+        parse_yahoo_team(team_parse, false)
+      end
+      if (team_parse.team_type == ESPN_AUTH_TYPE)
+        parse_espn_team(team_parse, false)
+      end
+    rescue => msg
+      @success = false
+      logger.error("ERROR OCCURED while refresh_lineup Team #{team.league_id} - #{session[:user]} - (#{msg})")
+        
+    end
+    render(:partial => 'loading')
   end
   
   def update_all

@@ -12,7 +12,7 @@ class Player
   key :game_today, Boolean, :default=>false
   key :in_lineup, Boolean, :default=>false
   key :action, String, :default=>""
-  key :priority, Integer, :default => 0
+  key :priority, Integer, :default => 99
   key :assign_slot, String
   key :current_slot, String
   key :eligible_slot, Array
@@ -21,5 +21,7 @@ class Player
   key :full_name, String
   key :team_name, String
   key :position_text, String
+  key :temp_pos, String
+  key :temp_slot, String
   belongs_to :roster
 end
