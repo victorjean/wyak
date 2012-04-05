@@ -173,6 +173,7 @@ class TeamsController < ApplicationController
     rescue => msg
       @success = false
       logger.error("ERROR OCCURED while Updating Team Lineup #{@team.league_id} - (#{msg})")
+      log_error(session[:user], @team, 'teams/set_lineup', msg)
     end
     
     
@@ -200,7 +201,7 @@ class TeamsController < ApplicationController
     rescue => msg
       @success = false
       logger.error("ERROR OCCURED while refresh_lineup Team #{team.league_id} - #{session[:user]} - (#{msg})")
-        
+      log_error(session[:user], team_parse, 'teams/refresh_lineup', msg)  
     end
     render(:partial => 'loading')
   end
@@ -220,6 +221,7 @@ class TeamsController < ApplicationController
       rescue => msg
         @success = false
         logger.error("ERROR OCCURED while Updating Yahoo Teams #{team.league_id} - #{user_info.email} - (#{msg})")
+        log_error(session[:user], team, 'teams/update_all',"Updating Yahoo Teams - #{msg}")
       end  
     end
     
@@ -230,6 +232,7 @@ class TeamsController < ApplicationController
       rescue => msg
         @success = false
         logger.error("ERROR OCCURED while Updating ESPN Teams #{team.league_id} - #{user_info.email} - (#{msg})")
+        log_error(session[:user], team, 'teams/update_all',"Updating ESPN Teams - #{msg}")
       end
     end
     
@@ -262,6 +265,7 @@ class TeamsController < ApplicationController
         rescue => msg
           @success = false
           logger.error("ERROR OCCURED while Updating #{@teamType} Teams #{user_info.email} - (#{msg})")
+          log_error(session[:user], nil, 'teams/manage',"Reloading Teams - #{msg}")
         end
       #Create New ESPN/YAHOO authentication and load teams
       elsif(params[:manageAction] == 'U' && @authInfo.nil?)
@@ -284,6 +288,7 @@ class TeamsController < ApplicationController
         rescue => msg
           @success = false
           logger.error("ERROR OCCURED while Creating New #{@teamType} Teams #{user_info.email} - (#{msg})")
+          log_error(session[:user], nil, 'teams/manage',"Creating New Auth Info and Teams - #{msg}")
         end
       elsif(params[:manageAction] == 'U' && !@authInfo.nil?)
         begin
@@ -314,6 +319,7 @@ class TeamsController < ApplicationController
         rescue => msg
           @success = false
           logger.error("ERROR OCCURED while Creating New #{@teamType} Teams #{user_info.email} - (#{msg})")
+          log_error(session[:user], nil, 'teams/manage',"Changing Auth Info User/Password and Teams - #{msg}")
         end
       end
       render(:partial => 'loading')

@@ -23,6 +23,7 @@ namespace :scraper do
       end
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
+        log_error('sys', nil, 'dailystart',msg)
       end  
     end
     
@@ -46,6 +47,7 @@ namespace :scraper do
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
+        log_error('sys', nil, 'dailystartyahoo',msg)
       end  
     end
     
@@ -69,6 +71,7 @@ namespace :scraper do
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
+        log_error('sys', nil, 'dailystartespn',msg)
       end  
     end
     

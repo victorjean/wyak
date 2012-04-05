@@ -1171,6 +1171,24 @@ def set_espn_lineup(team,player_list,scoring_period_id)
 
 end
 
+def log_error(email, team, method, message)
+  begin
+    l = Log.new
+    l.email = email
+    l.method = method
+    l.msg = message
+    l.type = 'E'
+    if (!team.nil?)
+      l.league_id = team.league_id
+      l.team_id = team.team_id
+    end
+    l.save
+  rescue => msg
+      logger.error("LOG ERROR Could not write to DB - (#{msg})")
+  end
+  
+end
+
 def open_url(url, retry_count = 5)
   begin
     sleep rand(2)
