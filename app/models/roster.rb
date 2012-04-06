@@ -51,7 +51,10 @@ class Roster
       self.player.action = DEFAULT_START_OPTION
     end
 
-    
+    #If Never Start Set Priority to 99
+    if (self.player.action == NEVER_START_OPTION)
+      self.player.priority = 99
+    end
     
     #Set Position Type to either PITCHER or BATTER
     if (self.player.position_text.index(BENCH_PITCHER_TYPE).nil?)

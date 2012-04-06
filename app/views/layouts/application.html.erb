@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for?(:title) ? yield(:title) : "Untitled" %></title>
+    <title>RotoStarter</title>
 
 
     <%= stylesheet_link_tag '/stylesheets/style' %>
@@ -38,10 +38,11 @@
 			<div class="NavHeadLeft">
 			&nbsp; &nbsp;
 			<%-if (session[:user].nil?)-%>
-	      	<%= link_to 'Login', :action => 'login' %> | 
-	      	<%= link_to 'Register', :action => 'signup' %>
+			<%= link_to "Home", "/" %> |
+	      	<%= link_to 'Login', :action => 'login' %>
+	      	| <u>How Does It Work?</u>
 	      	<%-else-%>
-	      	<%= link_to "Dashboard", :controller => "teams", :action => "index" %> |
+	      	<%= link_to "Home", :controller => "teams", :action => "index" %> |
 			<u>How Does It Work?</u> |
 			<u><%=session[:user]%></u> |
 			<%= link_to "Logout", :controller => "user", :action => "logout"  %>
@@ -51,9 +52,7 @@
 		</div>
   	
 	    <div id="RSMain" style="float:left; margin:0;width:100%">
-	      <% flash.each do |name, msg| %>
-	        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-	      <% end %>
+	      
 	      <BR>
 	      <%= yield %>	
 	    </div>

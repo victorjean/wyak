@@ -70,6 +70,10 @@ class TeamsController < ApplicationController
   end
 
   def showbatters
+    user_info = UserInfo.find_by_email(session[:user])
+    @espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
+    @yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
+    
     bench_count = 0
     @team = Team.find(params[:id])
     @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_BATTER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
@@ -80,8 +84,11 @@ class TeamsController < ApplicationController
     roster_bench_list = Roster.where(:pos_text=>BENCH_POSITION,:pos_type=>BENCH_BATTER_TYPE, :team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all
     roster_bench_list.each do |roster|
       if (!roster.player.nil? && (roster.player.current_slot != DL_POSITION && roster.player.current_slot != ESPN_DL_SLOT) )
+        if (roster.player.action != NEVER_START_OPTION)
         bench_count += 1
         @bench_array.push(bench_count)
+        end
+        
         @bench_player_array.push(roster)
       end 
     end
@@ -91,6 +98,10 @@ class TeamsController < ApplicationController
   end
 
   def showpitchers
+    user_info = UserInfo.find_by_email(session[:user])
+    @espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
+    @yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
+    
     bench_count = 0
     @team = Team.find(params[:id])
     @roster_list = Roster.where(:pos_text.ne=>DL_POSITION, :pos_type=>BENCH_PITCHER_TYPE,:team_type=>@team.team_type, :team_id=>@team.team_id, :league_id=>@team.league_id).all

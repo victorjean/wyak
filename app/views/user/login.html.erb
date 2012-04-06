@@ -1,11 +1,20 @@
-
+  
+ <h3 class="HomeSignUp" >
 <%= form_tag do %>
-  <h3>Roto Starter Login</h3>
+
+
+  <b>RotoStarter Login</b><BR><BR>
   <%= label_tag(:email, "Email:") %>
-  <%= text_field_tag(:email) %><BR>
+  <%= text_field_tag(:email) %>
+  <BR>
   <%= label_tag(:pass, "Password:") %>
   <%= password_field_tag(:pass) %>
-  <BR>
-  <%= submit_tag("Submit") %>
- 
+  <BR><BR>
+<input name="commit" src="/images/RSSignUp.png" type="image" value="Login"/>
+<BR>
+
+  <% flash.each do |name, msg| %>
+	        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+	      <% end %>
 <% end %>
+</h3>

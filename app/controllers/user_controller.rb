@@ -10,24 +10,25 @@ class UserController < ApplicationController
     if session[:user]
       redirect_to :controller => "teams", :action => "index"
     else
-      render :action => 'show'
+      @user = UserInfo.new 
+      render :action => 'signup'
     end
   end
   
   
   def signup
-    @user = UserInfo.new
     if request.post?
-      
+      @user = UserInfo.new  
       @user.email = params[:email]
       @user.password = params[:pass]
       if(params[:pass]!=params[:repass])
         flash[:message] = "Passwords do not match"
       elsif @user.save
         flash[:message] = "Signup successful"
+        session[:user] = @user.email
         redirect_to :controller => "teams", :action => "index"          
       else
-        flash[:message] = "Signup unsuccessful"
+        #flash[:message] = "Signup unsuccessful"
       end
     end
   end

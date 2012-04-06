@@ -1,175 +1,293 @@
 <% priority_count = 0%>
-<%= link_to "Team Dashboard", :controller => "teams", :action => "index" %> |
-<a href="/teams/showbatters?id=<%=@team._id%>">Manage Batters</a> | 
-<a href="/teams/showpitchers?id=<%=@team._id%>">Manage Pitchers</a>
+
 <%= form_tag '/teams/set_lineup', options = {:id => 'set_lineup'} do%>
-<table align=center cellpadding="0" cellspacing="0" border="0">		
-    <tr><td colspan="7" class="LineupHeader"><br>Starting Lineup for <%=@team.team_name%> in League <%=@team.league_name%></td></tr>
-    <tr>
-    	<td class="LineupHeaderTiny">Position</td>
-    	<td class="LineupHeaderTiny">Player</td>
-    	<td class="LineupHeaderTiny"></td>
-    	<td class="LineupHeaderTiny">Start Position</td>
-    	<td class="LineupHeaderTiny">Start Frequency</td>
-    	<td class="LineupHeaderTiny"></td>
-    	<td class="LineupHeaderTiny">Profile</td>
-    </tr>
+
+
+<!--START -->
+
+<div id="RSSidebar" style="float:left; margin:0;">
+	<table align=right cellpadding="0" cellspacing="0" border="0" >
+	<thead>
+		<tr>
+		<td colspan="2" class="SideTitle">
+		Lineup Preferences
+		<div class="SideTitleBrown">How To Set Tomorrow's Lineup</div>
+		</td>
+		</tr>
+		<tr>
+		<td>
+		<br>
+		</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+		<td class="SideHeader">
+		<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+		Yahoo Teams
+		</td>
+		<td class="MainSubTitleLinks">
+		
+		<br>
+		</td>
+		</tr>
+		<%- @yahoo_teams.each do |team| -%>
+		<tr>
+		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
+		<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showpitchers':'showbatters'%>?id=<%=team._id%>">
+		<%=team.team_name%><br>
+		<div class="SideBrown"><%=team.league_name%></div>
+		</a>
+		</td>
+		</tr>
+		<%-end-%>
+		
+		<tr>
+		<td colspan="2" class="SideClose"></td>
+		</tr>
+		<tr>
+		<td>
+		<br>
+		</td>
+		</tr>
+		<tr>
+		<td class="SideHeader">
+		<img src="/images/RSArrowDownBlue10.png" size=80% alt="Blue Down Arrow"> ESPN Teams<br>
+		</td>
+		<td class="MainSubTitleLinks">
+		
+		<br>
+		</td>
+		</tr>
+		<%- @espn_teams.each do |team| -%>
+		<tr>
+		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
+		<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showpitchers':'showbatters'%>?id=<%=team._id%>">
+		<%=team.team_name%><br>
+		<div class="SideBrown"><%=team.league_name%></div>
+		</a>
+		</td>
+		</tr>
+		<%-end-%>
+	</tbody>
+	<tfoot>
+	</tfoot>
+	</table>
+</div>
+<div id="RSMiddleDivider" style="float:left; margin:0;">
+<ul></ul>
+</div>
+<div id="RSMain" style="float:left; margin:0;">
+<table cellpadding="0" cellspacing="0" border="0">
+<thead>
+<tr class="MainTitle">
+<td colspan="2" class="MainTitle">
+<%=@team.team_name%>
+<div class="MainTitleBrown"><%=@team.league_name%></div>
+</td>
+<td colspan="3" class="MainSubTitle">
+<div class="MainSubTitleLinks">
+<img src="/images/RSSwitchIcon.png" width="12" height="12" alt="Switch Icon">
+<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showbatters':'showpitchers'%>?id=<%=@team._id%>">
+Switch to <%=(@pitch)?'Batters':'Pitchers'%>	
+</a>
+</div>
+<%if (@pitch)%>
+	<%if (@team.daily_auto_pitcher)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<b><font color=green>Pitchers</font></b> |
+	<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<b><font color=red>Pitchers</font></b> |
+	<%end%>
+<%else%>
+	<%if (@team.daily_auto_batter)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<b><font color=green>Batters</font></b> |
+	<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<b><font color=red>Batters</font></b> |
+	<%end%>
+<%end%>
+<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+<a href="javascript:refreshLineup()">Refresh</a>
+</td>
+</tr>
+<tr>
+<td colspan="3" class="MainHeader">
+<br>
+<%=(@pitch)?'Pitcher':'Batter'%> Starting Lineup
+</td>
+<td colspan="2" align="right">
+	<span id="refresh_span" style="display:none; padding-right: 3px">Refreshing Team <img src="/images/refresh-animated.gif"></span>
+</td>
+</tr>
+
+</thead>
+<tbody>
+<tr>
+<td class="MainTinyHeader">Position</td>
+<td class="MainTinyHeader">Player</td>
+<td class="MainTinyHeader">Start Position</td>
+<td class="MainTinyHeader">Start Frequency</td>
+<td class="MainTinyHeader">Start Behavior</td>
+</tr>
+
     <%- @roster_list.each do |roster| -%>
     <%- if (roster.pos_text != BENCH_POSITION )-%>
     <tr>
-        <td class="LineupTopEdgeBold"><%=roster.pos_text%></td>
-        <td class="LineupTop">
+        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow">
         	<%- if (roster.player.nil?)-%>
+        	<img src="/images/RS_Red_Button10.png" alt="Red Button">
         	[ EMPTY SLOT ]
         	<%-else-%>
+        	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
+        	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+        	<%if(roster.player.action == 'P')%><img src="/images/RS_LightBlue_Button10.png" alt="Blue Button"><%end%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
         	<%-end-%>
        	</td>
-        <td class="LineupTop"></td>
+        
         <%- if (!roster.player.nil?)-%>
-    		<td class="LineupTop">
-    		<select name="poselect[<%=roster.player._id%>]" class="LineupSelect">
+    		<td class="MainRow">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
     			<%- roster.player.eligible_pos.each do |p|-%>
-    			<OPTION value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
     			<%-end-%>
     		</select>
         	</td>
-    		<td class="LineupTop"><select class="LineupSelect" name="freqselect[<%=roster.player._id%>]">
-    		<option  value="A" <%=(roster.player.action=='A')?'selected':''%>>Always</option>
-    		<option  value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
-    		<%if(@pitch)%><option  value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
+    		<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]">
+    		<option class="MainOption" value="A" <%=(roster.player.action=='A')?'selected':''%>>Always</option>
+    		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
+    		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
     		</select>
     		</td>
     	<%-else-%>
-    	    <td class="LineupTop" colspan="2">
+    	    <td class="MainRow" colspan="2" valign="center">
     	    	<%= check_box('empty', roster._id, options = { 
 :checked => roster.leave_empty}, checked_value = "1", unchecked_value = "0") %>
-    	    
-        	Leave Slot Empty<br />
+        	Leave Slot Empty
         	</td>	
     	<%-end-%>        
-        <td class="LineupTop"></td>        
-        <td class="LineupTopEdge"><img src="/images/stats_button.gif" alt="StatsIcon"></td>
+        <td class="MainRowEnd">
+        	<span>
+        	<%if(!roster.player.nil? && roster.player.action == 'A')%><font color=green>Always Start</font><%end%>
+        	<%if(!roster.player.nil? && roster.player.action == 'D')%><font color=#00AEEF>Start If Game</font><%end%>
+        	<%if(roster.player.nil?)&& roster.leave_empty%><font color=red>Leave Slot Empty</font><%end%>
+        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#9FDAF7">Start If Pitching</font><%end%>
+        	</span>
+        </td>        
+        
     </tr>
     <%-end-%>
     <%-end-%>
-            <tr>
-        <td class="LineupBotEdgeBold"></td>
-        <td class="LineupBot"></td>
-        <td class="LineupBot"></td>
-    	<td class="LineupBot">
-        	</td>
-    	<td class="LineupBot">
-    		</td>        
-        <td class="LineupBot">
-        	</td>       
-        <td class="LineupBotEdge"></td>
-    </tr> 
-    <tr><td colspan="7" class="LineupHeader"><br>Bench Priority</td></tr>
-    <tr>
-    	<td class="LineupHeaderTiny">Position</td>
-    	<td class="LineupHeaderTiny">Player</td>
-    	<td class="LineupHeaderTiny"></td>
-    	<td class="LineupHeaderTiny">Start Position</td>
-    	<td class="LineupHeaderTiny">Start Frequency</td>
-    	<td class="LineupHeaderTiny">Bench Priority</td>
-    	<td class="LineupHeaderTiny">Profile</td>
-    </tr>
+
+
+<tr>
+<td colspan="5" class="MainClose"></td>
+</tr>
+<tr>
+<td colspan="5" class="MainHeader"><br><%=(@pitch)?'Pitcher':'Batter'%> Bench Priority</td>
+</tr>
+<tr>
+<td class="MainTinyHeader">Position</td>
+<td class="MainTinyHeader">Player</td>
+<td class="MainTinyHeader">Start Position</td>
+<td class="MainTinyHeader">Start Frequency</td>
+<td class="MainTinyHeader">Bench Priority</td>
+</tr>
+
     <%
      
     @bench_player_array.each do |roster| 
     %>
     <% if (!roster.player.nil?  && roster.pos_text == BENCH_POSITION)
-    	priority_count += 1
+    	if(roster.player.action != 'N') 
+    		priority_count += 1 
+    	end
     %>
     <tr>
-        <td class="LineupTopEdgeBold"><%=roster.pos_text%></td>
-        <td class="LineupTop">
-        
+        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow">
+        	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
+        	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+        	<%if(roster.player.action == 'P')%><img src="/images/RS_LightBlue_Button10.png" alt="Blue Button"><%end%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
-        
        	</td>
-        <td class="LineupTop"></td>
-        
-    		<td class="LineupTop">
-    		<select name="poselect[<%=roster.player._id%>]" class="LineupSelect">
+    	<td class="MainRow">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
     			<%- roster.player.eligible_pos.each do |p|-%>
-    			<OPTION value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
     			<%-end-%>
     		</select>
-        	</td>
-    		<td class="LineupTop"><select class="LineupSelect" name="freqselect[<%=roster.player._id%>]">
+       	</td>
+    	<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]">
     		
-    		<option  value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
-    		<%if(@pitch)%><option  value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
-    		<option  value="N" <%=(roster.player.action=='N')?'selected':''%>>Never</option>
+    		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
+    		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
+    		<option class="MainOption" value="N" <%=(roster.player.action=='N')?'selected':''%>>Never</option>
     		</select>
-    		</td>
-    		</td>	
-    	        
-        <td class="LineupTop"><select class="LineupSelect" name="priorityselect[<%=roster.player._id%>]">
+    	</td>
+    		        
+        <td class="MainRowEnd">
+        	<%if (roster.player.action == NEVER_START_OPTION)%>
+				<font color=red>Never Start</font>
+			<%else%>
+	        	<select class="MainSelect" name="priorityselect[<%=roster.player._id%>]">
 				<%- @bench_array.each do |p|-%>
-    			<OPTION value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
+    			<OPTION class="MainOption" value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
     			<%-end-%>
-    		
 			</select>
-			</td>        
-        <td class="LineupTopEdge"><img src="/images/stats_button.gif" alt="StatsIcon"></td>
+			<%end%>
+		</td>  
     </tr>
     <%-end-%>
     <%-end-%>
     <%@dl_list.each do |player| %>     
     <%if(@pitch && !player.position_text.index('P').nil?)%> 
     <tr>
-        <td class="LineupTopEdgeBold">DL</td>
-        <td class="LineupTop"><%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
-        <td class="LineupTop"></td>
-    	<td class="LineupTop">
-        	</td>
-    	<td class="LineupTop">
-    		</td>        
-        <td class="LineupTop">
-        	</td>       
-        <td class="LineupTopEdge"></td>
+        <td class="MainRowBeg">DL</td>
+        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="MainRow"></td>
+    	<td class="MainRow"></td>
+        <td class="MainRowEnd"></td>
     </tr>
 	<%end%>
 	<%if(!@pitch && player.position_text.index('P').nil?)%> 
     <tr>
-        <td class="LineupTopEdgeBold">DL</td>
-        <td class="LineupTop"><%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
-        <td class="LineupTop"></td>
-    	<td class="LineupTop">
-        	</td>
-    	<td class="LineupTop">
-    		</td>        
-        <td class="LineupTop">
-        	</td>       
-        <td class="LineupTopEdge"></td>
+        <td class="MainRowBeg">DL</td>
+        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="MainRow"></td>
+    	<td class="MainRow"></td>
+        <td class="MainRowEnd"></td>
     </tr>
 	<%end%>
 	   
 	<%end%>    
-        <tr >
-        <td class="LineupBotEdgeBold"></td>
-        <td class="LineupBot"></td>
-        <td class="LineupBot"></td>
-    	<td class="LineupBot">
-        	</td>
-    	<td class="LineupBot">
-    		</td>        
-        <td class="LineupBot">
-        	</td>       
-        <td class="LineupBotEdge"></td>
-    </tr>
 
-       
-    </table>
-    
+
+</tbody>
+<tfoot>
+<tr>
+<td colspan="5" class="MainClose"></td>
+</tr>
+<tr>
+<td>
+<br>
+</td>
+</tr>
+</tfoot>
+</table>    
     <INPUT type="hidden" name="id" value="<%=@team._id%>">
-    <button type="button" onclick="submitLineup()">Submit</button>
-    <button type="button" onclick="refreshLineup()">Refresh</button>
-    <button type="button" onclick="startLineup()">Start</button>
+    <button type="button" onclick="submitLineup()">Submit Changes</button>
+    <button type="button" onclick="startLineup()">Start Lineup for Tomorrow</button>
     <span id="status_span"></span>
+</div>
+
+<!--END -->
+
+
 <%end%>
 
 <%= form_tag '/teams/refresh_lineup', options = {:id => 'refresh_lineup'} do%>
@@ -177,13 +295,12 @@
 <%end%>
 <SCRIPT>
 function refreshLineup() {
+	$('refresh_span').style.display = '';
+	
 	$('refresh_lineup').request({
 	    onSuccess: successLine,
   		onFailure:  failureLine
 	});
-	
-	$('status_span').innerHTML = "Refreshing Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";
-
 }
 
 function successLine(response){
@@ -219,12 +336,25 @@ function submitLineup() {
 function startLineup() {
 	$('refresh_lineup').action = '/teams/start_lineup'
 	$('refresh_lineup').request({
-	    onSuccess: successFunc,
+	    onSuccess: successFuncStart,
   		onFailure:  failureFunc
 	});
 	
 	$('status_span').innerHTML = "Starting & Applying Lineup Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
 
+}
+
+function successFuncStart(response){
+	
+	if (response.responseText == 'true') {
+	    var container = $('status_span');    
+    	container.update("Lineup Started for Tomorrow - Check your Team");
+	}
+	else {
+	    var container = $('status_span');    
+    	container.update("Could not start tomorrow's lineup. Please try again later.");
+		}
+    
 }
 
 function successFunc(response){

@@ -1,5 +1,6 @@
 class Team
   include MongoMapper::Document
+  plugin MongoMapper::Plugins::IdentityMap
   
   key :team_id, String, :required => true
   key :league_id, String, :required => true

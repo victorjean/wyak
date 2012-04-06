@@ -123,11 +123,12 @@ body {
 /* Sidebar Div Styles */
 
 .SideTitle {
-	color: #00AEEF;
+	color: #5A4A42;
 	font: bold 18px Verdana, Geneva, sans-serif;
 	padding-left: 10px;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	padding-right: 10px;
 	background-color: #f7f7f8;
 }
 
@@ -154,6 +155,13 @@ body {
 	background-color: #f7f7f8;
 }
 
+.LeftNavLink {
+	color: #00AEEF;
+	font: bold 11px Verdana, Geneva, sans-serif;
+	text-align: left;
+	text-decoration: none;
+}
+
 .SideActive {
 	color: #00AEEF;
 	font: bold 10px Verdana, Geneva, sans-serif;
@@ -163,7 +171,7 @@ body {
 	border-top-width: 1px;
 	border-right-width: 1px;	
 	text-align: left;
-	background-color: #EFF7FD;
+	background-color: #E0F2FE;
 }
 
 .SideBrown {
@@ -324,6 +332,7 @@ body {
 .DashActiveBrown {
 	color: #5A4A42;
 	font: 12px Verdana, Geneva, sans-serif;
+	padding-right: 10px;
 }
 
 
@@ -361,3 +370,86 @@ body {
 	background-color: #f7f7f8;
 }
 
+/* Home Page Styles */
+
+
+.HomeSectionHeader {
+	color: #00AEEF;
+	font: 14px Verdana, Geneva, sans-serif;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #F9FBFB;
+	text-align: right;
+}
+
+
+.HomeSections {
+	color: #00AEEF;
+	font: 16px Verdana, Geneva, sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #e0f2fe;
+	width: 25%;
+	vertical-align: top;
+	border: 0 solid #FFFFFF; 
+	border-left-width: 1px;
+	border-right-width: 1px;	
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	
+}
+
+.HomeSectionsBrown {
+	color: #5A4A42;
+	font: 12px Verdana, Geneva, sans-serif;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
+.HomeBrownDetail {
+	color: #5A4A42;
+	font: 12px Verdana, Geneva, sans-serif;
+	padding-left: 26px;
+	padding-right: 26px;
+}
+
+.HomeScreenshot {
+	float: left;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.HomeTagline {
+	color: #00AEEF;
+	font: bold 16px Verdana, Geneva, sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	float: left;
+	text-align: left;
+}
+
+.HomeSignUp {
+	color: #5A4A42;
+	font: 16px Verdana, Geneva, sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #e0f2fe;
+	text-align: right;
+	float: left;
+}
+
+.flash_message{
+	color: red;
+	font: 12px Verdana, Geneva, sans-serif;
+}

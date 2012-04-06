@@ -1,15 +1,80 @@
-<%= form_tag do %>
-<%= @user.errors.full_messages.first if @user.errors.any? %>
-  <h3>Register New User</h3>
-  <%= label_tag(:email, "Email:") %>
-  <%= text_field_tag('email', @user.email) %><BR>
-  <%= label_tag(:pass, "Password:") %>
-  <%= password_field_tag(:pass) %>
-  <BR>
-  <%= label_tag(:repass, "Confirm Password:") %>
-  <%= password_field_tag(:repass) %>
-  <BR>
-  <%= submit_tag("Sign Up") %>
-  <BR>
+<table cellpadding="0" cellspacing="0" border="0">
+<thead>
+</thead>
+<tbody>
+<tr>
+<td colspan="4" class="HomeSectionHeader">
+<div class="HomeScreenshot">
+<br>
+<img src="/images/RSScreenshot.png" alt="RotoStarter:  Automatically Set Your Fantasy Lineups"></div>
+<h1 class="HomeTagline">
+<br>
+RotoStarter<br>
+Automatically Sets<br>
+Your Fantasy Lineups<br>
+</h1>
+<%= form_tag '/user/signup' do %>
+<div style="margin:0;padding:0;display:inline">
+<input name="utf8" type="hidden" value="&#x2713;"/>
+<input name="authenticity_token" type="hidden" value="j7+BQAJL4+O/vxqArSm4BmwFpvMhjGmR4vBRLrcxkc4="/>
+</div>
+<h3 class="HomeSignUp">
+<b>Sign Up Now, It's Free</b><br><br>
+<label for="email">Email:</label>
+<%= text_field_tag('email', @user.email) %>
+<br>
+<label for="pass">Password:</label>
+<%= password_field_tag(:pass) %>
+<br>
+<label for="repass">Confirm Password:</label>
+<%= password_field_tag(:repass) %>
   
+<br>
+<br>
+<span class="flash_message"><%= @user.errors.full_messages.first if @user.errors.any? %></span>
+<% flash.each do |name, msg| %>
+	        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+	      <% end %>
+<input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
+<br>
+</h3>
 <% end %>
+</td>
+</tr>
+<tr>
+<td colspan="1" class="HomeSections">
+Set It and Forget It!<br>
+<div class="HomeSectionsBrown">
+RotoStarter automates the manual task of logging in early every day just to start and bench your fantasy players.
+</div>
+</td>
+<td colspan="1" class="HomeSections">
+Are You Too Busy?<br>
+<div class="HomeSectionsBrown">
+Don't you hate it when a guy on your bench (that you would have started) hits a home run, but you were too busy?
+</div>
+</td>
+<td colspan="1" class="HomeSections">
+No Internet Access?<br>
+<div class="HomeSectionsBrown">
+Are you always scrambling because you have no internet access at work?
+</div>
+</td>
+<td colspan="1" class="HomeSections">
+Vacation in Peace<br>
+<div class="HomeSectionsBrown">
+Don't pay for internet access just to set the lineups for your fantasy teams when you're on vacation.
+</div>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="4" class="HomeSectionHeader">
+<br>
+</td>
+</tr>
+</tfoot>
+</table>
+
+

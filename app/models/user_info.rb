@@ -2,6 +2,7 @@ require 'digest/sha1'
 
 class UserInfo
   include MongoMapper::Document
+  plugin MongoMapper::Plugins::IdentityMap
   
   key :email, String, :required => true
   key :pass, String, :required => true

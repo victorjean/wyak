@@ -48,7 +48,7 @@
 			<%end%>
 			Yahoo Teams
 			</td>
-			<td colspan="2" class="MainSubTitleLinks">
+			<td colspan="2" class="MainSubTitleLinks" <% if (@yahoo_teams.length == 0) %>style="text-align:left"<%end%>>
 			<%- if (@yahoo_teams.length == 0) -%>
 				<img src="/images/RSPlus10.png" alt="Add Icon">
 				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
@@ -114,7 +114,7 @@
 			<%end%>
 			ESPN Teams
 			</td>
-			<td colspan="2" class="MainSubTitleLinks">
+			<td colspan="2" class="MainSubTitleLinks" <% if (@espn_teams.length == 0) %>style="text-align:left"<%end%>>
 			<%- if (@espn_teams.length == 0) -%>
 				<img src="/images/RSPlus10.png" alt="Add Icon">
 				<a href="javascript:teamWindow('ESPN')">Add Account</a>
