@@ -17,23 +17,61 @@
     <%= yield(:head) %>
   </head>
   <body <%= content_for?(:body_attributes) ? yield(:body_attributes) : "" %>>
-    <div id="container">
-      <% flash.each do |name, msg| %>
-        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-      <% end %>
-      <%= content_tag :h1, yield(:title) if show_title? %>
-      <%= yield %>
-      <BR>
-      	
-      	<%-if (session[:user].nil?)-%>
-      	<%= link_to 'Login', :action => 'login' %> &nbsp;| &nbsp;
-      	<%= link_to 'Register', :action => 'signup' %> &nbsp;| &nbsp;
-      	<%-else-%>
-      	<%=session[:user]%>  &nbsp;| &nbsp;
-      	<%-end-%>
-      	<%= link_to "Logout", :controller => "user", :action => "logout" %>
+	<div id="RSWrapper">
+		<div id="RSHeader" style="float:left; margin:0;">
+			<table cellpadding="0" cellspacing="0" border="0">
+			<tr>
+			<td>
+			&nbsp;
+			<img src="/images/RotoStarterLogoBlue200.png" alt="RotoStarter Logo">
+			</td>
+			<td>
+			<div class="HeaderTitle">RotoStarter
+			<font color="#5A4A42"> [roh-toh stahr-ter]</font>
+			noun</div>
+			<div class="HeaderTitleBrown">Free service that automatically starts your fantasy baseball players for you every morning</div>
+			</td>
+			</tr>
+			</table>
+		</div>
+		<div id="RSNav" style="float:left; margin:0;">
+			<div class="NavHeadLeft">
+			&nbsp; &nbsp;
+			<%-if (session[:user].nil?)-%>
+	      	<%= link_to 'Login', :action => 'login' %> | 
+	      	<%= link_to 'Register', :action => 'signup' %>
+	      	<%-else-%>
+	      	<%= link_to "Dashboard", :controller => "teams", :action => "index" %> |
+			<u>How Does It Work?</u> |
+			<u><%=session[:user]%></u> |
+			<%= link_to "Logout", :controller => "user", :action => "logout"  %>
+	      	<%-end-%>
+	      	
+			</div>
+		</div>
+  	
+	    <div id="RSMain" style="float:left; margin:0;width:100%">
+	      <% flash.each do |name, msg| %>
+	        <%= content_tag :div, msg, :id => "flash_#{name}" %>
+	      <% end %>
+	      <BR>
+	      <%= yield %>	
+	    </div>
+	    <div id="RSEdge" style="float:left; margin:0;">
+		<br><br>
+		</div>
+		<div id="RSFooter" style="float:left; margin:0;">
+		<div class="NavHeadLeft">
+		&nbsp; &nbsp;
+		<u>About Us</u> |
+		<u>Privacy</u> |
+		<u>Terms</u> |
+		<u>Contact Us</u>
+		</div>
+		</div>
+		<div id="RSEdge" style="float:left; margin:0;">
+		<br>
+		</div>
     </div>
-    
-    
   </body>
 </html>

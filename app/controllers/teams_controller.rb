@@ -6,7 +6,7 @@ class TeamsController < ApplicationController
   
   def index
     four_hours = 4*60*60
-    
+    #four_hours = 1
       
     user_info = UserInfo.find_by_email(session[:user])
     @espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
@@ -206,14 +206,48 @@ class TeamsController < ApplicationController
     render(:partial => 'loading')
   end
   
+  def start_lineup
+    @success = true
+    begin
+      team_parse = Team.find(params[:id])
+      if (team_parse.team_type == YAHOO_AUTH_TYPE)
+        set_yahoo_default(team_parse)
+      end
+      if (team_parse.team_type == ESPN_AUTH_TYPE)
+        set_espn_default(team_parse)
+      end
+    rescue => msg
+      @success = false
+      logger.error("ERROR OCCURED while start_lineup Team #{team.league_id} - #{session[:user]} - (#{msg})")
+      log_error(session[:user], team_parse, 'teams/start_lineup', msg)  
+    end
+    render(:partial => 'loading')
+  end
+  
   def update_all
     logger.info("Update All Function For #{session[:user]}")
+    
+    yahoo_update= false
+    espn_update = false
+    
+    mode = params[:mode]
+    if (mode == 'all')
+      yahoo_update = true
+      espn_update = true
+    end
+    if(mode == 'yahoo')
+      yahoo_update = true
+    end
+    if(mode == 'espn')
+      espn_update = true
+    end
     
     user_info = UserInfo.find_by_email(session[:user])
     espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
     yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
     @success = true
     
+    if (yahoo_update)
     yahoo_teams.each do |team|
       begin
         parse_yahoo_team(team, false)
@@ -224,7 +258,9 @@ class TeamsController < ApplicationController
         log_error(session[:user], team, 'teams/update_all',"Updating Yahoo Teams - #{msg}")
       end  
     end
+    end
     
+    if (espn_update)
     espn_teams.each do |team|
       begin
         parse_espn_team(team, false)
@@ -235,8 +271,25 @@ class TeamsController < ApplicationController
         log_error(session[:user], team, 'teams/update_all',"Updating ESPN Teams - #{msg}")
       end
     end
+    end
     
     render(:partial => 'updated')
+  end
+  
+  def setup
+    @team = Team.find(params[:teamid])
+    @player_type = params[:playertype]
+
+    if (@player_type == 'b' )
+      @team.daily_auto_batter = (params[:setvalue] == 'true')
+      @team.save     
+    end
+    if (@player_type == 'p' )
+      @team.daily_auto_pitcher = (params[:setvalue] == 'true')
+      @team.save
+    end
+    
+    render(:partial => 'set')
   end
   
   def manage

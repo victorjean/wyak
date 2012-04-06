@@ -168,6 +168,7 @@
     <INPUT type="hidden" name="id" value="<%=@team._id%>">
     <button type="button" onclick="submitLineup()">Submit</button>
     <button type="button" onclick="refreshLineup()">Refresh</button>
+    <button type="button" onclick="startLineup()">Start</button>
     <span id="status_span"></span>
 <%end%>
 
@@ -212,6 +213,17 @@ function submitLineup() {
 	});
 	
 	$('status_span').innerHTML = "Submitting Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+}
+
+function startLineup() {
+	$('refresh_lineup').action = '/teams/start_lineup'
+	$('refresh_lineup').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	
+	$('status_span').innerHTML = "Starting & Applying Lineup Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
 
 }
 

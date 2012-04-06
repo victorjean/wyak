@@ -1,0 +1,26 @@
+<%if (@player_type == 'b') %>
+<%if (@team.daily_auto_batter)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<a href="/teams/showbatters?id=<%=@team._id%>"><font color=green>Batters</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="br_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<a href="/teams/showbatters?id=<%=@team._id%>"><font color=red>Batters</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="br_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+<%end%>
+<%end%>
+<%if (@player_type == 'p') %>
+<%if (@team.daily_auto_pitcher)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<a href="/teams/showpitchers?id=<%=@team._id%>"><font color=green>Pitchers</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="pr_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
+	<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<a href="/teams/showpitchers?id=<%=@team._id%>"><font color=red>Pitchers</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="pr_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
+<%end%>
+<%end%>

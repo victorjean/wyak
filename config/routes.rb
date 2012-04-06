@@ -8,9 +8,11 @@ Wyak::Application.routes.draw do
       get 'showbatters'
       get 'showpitchers'
       get 'manage'
+      get 'setup'
       post 'manage'
       post 'set_lineup'
       post 'refresh_lineup'
+      post 'start_lineup'
     end
   end
   resources :user do

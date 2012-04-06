@@ -390,6 +390,10 @@ def load_espn_first_time(user_info)
 end
 
 def load_yahoo_teams(user_info)
+  
+  auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,YAHOO_AUTH_TYPE)
+  agent = authenticate_yahoo(auth_user)
+  
   puts 'Loading all Yahoo Teams into Database for User - '+user_info.email
   puts 'Deleting Teams from DB...'
   team_list = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
@@ -398,11 +402,6 @@ def load_yahoo_teams(user_info)
     item.destroy
     puts item.league_id + ' Deleted'
   end
-
-  
-  auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,YAHOO_AUTH_TYPE)
-  agent = authenticate_yahoo(auth_user)
-  
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)
@@ -435,6 +434,9 @@ def load_yahoo_teams(user_info)
 end
 
 def load_espn_teams(user_info)
+  auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,ESPN_AUTH_TYPE)
+  agent = authenticate_espn(auth_user)
+  
   puts 'Loading all ESPN Teams into Database for User - '+user_info.email
   puts 'Deleting Teams from DB...'
   team_list = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
@@ -443,11 +445,6 @@ def load_espn_teams(user_info)
     item.destroy
     puts item.league_id + ' Deleted'
   end
-
-  
-  auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,ESPN_AUTH_TYPE)
-  agent = authenticate_espn(auth_user)
-  
   
   page = agent.get(ESPN_BASEBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)

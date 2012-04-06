@@ -5,93 +5,200 @@
 
 
 
-<h2>Welcome to RotoStarter</h3>
-
-<div id="updating">
-<%-if (@update)-%>	
-Updating Teams <%= image_tag '/images/refresh-animated.gif' %>
-<%-end-%>
-</div>
-<%= form_tag do %>
-<TABLE cellpadding="0" cellspacing="1">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<thead>
-		<tr valign="bottom"  >
-		<th colspan="1" align="left">ESPN Teams</th>
-		<th colspan="3" align="right"><a href="javascript:teamWindow('ESPN')"><%=(@espn_teams.length == 0)?'Add':'Manage'%> Teams</a></th>
 		<tr>
-		<tr valign="bottom"  >
-			<th align="left" width="40%">League Name</th>
-			<th align="left" width="40%">Team Name</th>
-			<th align="left" width="10%">Start Batters</th>
-			<th align="left" width="10%">Start Pitchers</th>
+			<td colspan="3" class="DashHeaderTop" width="42%">
+			Dashboard
+			<div class="DashHeaderTopBrown">Manage Accounts and Teams</div>
+			</td>
+			<td colspan="2" class="DashHeaderTop" align="right">
+			<div id="updating" class="DashActiveBrown" style="display:<%if (!@update)%>none<%end%>">
+			Refreshing Teams <%= image_tag '/images/refresh-animated.gif' %>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="1" class="DashHeaderLeft">
+			Step 1: Add Accounts<br>
+			Step 2: Edit Team Preferences<br>
+			Step 3: Wait Until Morning<br>
+			Step 4: Review Lineup <br>
+			</td>
+			<td colspan="4" class="DashHeaderRight">
+			1. Log into your Yahoo or ESPN account from RotoStarter<br>
+			2. Set each player to "Always" start, to "Never" start or to start "If Game"<br>
+			3. RotoStarter will set your lineups every morning using your preferences<br>
+			4. If you want, you can review your lineups and make changes<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<br>
+			</td>
 		</tr>
 	</thead>
 	<tbody>
-		<%- @espn_teams.each do |team| -%>
-		<tr valign="bottom"  >
-			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.league_name%></a></td>
-			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></td>
-			<td align="center"><%= check_box('batter', team._id, options = { 
-:checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
-			<td align="center"><%= check_box('pitcher', team._id, options = { 
-:checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
-		</tr>
-		<%- end -%>
-		<%- if (@espn_teams.length == 0) -%>
-		<tr  >
-		<td  colspan="4" align="center" >
-				No Teams Added - Click Add Teams							
-		</td>
-		</tr>
-		<%- end -%>		
-	</tbody>
-</TABLE>
-<BR><BR><BR>
-<TABLE cellpadding="0" cellspacing="1">
-	<thead>
-		<tr valign="bottom"  class="greybg" >
-		<th colspan="1" align="left">Yahoo Teams</th>
-		<th colspan="3" align="right"><a href="javascript:teamWindow('YAHOO')"><%=(@yahoo_teams.length == 0)?'Add':'Manage'%> Teams</a></th>
 		<tr>
-		<tr valign="bottom"  >
-			<th align="left" width="40%">League Name</th>
-			<th align="left" width="40%">Team Name</th>
-			<th align="left" width="10%">Start Batters</th>
-			<th align="left" width="10%">Start Pitchers</th>
+			<td colspan="3" class="SideHeader">
+			<%- if (@yahoo_teams.length == 0) -%>
+			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
+			<%else%>
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			<%end%>
+			Yahoo Teams
+			</td>
+			<td colspan="2" class="MainSubTitleLinks">
+			<%- if (@yahoo_teams.length == 0) -%>
+				<img src="/images/RSPlus10.png" alt="Add Icon">
+				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
+			<%else%>
+			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+			<a href="javascript:updateTeams('yahoo')">Refresh</a>
+			<img src="/images/editIcon.gif" alt="Edit Icon">
+			<a href="javascript:teamWindow('YAHOO')">Edit</a>
+			<%end%>
+			<br>
+			</td>
 		</tr>
-	</thead>
-	<tbody>
 		<%- @yahoo_teams.each do |team| -%>
-		<tr valign="bottom"  >
-			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.league_name%></a></td>
-			<td><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></td>
-			<td align="center"><%= check_box('batter', team._id, options = { 
-:checked => team.daily_auto_batter}, checked_value = "1", unchecked_value = "0") %></td>
-			<td align="center"><%= check_box('pitcher', team._id, options = { 
-:checked => team.daily_auto_pitcher}, checked_value = "1", unchecked_value = "0") %></td>
+		<tr>
+			<td colspan="3" class="DashActive"><%=team.team_name%><br>
+				<div class="DashActiveBrown"><%=team.league_name%></div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=team._id%>">
+				<%if (team.daily_auto_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showbatters?id=<%=team._id%>"><font color=green>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showbatters?id=<%=team._id%>"><font color=red>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=team._id%>">
+				<%if (team.daily_auto_pitcher)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=green>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=red>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			
 		</tr>
-		<%- end -%>
-		<%- if (@yahoo_teams.length == 0) -%>
-		<tr  >
-		<td  colspan="4" align="center" >
-				No Teams Added - Click Add Teams							
-		</td>
+		<%end%>
+		<tr>
+			<td>
+			<br>
+			</td>
 		</tr>
-		<%- end -%>		
+		<tr>
+			<td colspan="3" class="SideHeader">
+			<%- if (@espn_teams.length == 0) -%>
+			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
+			<%else%>
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			<%end%>
+			ESPN Teams
+			</td>
+			<td colspan="2" class="MainSubTitleLinks">
+			<%- if (@espn_teams.length == 0) -%>
+				<img src="/images/RSPlus10.png" alt="Add Icon">
+				<a href="javascript:teamWindow('ESPN')">Add Account</a>
+			<%else%>
+			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+			<a href="javascript:updateTeams('espn')">Refresh</a>
+			<img src="/images/editIcon.gif" alt="Edit Icon">
+			<a href="javascript:teamWindow('ESPN')">Edit</a>
+			<%end%>
+			<br>
+			</td>
+		</tr>
+		<%- @espn_teams.each do |team| -%>
+		<tr>
+			<td colspan="3" class="DashActive"><%=team.team_name%><br>
+				<div class="DashActiveBrown"><%=team.league_name%></div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=team._id%>">
+				<%if (team.daily_auto_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showbatters?id=<%=team._id%>"><font color=green>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showbatters?id=<%=team._id%>"><font color=red>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=team._id%>">
+				<%if (team.daily_auto_pitcher)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=green>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=red>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			
+		</tr>
+		<%end%>		
 	</tbody>
-</TABLE>
-<BR>
-<%= submit_tag("Submit Changes") %>
-
-<% end %>
+</table>
 
 
 
 <SCRIPT>
 
+function setup(teamid, setbool, type) {
+	old_inner_html = $(type+'r_'+teamid).innerHTML;
+	$(type+'r_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
+	
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: 'teamid='+escape(teamid)+'&setvalue='+escape(setbool)+'&playertype='+escape(type),
+        cache: false,
+        async: true, 
+        url: '/teams/setup',
+        success: function(html) {
+            $(type+'_'+teamid).innerHTML = html;
+        },
+        error: function () {
+			$(type+'r_'+teamid).innerHTML = old_inner_html;
+        },
+        complete: function () {
+			
+        }
+    });
+}
+
 function update_function(){
 	<%-if (@update)-%>	
-	updateTeams();
+	updateTeams('all');
 	<%-end-%>
 }
 
@@ -159,13 +266,15 @@ function failureFunc(response){
     
 }
   
-function updateTeams() {
+function updateTeams(mode) {
+	$('updating').style.display = '';
+	$('updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
 	
 	
 	$j.ajax({
         type: 'GET',
         dataType: "html",
-        data: '',
+        data: 'mode='+escape(mode),
         cache: false,
         async: true, 
         url: '/teams/update_all',
@@ -176,7 +285,7 @@ function updateTeams() {
 			//$('popup_gamelog').popup.show();
         },
         error: function () {
-			
+			$('updating').innerHTML = "Error Refreshing!";
         },
         complete: function () {
 			
