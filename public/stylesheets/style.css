@@ -31,21 +31,21 @@ body {
 
 #RSWrapper {
 	background-color: #FFFFFF;
-	padding-top: 20px;
+	padding-top: 10px;
 	padding-bottom: 40px;
-	width: 95%;
-	height: 95%;
+	width: 98%;
+	height: 98%;
 	min-height: 100%;
 	margin: auto;
 }
 
 #RSHeader {
-	background-color: #eeebe9;
-	width: 100%;
-	height: 100%;
-	min-height: 100%;
-	padding-top: 20px;
-	padding-bottom: 10px;
+       background-color: #eeebe9;
+       width: 100%;
+       height: 100%;
+       min-height: 100%;
+       padding-top: 10px;
+       padding-bottom: 10px;
 }
 
 #RSNav {
@@ -306,8 +306,8 @@ body {
 	font: 12px Verdana, Geneva, sans-serif;
 	padding-left:20px;
 	padding-right: 20px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	border: 0 solid #FFFFFF; 
 	border-left-width: 1px;
 	border-top-width: 1px;
@@ -322,8 +322,8 @@ body {
 	font: bold 14px Verdana, Geneva, sans-serif;
 	padding-left: 30px;
 	padding-right: 30px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	border: 0 solid #FFFFFF; 
 	border-left-width: 1px;
 	border-top-width: 1px;
@@ -332,6 +332,16 @@ body {
 	background-color: #EFF7FD;
 
 }
+
+.DashActive a {
+	color: #00AEEF;
+	font: bold 14px Verdana, Geneva, sans-serif;	
+	text-align: left;
+	background-color: #EFF7FD;
+
+}
+
+
 .DashActiveBrown {
 	color: #5A4A42;
 	font: 12px Verdana, Geneva, sans-serif;
@@ -343,8 +353,8 @@ body {
 	color: #5A4A42;
 	font: bold 20px Verdana, Geneva, sans-serif;
 	padding-left: 10px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	background-color: #e0f2fe;
 }
 
@@ -358,8 +368,8 @@ body {
 	font: 12px Verdana, Geneva, sans-serif;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	background-color: #f7f7f8;
 }
 
@@ -450,6 +460,11 @@ body {
 	background-color: #e0f2fe;
 	text-align: right;
 	float: left;
+}
+
+.HomeTinyLinks {
+	color: #5A4A42;
+	font: 9px Verdana, Geneva, sans-serif;
 }
 
 .flash_message{

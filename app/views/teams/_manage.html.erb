@@ -1,34 +1,47 @@
 <div id='team_popup' >
-<h3>Manage <%=@teamType%> Teams</h3>
+
 
 <%= form_tag('/teams/manage', :id=>'manage_team') do %>
-<TABLE cellpadding="0" cellspacing="1"  width="540">
+<TABLE cellpadding="0" cellspacing="1"  width="400">
 		<tr  >
-			<td align="left" width="20%"><%=@teamType%> ID</td>
-			<td align="left" width="40%">
+			<td align="left" ><%=@teamType%> ID:</td>
+			<td align="left" >
 				<%-if (@authInfo.nil?)-%>
-				<%= text_field_tag('userid', '', options = {:size => 10,  :onchange => "$('team_manage_submit').disabled = false"}) %>
+				<%= text_field_tag('userid', '', options = {:size => 12,  :onfocus => "$('team_manage_submit').disabled = false"}) %>
 				<%= hidden_field_tag('current_user') %>
 				<%-else-%>
-				<%= text_field_tag('userid', @authInfo.login, options = {:size => 10, :onchange => "$('team_manage_submit').disabled = false",
-:disabled  => true}) %> <BUTTON type="button" onclick="$('userid').disabled = false">Edit</BUTTON>
+				<%= text_field_tag('userid', @authInfo.login, options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
+:disabled  => true}) %> 
+				<img src="/images/editIcon.gif" alt="Edit Icon">
+				<a href="javascript:$('userid').disabled = false;" class="LeftNavLink">Edit</a>
+				
 				<%= hidden_field_tag('current_user', @authInfo.login) %>
 				<%-end-%>
 			</td>
-			<td align="right" width="40%"><%-if (!@authInfo.nil?)-%><button type="button" onclick="reload_team()">Reload Teams</button><%-end-%></td>
+			<td align="right" ><%-if (!@authInfo.nil?)-%>
+				
+				<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+				<a class="LeftNavLink" href="javascript:reload_team()">Reload Teams</a>
+				<%-end-%>
+			</td>
 		</tr>
 		<tr   >
-			<td align="left" width="30%">Password</td>
-			<td align="left" width="30%">
+			<td align="left" >Password:</td>
+			<td align="left" >
 				<%-if (@authInfo.nil?)-%>
-				<%= password_field_tag(:pass,'',options ={:size => 10,:onchange => "$('team_manage_submit').disabled = false"}) %> 
+				<%= password_field_tag(:pass,'',options ={:size => 12,:onfocus => "$('team_manage_submit').disabled = false"}) %> 
 				<%-else-%>
-				<%= password_field_tag(:pass,'', options = {:size => 10, :onchange => "$('team_manage_submit').disabled = false",
-:disabled  => true}) %> <BUTTON type="button" onclick="$('pass').disabled = false">Edit</BUTTON>
+				<%= password_field_tag(:pass,'', options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
+:disabled  => true}) %> 
+				<img src="/images/editIcon.gif" alt="Edit Icon">
+				<a href="javascript:$('pass').disabled = false;" class="LeftNavLink">Edit</a>
+				
 				<%-end-%>
 				
 			</td>
-			<td align="right" width="40%"><BUTTON type="button" id='team_manage_submit' onclick="submit_team()" disabled="disabled">Submit</BUTTON></td>
+			<td align="right" >
+				<BUTTON  type="button" id='team_manage_submit' onclick="submit_team()" disabled="disabled">Submit</BUTTON>
+				</td>
 		</tr>
 	
 </table>

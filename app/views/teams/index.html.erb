@@ -2,6 +2,7 @@
 
 <link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
 <link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
 
 
 
@@ -63,7 +64,7 @@
 		</tr>
 		<%- @yahoo_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><%=team.team_name%><br>
+			<td colspan="3" class="DashActive"><a target="_blank" href="<%=YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
@@ -129,7 +130,7 @@
 		</tr>
 		<%- @espn_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><%=team.team_name%><br>
+			<td colspan="3" class="DashActive"><a target="_blank" href="<%=ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId="+team.team_id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
@@ -205,7 +206,7 @@ function update_function(){
 
 function teamWindow(type) {
 Dialog.alert({url: "/teams/manage?teamType="+type, options: {method: 'get'}}, 
-            { width:540, okLabel: "Close"});
+            { title:"Manage "+type+" Teams",className:"bluelighting", width:400, okLabel: "Close"});
             
 }
 

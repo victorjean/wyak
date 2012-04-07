@@ -23,7 +23,9 @@
 			<tr>
 			<td>
 			&nbsp;
+			<a href="/">
 			<img src="/images/RotoStarterLogoBlue200.png" alt="RotoStarter Logo">
+			</a>
 			</td>
 			<td>
 			<div class="HeaderTitle">RotoStarter
@@ -39,16 +41,23 @@
 			&nbsp; &nbsp;
 			<%-if (session[:user].nil?)-%>
 			<%= link_to "Home", "/" %> |
-	      	<%= link_to 'Login', :action => 'login' %>
-	      	| <u>How Does It Work?</u>
+	      	
+	      	<u>How Does It Work?</u>
+	      	<span style="float:right;text-align: right;padding-right: 10px">
+	      	<%= link_to 'Log In', :action => 'login' %>
+	      	</span>
 	      	<%-else-%>
-	      	<%= link_to "Home", :controller => "teams", :action => "index" %> |
-			<u>How Does It Work?</u> |
-			<u><%=session[:user]%></u> |
-			<%= link_to "Logout", :controller => "user", :action => "logout"  %>
+	      	<%= link_to "Dashboard Home", :controller => "teams", :action => "index" %> |
+			<u>How Does It Work?</u>
+			<span style="float:right;text-align: right;padding-right: 10px">
+			<%=session[:user]%> | 
+			<%= link_to "Log Out", :controller => "user", :action => "logout"  %>
+			</span> 
+			
 	      	<%-end-%>
 	      	
 			</div>
+
 		</div>
   	
 	    <div id="RSMain" style="float:left; margin:0;width:100%">

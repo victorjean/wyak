@@ -36,7 +36,9 @@ Your Fantasy Lineups<br>
 	        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
 	      <% end %>
 <input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
-<br>
+<div class="HomeTinyLinks">
+<%= link_to 'Log In', :action => 'login' %> or <u>Forgot Your Password?</u><br>
+</div>
 </h3>
 <% end %>
 </td>

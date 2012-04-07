@@ -10,8 +10,8 @@
 	<thead>
 		<tr>
 		<td colspan="2" class="SideTitle">
-		Lineup Preferences
-		<div class="SideTitleBrown">How To Set Tomorrow's Lineup</div>
+		<%=(@pitch)?'Pitcher':'Batter'%> Settings
+		<div class="SideTitleBrown">Set Future Lineup Preferences</div>
 		</td>
 		</tr>
 		<tr>
@@ -144,7 +144,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%-else-%>
         	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
-        	<%if(roster.player.action == 'P')%><img src="/images/RS_LightBlue_Button10.png" alt="Blue Button"><%end%>
+        	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
         	<%-end-%>
        	</td>
@@ -175,7 +175,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(!roster.player.nil? && roster.player.action == 'A')%><font color=green>Always Start</font><%end%>
         	<%if(!roster.player.nil? && roster.player.action == 'D')%><font color=#00AEEF>Start If Game</font><%end%>
         	<%if(roster.player.nil?)&& roster.leave_empty%><font color=red>Leave Slot Empty</font><%end%>
-        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#9FDAF7">Start If Pitching</font><%end%>
+        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#F7941E">Start If Starter Today</font><%end%>
         	</span>
         </td>        
         
@@ -212,7 +212,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <td class="MainRow">
         	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
-        	<%if(roster.player.action == 'P')%><img src="/images/RS_LightBlue_Button10.png" alt="Blue Button"><%end%>
+        	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
        	</td>
     	<td class="MainRow">
@@ -281,7 +281,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 </table>    
     <INPUT type="hidden" name="id" value="<%=@team._id%>">
     <button type="button" onclick="submitLineup()">Submit Changes</button>
-    <button type="button" onclick="startLineup()">Start Lineup for Tomorrow</button>
+    <button type="button" onclick="startLineup()">Start Tomorrow</button>
     <span id="status_span"></span>
 </div>
 
