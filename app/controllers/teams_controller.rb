@@ -2,7 +2,7 @@ require "fantasy_team_helper"
 
 class TeamsController < ApplicationController
     
-  before_filter :login_required, :only=>['index', 'show', 'create', 'set_lineup']
+  before_filter :login_required, :only=>['index', 'show', 'create', 'set_lineup', 'showbatters', 'showpitchers' ]
   
   def index
     four_hours = 4*60*60

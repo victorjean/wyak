@@ -29,7 +29,7 @@
 			</td>
 			<td colspan="4" class="DashHeaderRight">
 			1. Log into your Yahoo or ESPN account from RotoStarter<br>
-			2. For basic setup, set Batters to "If Game" & starting Pitchers to "If Probable"<br>
+			2. For basic setup, set Batters to "If Game" & Starting Pitchers to "If Probable"<br>
 			3. After saving prefs, test setting tomorrow's lineup by clicking "Start Tommorow"<br>
 			4. If satisfied, relax!  RotoStarter will set your daily lineup ONCE every morning<br>
 			5. You can safely modify your Yahoo or ESPN lineups for any last minute changes
@@ -66,7 +66,7 @@
 		</tr>
 		<%- @yahoo_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><a target="_blank" href="<%=YAHOO_BASEBALL_PAGE_URL+team.league_id+"/"+team.team_id%>"><%=team.team_name%></a><br>
+			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
@@ -132,7 +132,7 @@
 		</tr>
 		<%- @espn_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><a target="_blank" href="<%=ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId="+team.team_id%>"><%=team.team_name%></a><br>
+			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
