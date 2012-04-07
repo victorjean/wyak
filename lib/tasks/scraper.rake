@@ -14,12 +14,12 @@ namespace :scraper do
       begin  
       if (team.team_type == ESPN_AUTH_TYPE)
          puts 'ESPN ESPN DEFAULT '+team.league_name + '-' + team.league_id
-         set_espn_default(team)
+         set_espn_default(team, false)
          
       end
       if (team.team_type == YAHOO_AUTH_TYPE)
          puts 'YAHOO YAHOO DEFAULT '+team.league_name + '-' + team.league_id
-         set_yahoo_default(team)
+         set_yahoo_default(team,false)
       end
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
@@ -43,7 +43,7 @@ namespace :scraper do
       begin  
       
          puts 'YAHOO YAHOO DEFAULT '+team.league_name + '-' + team.league_id
-         set_yahoo_default(team)
+         set_yahoo_default(team,false)
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
@@ -67,7 +67,7 @@ namespace :scraper do
       begin  
       
          puts 'ESPN ESPN DEFAULT '+team.league_name + '-' + team.league_id
-         set_espn_default(team)
+         set_espn_default(team, false)
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
@@ -83,7 +83,7 @@ namespace :scraper do
   desc "Fetch yahoo team"
   task :yahoo => :environment do
     team_parse = Team.find_by_league_id_and_team_id("116135","6")
-    parse_yahoo_team(team_parse, true)
+    parse_yahoo_team(team_parse, true, false)
     
   end
 end
@@ -92,7 +92,7 @@ namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
     team_parse = Team.find_by_league_id("130711")
-    parse_espn_team(team_parse, true)
+    parse_espn_team(team_parse, true, false)
     
   end
 end
@@ -102,7 +102,7 @@ namespace :scraper do
   task :yahoostart => :environment do
     team_parse = Team.find_by_league_id_and_team_id("116135","6")
    
-    set_yahoo_default(team_parse)
+    set_yahoo_default(team_parse,true)
     
   end
 end
@@ -112,7 +112,7 @@ namespace :scraper do
   task :espnstart => :environment do
     team_parse = Team.find_by_league_id("130711")
     
-    set_espn_default(team_parse)
+    set_espn_default(team_parse, true)
     
   end
 end

@@ -204,14 +204,14 @@ class TeamsController < ApplicationController
     begin
       team_parse = Team.find(params[:id])
       if (team_parse.team_type == YAHOO_AUTH_TYPE)
-        parse_yahoo_team(team_parse, false)
+        parse_yahoo_team(team_parse, false, true)
       end
       if (team_parse.team_type == ESPN_AUTH_TYPE)
-        parse_espn_team(team_parse, false)
+        parse_espn_team(team_parse, false, true)
       end
     rescue => msg
       @success = false
-      logger.error("ERROR OCCURED while refresh_lineup Team #{team.league_id} - #{session[:user]} - (#{msg})")
+      logger.error("ERROR OCCURED while refresh_lineup Team #{team_parse.league_id} - #{session[:user]} - (#{msg})")
       log_error(session[:user], team_parse, 'teams/refresh_lineup', msg)  
     end
     render(:partial => 'loading')
@@ -222,14 +222,14 @@ class TeamsController < ApplicationController
     begin
       team_parse = Team.find(params[:id])
       if (team_parse.team_type == YAHOO_AUTH_TYPE)
-        set_yahoo_default(team_parse)
+        set_yahoo_default(team_parse,true)
       end
       if (team_parse.team_type == ESPN_AUTH_TYPE)
-        set_espn_default(team_parse)
+        set_espn_default(team_parse,true)
       end
     rescue => msg
       @success = false
-      logger.error("ERROR OCCURED while start_lineup Team #{team.league_id} - #{session[:user]} - (#{msg})")
+      logger.error("ERROR OCCURED while start_lineup Team #{team_parse.league_id} - #{session[:user]} - (#{msg})")
       log_error(session[:user], team_parse, 'teams/start_lineup', msg)  
     end
     render(:partial => 'loading')
@@ -261,7 +261,7 @@ class TeamsController < ApplicationController
     if (yahoo_update)
     yahoo_teams.each do |team|
       begin
-        parse_yahoo_team(team, false)
+        parse_yahoo_team(team, false, true)
         team.save
       rescue => msg
         @success = false
@@ -274,7 +274,7 @@ class TeamsController < ApplicationController
     if (espn_update)
     espn_teams.each do |team|
       begin
-        parse_espn_team(team, false)
+        parse_espn_team(team, false, true)
         team.save
       rescue => msg
         @success = false
