@@ -13,7 +13,7 @@
 				<%= text_field_tag('userid', @authInfo.login, options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
 :disabled  => true}) %> 
 				<img src="/images/editIcon.gif" alt="Edit Icon">
-				<a href="javascript:$('userid').disabled = false;" class="LeftNavLink">Edit</a>
+				<a href="javascript:activateUserField()" class="LeftNavLink">Edit</a>
 				
 				<%= hidden_field_tag('current_user', @authInfo.login) %>
 				<%-end-%>
@@ -34,7 +34,7 @@
 				<%= password_field_tag(:pass,'', options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
 :disabled  => true}) %> 
 				<img src="/images/editIcon.gif" alt="Edit Icon">
-				<a href="javascript:$('pass').disabled = false;" class="LeftNavLink">Edit</a>
+				<a href="javascript:activatePassField()" class="LeftNavLink">Edit</a>
 				
 				<%-end-%>
 				
