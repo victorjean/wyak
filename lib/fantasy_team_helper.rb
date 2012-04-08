@@ -289,13 +289,12 @@ def parse_yahoo_team(team, first_time, tomm)
   #Check if players are empty
   if (@rosterPlayerHash.length == 0 && first_time)
     team.empty_team = true
-    team.save
   end
   if (@rosterPlayerHash.length != 0 && first_time)
     team.empty_team = false
-    team.save
   end
   
+  team.save
   #Return Crumb Info to Set Lineup
   crumbHash
   
@@ -882,12 +881,11 @@ def parse_espn_team(team, first_time, tomm)
   #Check if players are empty
   if (@rosterPlayerHash.length == 0 && first_time)
     team.empty_team = true
-    team.save
   end
   if (@rosterPlayerHash.length != 0 && first_time)
     team.empty_team = false
-    team.save
   end
+  team.save
   #return value
   currentScoringPeriodId
 end

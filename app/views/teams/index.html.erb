@@ -15,7 +15,7 @@
 			</td>
 			<td colspan="2" class="DashHeaderTop" align="right">
 			<div id="updating" class="DashActiveBrown" style="display:<%if (!@update)%>none<%end%>">
-			Refreshing Teams <%= image_tag '/images/refresh-animated.gif' %>
+			Refreshing All Teams <%= image_tag '/images/refresh-animated.gif' %>
 			</div>
 			</td>
 		</tr>
@@ -278,10 +278,12 @@ function activatePassField(){
 }
   
 function updateTeams(mode) {
-	$('updating').style.display = '';
-	$('updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
+	$('updating').style.display = "";
 	
-	
+	if (mode!='all') {
+		$('updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
+	}
+
 	$j.ajax({
         type: 'GET',
         dataType: "html",

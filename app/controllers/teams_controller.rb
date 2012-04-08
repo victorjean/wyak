@@ -262,7 +262,7 @@ class TeamsController < ApplicationController
     yahoo_teams.each do |team|
       begin
         parse_yahoo_team(team, false, true)
-        team.save
+        
       rescue => msg
         @success = false
         logger.error("ERROR OCCURED while Updating Yahoo Teams #{team.league_id} - #{user_info.email} - (#{msg})")
@@ -275,7 +275,7 @@ class TeamsController < ApplicationController
     espn_teams.each do |team|
       begin
         parse_espn_team(team, false, true)
-        team.save
+        
       rescue => msg
         @success = false
         logger.error("ERROR OCCURED while Updating ESPN Teams #{team.league_id} - #{user_info.email} - (#{msg})")
