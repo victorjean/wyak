@@ -345,11 +345,11 @@ def authenticate_yahoo(auth)
     page = @agent.submit form
     puts 'Finished Authentication Post'
     @current_auth_id = auth._id
-    #puts page.uri.to_s
+    puts page.uri.to_s
     #Throw Exception if Authentication Fails
-    if (page.uri.to_s.index('verify').nil?)
+    if (!page.uri.to_s.index('login?').nil?)
       @agent = nil
-      raise 'Authentication Failed for YAHOO ID - '+auth.login 
+      raise 'Authentication Failed for YAHOO ID - '+auth.login + '-' + page.uri.to_s
     end
   end
   @agent
@@ -1200,6 +1200,67 @@ def log_error(email, team, method, message)
   end
   
 end
+
+def parse_player_list(url)
+  100.times do |n|
+    count = 0
+    url_with_count = url.gsub("###","#{n*25}")
+    puts url_with_count
+    doc = Hpricot(open_url(url_with_count))
+    tbody = (doc/"table.teamtable//tbody").first
+    (tbody/"tr").each do |row|
+      name_cell = (row/"td//a.name").first
+      return if name_cell.nil?
+      name = name_cell.innerHTML.strip
+      split_name = name.split(" ")
+      first_name = split_name.first.strip
+      
+      
+        #In case there are multiple spaces in the string we are parsing join them all back together
+        if (split_name.length > 2)
+          last_name = split_name.last(split_name.length - 1).join(" ").strip 
+        else
+          last_name = split_name.last.strip
+        end
+      
+      #last_name = split_name.last.strip
+      #if(last_name.downcase == 'jr' or last_name.downcase == 'jr.')
+      #  last_name = split_name.last(2).join(" ").strip
+      #end
+      
+      short_name = "#{first_name.first(1)} #{last_name}"
+      player_url = name_cell[:href].strip
+      yahooid = player_url.scan(/http:\/\/sports.yahoo.com\/mlb\/players\/(\d+)/).flatten.compact.first.strip
+
+      detail_cell = (row/"td//div.detail//span").first
+      detail_cell_scan = detail_cell.innerHTML.scan(/([a-zA-Z]+) - ([a-zA-Z0-9,]+)/).flatten
+      team_short_name = detail_cell_scan[0].upcase.strip
+      position = detail_cell_scan[1].upcase.strip
+      
+      
+      owned_cell = (row/"td")[7]
+      percent_owned = owned_cell.innerHTML.gsub('%', '').to_f
+      puts short_name +"-" +percent_owned.to_s+"-"+first_name+"_"+last_name+"-"+yahooid+"-"+team_short_name+"-"+position
+      player = Player.find_or_create_by_yahooid(yahooid)
+      
+      player.first_name = first_name
+      player.last_name = last_name
+      player.short_name = ActiveSupport::Inflector.transliterate(short_name)
+      player.team_id
+      
+      player.position = position
+      player.yahooid = yahooid
+      player.team = team
+      player.save!
+
+      count = count + 1
+    end
+    return if count == 0
+
+    sleep rand(10)
+  end              
+end
+
 
 def open_url(url, retry_count = 5)
   begin

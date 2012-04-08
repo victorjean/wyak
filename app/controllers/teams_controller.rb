@@ -350,6 +350,7 @@ class TeamsController < ApplicationController
             load_yahoo_first_time(user_info)
           end
         rescue => msg
+          auth_info.destroy
           @success = false
           logger.error("ERROR OCCURED while Creating New #{@teamType} Teams #{user_info.email} - (#{msg})")
           log_error(session[:user], nil, 'teams/manage',"Creating New Auth Info and Teams - #{msg}")
