@@ -12,7 +12,10 @@ ACCEPT = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8
 #ACCEPT_LANGUAGE = "en-US,en;q=0.8"
 ACCEPT_CHARSET = "utf-8;q=0.7,*;q=0.3"
 
-YAHOO_URL = "http://127.0.0.1:3000/yahoo.htm"
+SP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=SP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
+RP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=RP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
+ALL_BATTER_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_S_2012&count=###"
+
 
 YAHOO_BASEBALL_PAGE_URL = "http://baseball.fantasysports.yahoo.com/b1/"
 ESPN_BASEBALL_PAGE_URL = "http://games.espn.go.com/flb/tools/editmyteams"
@@ -245,11 +248,17 @@ def parse_yahoo_team(team, first_time, tomm)
       @player.game_status = statusHash[count]
       @player.game_today = (statusHash[count] != STATUS_NO_GAME )
       @player.in_lineup = (!statusHash[count].index('^').nil?)
-      @player.save
+      
+      plyr_stats = PlayerStats.find_by_yahoo_id(yahoo_id)
+      if (!plyr_stats.nil?)
+        @player.player_stats = plyr_stats
+      end
       
       if (@player.current_slot == DL_POSITION)
         @player.roster_id = nil  
       end
+      
+      @player.save     
       
       @playerHash[yahoo_id] = @player
       @rosterPlayerHash[count] = @player
@@ -840,11 +849,22 @@ def parse_espn_team(team, first_time, tomm)
       @player.game_status = @statusHash[full_name]
       @player.in_lineup = playerInLineupHash[full_name]
       @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
-      @player.save
+      
+      plyr_stats = PlayerStats.find_by_espn_id(espn_id)
+      if (!plyr_stats.nil?)
+        @player.player_stats = plyr_stats
+      else
+        plyr_stats = PlayerStats.find_by_full_name(full_name)
+        if (!plyr_stats.nil?)
+          @player.player_stats = plyr_stats
+        end
+      end
       
       if (@player.current_slot == ESPN_DL_SLOT)
         @player.roster_id = nil  
       end
+      
+      @player.save
       
       @playerHash[espn_id] = @player
       @rosterPlayerHash[count] = @player
@@ -1181,6 +1201,126 @@ def set_espn_lineup(team,player_list,scoring_period_id)
 
 end
 
+def rank_player(player, pos, rank)
+  if (player.pos_rank.nil?)
+    player.pos_rank = {}
+  end
+  
+  player.pos_rank[pos] = rank 
+  
+  player.save
+end
+
+def return_color(rank_value, position)
+  color = ''
+  if (rank_value< 16)
+    color = 'Green'
+  end
+  if (rank_value > 15 && rank_value < 31)
+    color = 'Orange'
+  end
+  if (rank_value > 30)
+    color = 'Red'
+  end
+   
+  if((rank_value < 51) && (position == 'P' || position == 'SP' || position == 'RP'))
+    color = 'Green'
+  end 
+  if (rank_value< 51 &&  position == 'OF')
+    color = 'Green'
+  end
+  
+   
+  if((rank_value > 50 && rank_value < 76) && (position == 'P' || position == 'SP' || position == 'RP'))
+    color = 'Orange'
+  end 
+  if (rank_value > 50 && rank_value < 76 &&  position == 'OF')
+    color = 'Orange'
+  end
+  
+   
+  if((rank_value > 75) && (position == 'SP' || position == 'RP'))
+    color = 'Red'
+  end 
+  if (rank_value > 75 &&  position == 'OF')
+    color = 'Red'
+  end
+
+           
+  color  
+end
+
+def rank_players_by_position()
+  
+  p_list = PlayerStats.where( :position=>/C/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'C', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/1B/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'1B', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/2B/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'2B', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/3B/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'3B', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/SS/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'SS', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/OF/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'OF', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/UTIL/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'UTIL', count)
+  end
+  
+  p_list = PlayerStats.where( :position=>/SP/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    if (player.ip > 3)
+      count += 1
+      rank_player(player,'SP', count)
+    end
+  end
+  
+  p_list = PlayerStats.where( :position=>/RP/).sort(:rank.asc)
+  count = 0
+  p_list.each do |player|
+    count += 1
+    rank_player(player,'RP', count)
+  end
+  
+  
+  
+end
+
 def log_error(email, team, method, message)
   begin
     l = Log.new
@@ -1199,7 +1339,8 @@ def log_error(email, team, method, message)
   
 end
 
-def parse_player_list(url)
+def parse_player_list(url, player_type)
+  rank_count = 0
   100.times do |n|
     count = 0
     url_with_count = url.gsub("###","#{n*25}")
@@ -1209,6 +1350,8 @@ def parse_player_list(url)
     (tbody/"tr").each do |row|
       name_cell = (row/"td//a.name").first
       return if name_cell.nil?
+      
+      rank_count += 1
       name = name_cell.innerHTML.strip
       split_name = name.split(" ")
       first_name = split_name.first.strip
@@ -1234,22 +1377,73 @@ def parse_player_list(url)
       detail_cell_scan = detail_cell.innerHTML.scan(/([a-zA-Z]+) - ([a-zA-Z0-9,]+)/).flatten
       team_short_name = detail_cell_scan[0].upcase.strip
       position = detail_cell_scan[1].upcase.strip
-      
-      
+   
       owned_cell = (row/"td")[7]
-      percent_owned = owned_cell.innerHTML.gsub('%', '').to_f
-      puts short_name +"-" +percent_owned.to_s+"-"+first_name+"_"+last_name+"-"+yahooid+"-"+team_short_name+"-"+position
-      player = Player.find_or_create_by_yahooid(yahooid)
+      percent_owned = owned_cell.innerHTML.gsub('%', '').to_i
       
-      player.first_name = first_name
-      player.last_name = last_name
-      player.short_name = ActiveSupport::Inflector.transliterate(short_name)
-      player.team_id
-      
+      player = PlayerStats.find_or_create_by_yahoo_id(yahooid)
+
+      player.full_name = ActiveSupport::Inflector.transliterate(name)  
       player.position = position
-      player.yahooid = yahooid
-      player.team = team
-      player.save!
+      player.yahoo_id = yahooid
+      player.team = team_short_name.upcase
+      player.owned = percent_owned.to_i
+      
+      player.rank7 = player.rank6
+      player.rank6 = player.rank5
+      player.rank5 = player.rank4
+      player.rank4 = player.rank3
+      player.rank3 = player.rank2
+      player.rank2 = player.rank1
+      player.rank1 = player.rank
+      player.rank = rank_count
+      
+      if (player.rank7 != 9999)
+      player.rank_change = player.rank7 - player.rank
+      end
+      
+      if (player_type == 'SP' || player_type == 'RP')
+        if ((row/"td")[13].innerHTML.strip.to_s.index('-').nil?)
+          player.ip = (row/"td")[8].innerHTML.to_f
+          player.win = (row/"td")[9].innerHTML.to_i
+          player.sv = (row/"td")[10].innerHTML.to_i
+          player.k = (row/"td")[11].innerHTML.to_i
+          player.era = (row/"td")[12].innerHTML.to_f
+          player.whip = (row/"td")[13].innerHTML.to_f
+        else
+          player.ip = 0
+          player.win = 0
+          player.sv = 0
+          player.k = 0
+          player.era = 0
+          player.whip = 0
+        end 
+      end
+      
+      if(player_type == 'BAT')
+        if ((row/"td")[13].innerHTML.strip.to_s.index('-').nil?)
+          player.hit = (row/"td")[8].innerHTML.split('/').first.strip
+          player.ab = (row/"td")[8].innerHTML.split('/').last.strip
+          player.run = (row/"td")[9].innerHTML.to_i
+          player.hr = (row/"td")[10].innerHTML.to_i
+          player.rbi = (row/"td")[11].innerHTML.to_i
+          player.sb = (row/"td")[12].innerHTML.to_i
+          player.avg = (row/"td")[13].innerHTML.to_f
+        else
+          player.hit = 0
+          player.ab = 0
+          player.run = 0
+          player.hr = 0
+          player.rbi = 0
+          player.sb = 0
+          player.avg = 0
+        end
+        
+      end
+      
+      #puts player.full_name+"-"+percent_owned.to_s+"-"+player.position+"-"+yahooid+"-"+team_short_name.upcase+"-"+position
+      
+      player.save
 
       count = count + 1
     end

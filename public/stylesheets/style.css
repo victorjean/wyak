@@ -277,6 +277,12 @@ body {
 	background-color: #f7f7f8;
 }
 
+.RankFont {
+	
+	font: normal 10px Arial, Helvetica, sans-serif;	
+
+}
+
 .MainRowEnd {
 	padding-left:10px;
 	padding-right: 10px;

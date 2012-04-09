@@ -81,7 +81,7 @@
 <table cellpadding="0" cellspacing="0" border="0">
 <thead>
 <tr class="MainTitle">
-<td colspan="2" class="MainTitle">
+<td colspan="4" class="MainTitle">
 <%=@team.team_name%>
 <div class="MainTitleBrown"><%=@team.league_name%></div>
 </td>
@@ -114,7 +114,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 </td>
 </tr>
 <tr>
-<td colspan="3" class="MainHeader">
+<td colspan="5" class="MainHeader">
 <br>
 <%=(@pitch)?'Pitcher':'Batter'%> Starting Lineup
 </td>
@@ -126,8 +126,10 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 </thead>
 <tbody>
 <tr>
-<td class="MainTinyHeader">Position</td>
+<td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
+<td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
+
 <td class="MainTinyHeader">Start Position</td>
 <td class="MainTinyHeader">Start Frequency</td>
 <td class="MainTinyHeader">Start Behavior</td>
@@ -148,12 +150,47 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
         	<%-end-%>
        	</td>
-        
+       	<td class="MainRow" align="right" style="padding-right: 0">
+       	<% color = ''
+       	if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+       			color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
+       	%>
+     		<FONT class="RankFont" color="<%=color%>">
+       		<%=roster.player.player_stats.pos_rank.values.first%>
+       		</FONT>  		 
+       		<%else
+       			color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
+       		%>
+       		<FONT class="RankFont" color="<%=color%>">
+        	<%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
+        	 </FONT> 		
+      		<%end%>
+      		<img src="/images/RSStar<%=color%>10.png">
+        <%end%>	
+        </td>
+        <td class="MainRow" style="padding-left: 2px;">
+        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+       	%>
+       		<FONT class="RankFont" color="<%=color%>">
+  			<%=roster.player.player_stats.pos_rank.keys.first%>
+  			</FONT>
+  			<%else%>
+       		<FONT class="RankFont" color="<%=color%>">
+        	<%=roster.player.assign_pos%>
+        	 </FONT>     	
+       		    	
+       		<%end%>
+        <%end%>	
+        </td>
         <%- if (!roster.player.nil?)-%>
     		<td class="MainRow">
     		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
     			<%- roster.player.eligible_pos.each do |p|-%>
+    			<% if (p!=DL_POSITION) %>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<% end %>
     			<%-end-%>
     		</select>
         	</td>
@@ -175,7 +212,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(!roster.player.nil? && roster.player.action == 'A')%><font color=green>Always Start</font><%end%>
         	<%if(!roster.player.nil? && roster.player.action == 'D')%><font color=#00AEEF>Start If Game</font><%end%>
         	<%if(roster.player.nil?)&& roster.leave_empty%><font color=red>Leave Slot Empty</font><%end%>
-        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#F7941E">Start If Starter Today</font><%end%>
+        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#F7941E">If Starter Today</font><%end%>
         	</span>
         </td>        
         
@@ -191,8 +228,9 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <td colspan="5" class="MainHeader"><br><%=(@pitch)?'Pitcher':'Batter'%> Bench Priority</td>
 </tr>
 <tr>
-<td class="MainTinyHeader">Position</td>
+<td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
+<td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
 <td class="MainTinyHeader">Start Position</td>
 <td class="MainTinyHeader">Start Frequency</td>
 <td class="MainTinyHeader">Bench Priority</td>
@@ -209,16 +247,52 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     %>
     <tr>
         <td class="MainRowBeg"><%=roster.pos_text%></td>
+        
         <td class="MainRow">
         	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
         	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
        	</td>
+       	<td class="MainRow" align="right" style="padding-right: 0">
+       	<% color = ''
+       	if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+       			color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
+       	%>
+     		<FONT class="RankFont" color="<%=color%>">
+       		<%=roster.player.player_stats.pos_rank.values.first%>
+       		</FONT>  		 
+       		<%else
+       			color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
+       		%>
+       		<FONT class="RankFont" color="<%=color%>">
+        	<%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
+        	 </FONT> 		
+      		<%end%>
+      		<img src="/images/RSStar<%=color%>10.png">
+        <%end%>	
+        </td>
+        <td class="MainRow" style="padding-left: 2px;">
+        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+       	%>
+       		<FONT class="RankFont" color="<%=color%>">
+  			<%=roster.player.player_stats.pos_rank.keys.first%>
+  			</FONT>
+  			<%else%>
+       		<FONT class="RankFont" color="<%=color%>">
+        	<%=roster.player.assign_pos%>
+        	 </FONT>     	
+       		<%end%>
+        <%end%>	
+        </td>
     	<td class="MainRow">
     		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
     			<%- roster.player.eligible_pos.each do |p|-%>
+    			<%- if (p!=DL_POSITION)-%>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+    			<%-end-%>
     			<%-end-%>
     		</select>
        	</td>
@@ -251,6 +325,8 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
         <td class="MainRow"></td>
     	<td class="MainRow"></td>
+    	<td class="MainRow"></td>
+    	<td class="MainRow"></td>
         <td class="MainRowEnd"></td>
     </tr>
 	<%end%>
@@ -259,6 +335,8 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <td class="MainRowBeg">DL</td>
         <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
         <td class="MainRow"></td>
+    	<td class="MainRow"></td>
+    	<td class="MainRow"></td>
     	<td class="MainRow"></td>
         <td class="MainRowEnd"></td>
     </tr>

@@ -83,7 +83,7 @@ namespace :scraper do
   desc "Fetch yahoo team"
   task :yahoo => :environment do
     team_parse = Team.find_by_league_id_and_team_id("116135","6")
-    parse_yahoo_team(team_parse, true, false)
+    parse_yahoo_team(team_parse, false, false)
     
   end
 end
@@ -148,21 +148,36 @@ namespace :scraper do
 end
 
 namespace :scraper do
-  desc "Database Test"
-  task :dbtest => :environment do
+  desc "Fetch players."
+  task :players => :environment do
     
-   
-    puts Roster.all(:pos_text.ne=>BENCH_POSITION).length
-    puts Roster.all(:pos_text=>BENCH_POSITION).length
     
-    roster_list = Roster.all(:league_id=>'130711')
-    roster_list.each do |item|
-      if (item.player.nil?)
-        puts item.pos_text + " - NONE"
-      else
-        puts item.pos_text + " - "+ item.player.full_name
-      end
-    end  
+    
+    begin   
+      puts 'Get SP Information'
+      parse_player_list(SP_PITCHERS_URL, "SP")      
+    rescue => msg
+      puts "ERROR OCCURED (#{msg})"
+      log_error('sys', nil, 'parseplayer_sp',msg)
+    end
+    
+    begin   
+      puts 'Get RP Information'
+      parse_player_list(RP_PITCHERS_URL, "RP")      
+    rescue => msg
+      puts "ERROR OCCURED (#{msg})"
+      log_error('sys', nil, 'parseplayer_rp',msg)
+    end
+    
+    begin   
+      puts 'Get Batter Information'
+      parse_player_list(ALL_BATTER_URL, "BAT")      
+    rescue => msg
+      puts "ERROR OCCURED (#{msg})"
+      log_error('sys', nil, 'parseplayer_batter',msg)
+    end
+    
+    rank_players_by_position()
+    
   end
 end
-

@@ -24,4 +24,5 @@ class Player
   key :temp_pos, String
   key :temp_slot, String
   belongs_to :roster
+  belongs_to :player_stats
 end
