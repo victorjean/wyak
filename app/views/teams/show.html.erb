@@ -186,7 +186,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         </td>
         <%- if (!roster.player.nil?)-%>
     		<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px">
     			<%- roster.player.eligible_pos.each do |p|-%>
     			<% if (p!=DL_POSITION) %>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
@@ -288,7 +288,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <%end%>	
         </td>
     	<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px">
     			<%- roster.player.eligible_pos.each do |p|-%>
     			<%- if (p!=DL_POSITION)-%>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
