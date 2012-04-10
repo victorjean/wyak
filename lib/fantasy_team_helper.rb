@@ -857,6 +857,8 @@ def parse_espn_team(team, first_time, tomm)
         plyr_stats = PlayerStats.find_by_full_name(full_name)
         if (!plyr_stats.nil?)
           @player.player_stats = plyr_stats
+          plyr_stats.espn_id = espn_id
+          plyr_stats.save
         end
       end
       
