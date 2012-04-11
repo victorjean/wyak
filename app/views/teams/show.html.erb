@@ -186,7 +186,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         </td>
         <%- if (!roster.player.nil?)-%>
     		<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px" <%=(@team.weekly_team)?'disabled':''%>>
     			<%- roster.player.eligible_pos.each do |p|-%>
     			<% if (p!=DL_POSITION) %>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
@@ -194,7 +194,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     			<%-end-%>
     		</select>
         	</td>
-    		<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]">
+    		<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
     		<option class="MainOption" value="A" <%=(roster.player.action=='A')?'selected':''%>>Always</option>
     		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
     		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
@@ -288,7 +288,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <%end%>	
         </td>
     	<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px">
+    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px" <%=(@team.weekly_team)?'disabled':''%>>
     			<%- roster.player.eligible_pos.each do |p|-%>
     			<%- if (p!=DL_POSITION)-%>
     			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
@@ -296,7 +296,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     			<%-end-%>
     		</select>
        	</td>
-    	<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]">
+    	<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
     		
     		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
     		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
@@ -308,7 +308,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if (roster.player.action == NEVER_START_OPTION)%>
 				<font color=red>Never Start</font>
 			<%else%>
-	        	<select class="MainSelect" name="priorityselect[<%=roster.player._id%>]">
+	        	<select class="MainSelect" name="priorityselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
 				<%- @bench_array.each do |p|-%>
     			<OPTION class="MainOption" value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
     			<%-end-%>
@@ -358,8 +358,12 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 </tfoot>
 </table>    
     <INPUT type="hidden" name="id" value="<%=@team._id%>">
+   	<%if (@team.weekly_team)%>
+	Team Lineup Set Weekly - Cannot Auto Start Players
+	<%else%>
     <button type="button" onclick="submitLineup()">Submit Changes</button>
     <button type="button" onclick="startLineup()">Start Tomorrow</button>
+    <%end%>
     <span id="status_span"></span>
 </div>
 

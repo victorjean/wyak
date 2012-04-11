@@ -47,7 +47,7 @@ namespace :scraper do
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
-        log_error('sys', nil, 'dailystartyahoo',msg)
+        log_error('sys', team, 'dailystartyahoo',msg)
       end  
     end
     
@@ -71,7 +71,7 @@ namespace :scraper do
       
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
-        log_error('sys', nil, 'dailystartespn',msg)
+        log_error('sys', team, 'dailystartespn',msg)
       end  
     end
     
@@ -82,8 +82,8 @@ end
 namespace :scraper do
   desc "Fetch yahoo team"
   task :yahoo => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("116135","6")
-    parse_yahoo_team(team_parse, false, false)
+    team_parse = Team.find_by_league_id_and_team_id("auto","187997")
+    parse_yahoo_team(team_parse, true, true)
     
   end
 end
@@ -137,13 +137,49 @@ namespace :scraper do
   end
 end
 
+#This is the cron/scheduler task used to set daily lineups
 namespace :scraper do
-  desc "Fetch espn team from scratch"
-  task :auth => :environment do
-    team_parse = Team.find_by_league_id("32280") #ESPN
-    authenticate_espn(team_parse.auth_info)
-    #team_parse = Team.find_by_league_id("116135") #YAHOO
-    #authenticate_yahoo(team_parse.auth_info)
+  desc "Refresh All Teams"
+  task :refreshall => :environment do
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where( :$or => [
+    {:team_type => 'Y'},
+    {:team_type => 'E'}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      begin  
+      if (team.team_type == ESPN_AUTH_TYPE)
+         parse_espn_team(team, false, true)
+      end
+      if (team.team_type == YAHOO_AUTH_TYPE)
+         parse_yahoo_team(team,false, true)
+      end
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', nil, 'refreshall',msg)
+      end  
+    end
+    
+  end
+end
+
+namespace :scraper do
+  desc "Process to Bench and Replace Scratched Players"
+  task :scratch => :environment do
+    team_list = []
+    #Read Scoreboard and Update PlayerStat table for scratched player
+    
+    #Get Scratched Player List
+    player_list = PlayerStats.find_all_by_scratched_and_processed(true,false)
+    player_list.each do |player_stat|
+      #add to team array
+      
+      player_stat.processed = true
+      player_stat.save
+    end
+    
+    #Process Teams with Real Time Activated
+    
   end
 end
 
@@ -154,19 +190,11 @@ namespace :scraper do
     
     
     begin   
-      puts 'Get SP Information'
-      parse_player_list(SP_PITCHERS_URL, "SP")      
+      puts 'Get Pitcher Information'
+      parse_player_list(ALL_PITCHERS_URL, "SP")      
     rescue => msg
       puts "ERROR OCCURED (#{msg})"
-      log_error('sys', nil, 'parseplayer_sp',msg)
-    end
-    
-    begin   
-      puts 'Get RP Information'
-      parse_player_list(RP_PITCHERS_URL, "RP")      
-    rescue => msg
-      puts "ERROR OCCURED (#{msg})"
-      log_error('sys', nil, 'parseplayer_rp',msg)
+      log_error('sys', nil, 'parseplayer_pitcher',msg)
     end
     
     begin   

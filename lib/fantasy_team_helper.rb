@@ -15,7 +15,7 @@ ACCEPT_CHARSET = "utf-8;q=0.7,*;q=0.3"
 SP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=SP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
 RP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=RP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
 ALL_BATTER_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_S_2012&count=###"
-
+ALL_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=P&stat1=S_S_2012&sort=AR&sdir=1&count=###"
 
 YAHOO_BASEBALL_PAGE_URL = "http://baseball.fantasysports.yahoo.com/b1/"
 ESPN_BASEBALL_PAGE_URL = "http://games.espn.go.com/flb/tools/editmyteams"
@@ -57,7 +57,7 @@ def parse_yahoo_team(team, first_time, tomm)
   @total_players = 0
   
   #If Team empty reload entire team set first_time true
-  if (team.empty_team) 
+  if (team.empty_team || team.weekly_team) 
     first_time = true
   end
     
@@ -118,6 +118,7 @@ def parse_yahoo_team(team, first_time, tomm)
     end
   end
   
+  
   puts 'Getting Player Position Information'
   #Get Positions from Drop Down
   count = 0
@@ -138,6 +139,20 @@ def parse_yahoo_team(team, first_time, tomm)
       posArray.push(pos.inner_html.strip)
     end
     positionHash[count] = posArray
+  end
+  
+  
+  puts 'Getting Player Count'
+  @total_players = 0
+  document.search("td[@class=player]").each do |player|
+    @total_players+=1
+  end
+  
+  if (positionHash.keys.length == 0 && @total_players !=0)
+    puts 'Weekly League Found'
+    team.weekly_team = true
+    team.daily_auto_batter = false
+    team.daily_auto_pitcher = false
   end
   
   
@@ -238,7 +253,7 @@ def parse_yahoo_team(team, first_time, tomm)
       @player.team_id = team.team_id
       @player.yahoo_id = yahoo_id
       @player.full_name = full_name
-      if(positionHash[count].length != 0)
+      if(!positionHash[count].nil? && positionHash[count].length != 0)
       @player.eligible_pos = positionHash[count]
       @player.eligible_slot = positionHash[count]
       end
@@ -1207,7 +1222,8 @@ def rank_player(player, pos, rank)
   if (player.pos_rank.nil?)
     player.pos_rank = {}
   end
-  
+  player.scratched = false
+  player.processed = false
   player.pos_rank[pos] = rank 
   
   player.save

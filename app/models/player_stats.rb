@@ -30,6 +30,8 @@ class PlayerStats
   key :rank6, Integer, :default => 9999
   key :rank7, Integer, :default => 9999
   key :rank_change, Integer, :default => 0
+  key :scratched, Boolean, :default=>false
+  key :processed, Boolean, :default=>false
   
   many :players
 end

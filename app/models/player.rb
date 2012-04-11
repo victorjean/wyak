@@ -23,6 +23,7 @@ class Player
   key :position_text, String
   key :temp_pos, String
   key :temp_slot, String
+  key :scratched, Boolean, :default=>false
   belongs_to :roster
   belongs_to :player_stats
 end
