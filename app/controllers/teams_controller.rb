@@ -338,19 +338,35 @@ class TeamsController < ApplicationController
           auth_info.email = user_info.email
           auth_info.login = params[:userid]
           auth_info.password = params[:pass]
-          
           if (@teamType == 'ESPN')
             auth_info.auth_type = ESPN_AUTH_TYPE 
             auth_info.save!
-            load_espn_first_time(user_info)
+            authenticate_espn(auth_info)
           end
           if (@teamType == 'YAHOO')
             auth_info.auth_type = YAHOO_AUTH_TYPE
             auth_info.save!
+            authenticate_yahoo(auth_info)
+          end
+          
+        rescue => msg
+          auth_info.destroy
+          @success = false
+          logger.error("ERROR OCCURED while Creating New #{@teamType} Teams #{user_info.email} - (#{msg})")
+          log_error(session[:user], nil, 'teams/manage',"Could not Authenticate or Save Auth Info - #{msg}")
+        end
+        
+        begin  
+          if (@teamType == 'ESPN' && @success)
+            
+            load_espn_first_time(user_info)
+          end
+          if (@teamType == 'YAHOO' && @success)
+            
             load_yahoo_first_time(user_info)
           end
         rescue => msg
-          auth_info.destroy
+        
           @success = false
           logger.error("ERROR OCCURED while Creating New #{@teamType} Teams #{user_info.email} - (#{msg})")
           log_error(session[:user], nil, 'teams/manage',"Creating New Auth Info and Teams - #{msg}")
