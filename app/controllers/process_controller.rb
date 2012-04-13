@@ -27,6 +27,13 @@ class ProcessController < ApplicationController
     
   end
   
+  def players_seven
+    @success = true
+    
+    render(:partial => 'loading')
+    
+  end
+  
   def yahoostart
     @success = true
     #Get Team List that is not empty and where batter or pitcher daily is true

@@ -32,6 +32,20 @@ class PlayerStats
   key :rank_change, Integer, :default => 0
   key :scratched, Boolean, :default=>false
   key :processed, Boolean, :default=>false
+  key :ip_7day, Float
+  key :win_7day, Integer
+  key :sv_7day, Integer
+  key :k_7day, Integer
+  key :era_7day, Float
+  key :whip_7day, Float
+  key :hit_7day, Integer
+  key :ab_7day, Integer
+  key :run_7day, Integer
+  key :hr_7day, Integer
+  key :rbi_7day, Integer
+  key :sb_7day, Integer
+  key :avg_7day, Float
+  key :rank_7day, Integer
   
   many :players
 end

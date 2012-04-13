@@ -1,3 +1,8 @@
+<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
+
+
 <% priority_count = 0%>
 
 <%= form_tag '/teams/set_lineup', options = {:id => 'set_lineup'} do%>
@@ -362,8 +367,10 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 	Team Lineup Set Weekly - Cannot Auto Start Players
 	<%else%>
     <button type="button" onclick="submitLineup()">Submit Changes</button>
-    <button type="button" onclick="startLineup()">Start Tomorrow</button>
+    <button type="button" onclick="showPreview()">Preview Tomorrow</button>
     <%end%>
+    
+  
     <span id="status_span"></span>
 </div>
 
@@ -455,6 +462,20 @@ function failureFunc(response){
     
     container.update('System error could not set lineup. Please try again later.');
     
+}
+
+function showPreview() {
+	
+	
+
+var win = new Window({className: "bluelighting", title: "Preview Lineup Tommorow", 
+                      width:370, height:420, 
+                      url: "/teams/preview_lineup?id=<%=@team._id%>", showEffectOptions: {duration:1.5}})
+win.showCenter();
+win.updateWidth();
+
+
+ 
 }
 
 </SCRIPT>

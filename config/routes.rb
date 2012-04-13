@@ -6,6 +6,15 @@ Wyak::Application.routes.draw do
       get 'yahoostart'
       get 'espnstart'
       get 'players'
+      get 'players_seven'
+    end
+  end
+  
+  resources :static do
+    collection do
+      get 'privacy'
+      get 'terms'
+      get 'contact'
     end
   end
   
@@ -16,6 +25,7 @@ Wyak::Application.routes.draw do
       get 'showpitchers'
       get 'manage'
       get 'setup'
+      get 'preview_lineup'
       post 'manage'
       post 'set_lineup'
       post 'refresh_lineup'

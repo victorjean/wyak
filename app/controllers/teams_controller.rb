@@ -235,6 +235,41 @@ class TeamsController < ApplicationController
     render(:partial => 'loading')
   end
   
+  def preview_lineup
+    @player_hash = {}
+    @player_list = []
+    @success = true
+    begin
+      team_parse = Team.find(params[:id])
+      #@player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team_parse.league_id,team_parse.team_id,team_parse.team_type )
+      @roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team_parse.team_type, :team_id=>team_parse.team_id, :league_id=>team_parse.league_id).all
+      if (team_parse.team_type == YAHOO_AUTH_TYPE)
+        
+        @player_list = preview_yahoo_default(team_parse)
+      end
+      if (team_parse.team_type == ESPN_AUTH_TYPE)
+        
+        @player_list = preview_espn_default(team_parse)
+      end
+      
+      
+      @player_list.each do |p|
+          if (@player_hash[p.assign_pos].nil?)
+            @player_hash[p.assign_pos] = []
+            @player_hash[p.assign_pos].push(p)
+          else
+            @player_hash[p.assign_pos].push(p)  
+          end
+      end
+      
+    rescue => msg
+      @success = false
+      logger.error("ERROR OCCURED while preview_lineup Team #{team_parse.league_id} - #{session[:user]} - (#{msg})")
+      log_error(session[:user], team_parse, 'teams/preview_lineup', msg)  
+    end
+    render(:partial => 'preview')
+  end
+  
   def update_all
     logger.info("Update All Function For #{session[:user]}")
     

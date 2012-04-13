@@ -38,10 +38,10 @@
 		</div>
 		<div id="RSNav" style="float:left; margin:0;">
 			<div class="NavHeadLeft">
-			&nbsp; &nbsp;
+				&nbsp;&nbsp;
 			<%-if (session[:user].nil?)-%>
 			<%= link_to "Home", "/" %> |
-	      	
+
 	      	<u>How Does It Work?</u>
 	      	<span style="float:right;text-align: right;padding-right: 10px">
 	      	<%= link_to 'Log In', :action => 'login' %>
@@ -50,19 +50,19 @@
 	      	<%= link_to "Dashboard Home", :controller => "teams", :action => "index" %> |
 			<u>How Does It Work?</u>
 			<span style="float:right;text-align: right;padding-right: 10px">
-			 
+
 			<%= link_to session[:user], :controller => "user", :action => "change_password"  %> | 
 			<%= link_to "Log Out", :controller => "user", :action => "logout"  %>
 			</span> 
-			
+
 	      	<%-end-%>
-	      	
+
 			</div>
 
 		</div>
   	
 	    <div id="RSMain" style="float:left; margin:0;width:100%">
-	      
+
 	      <BR>
 	      <%= yield %>	
 	    </div>
@@ -71,11 +71,11 @@
 		</div>
 		<div id="RSFooter" style="float:left; margin:0;">
 		<div class="NavHeadLeft">
-		&nbsp; &nbsp;
-		<u>About Us</u> |
-		<u>Privacy</u> |
-		<u>Terms</u> |
-		<u>Contact Us</u>
+		&nbsp;&nbsp;
+		
+      	<%= link_to "Privacy", :controller => "static", :action => "privacy" %> |
+		<%= link_to "Terms", :controller => "static", :action => "terms" %> |
+		<%= link_to "Contact Us", :controller => "static", :action => "contact" %>
 		</div>
 		</div>
 		<div id="RSEdge" style="float:left; margin:0;">

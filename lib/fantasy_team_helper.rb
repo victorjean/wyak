@@ -16,6 +16,8 @@ SP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?statu
 RP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=RP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
 ALL_BATTER_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_S_2012&count=###"
 ALL_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=P&stat1=S_S_2012&sort=AR&sdir=1&count=###"
+ALL_BATTER7_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_L7&count=###"
+ALL_PITCHERS7_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=P&stat1=S_L7&sort=AR&sdir=1&count=###"
 
 YAHOO_BASEBALL_PAGE_URL = "http://baseball.fantasysports.yahoo.com/b1/"
 ESPN_BASEBALL_PAGE_URL = "http://games.espn.go.com/flb/tools/editmyteams"
@@ -1218,6 +1220,40 @@ def set_espn_lineup(team,player_list,scoring_period_id)
 
 end
 
+def preview_yahoo_default(team)
+  #update team in database
+  crumbHash = parse_yahoo_team(team, false, true)
+  #Get roster list where position is not bench and dl and empty 
+  roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
+  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
+  
+  player_list = player_assignment_daily(player_list, roster_list)
+  
+  #try to set assigned players into roster spots that are still empty
+  player_list.each do |p|
+    set_assigned_player_in_empty_roster(p, roster_list)
+  end
+  
+  player_list  
+end
+
+def preview_espn_default(team)
+  #update team in database
+  scoring_period_id = parse_espn_team(team, false,true)
+  #Get roster list where position is not bench and dl and empty 
+  roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
+  player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
+  
+  player_list = player_assignment_daily(player_list, roster_list)
+  
+  #try to set assigned players into roster spots that are still empty
+  player_list.each do |p|
+    set_assigned_player_in_empty_roster(p, roster_list)
+  end
+  
+  player_list  
+end
+
 def rank_player(player, pos, rank)
   if (player.pos_rank.nil?)
     player.pos_rank = {}
@@ -1407,17 +1443,18 @@ def parse_player_list(url, player_type)
       player.team = team_short_name.upcase
       player.owned = percent_owned.to_i
       
-      player.rank7 = player.rank6
-      player.rank6 = player.rank5
-      player.rank5 = player.rank4
-      player.rank4 = player.rank3
-      player.rank3 = player.rank2
-      player.rank2 = player.rank1
-      player.rank1 = player.rank
-      player.rank = rank_count
-      
-      if (player.rank7 != 9999)
-      player.rank_change = player.rank7 - player.rank
+      if (player_type != 'seven')
+        player.rank7 = player.rank6
+        player.rank6 = player.rank5
+        player.rank5 = player.rank4
+        player.rank4 = player.rank3
+        player.rank3 = player.rank2
+        player.rank2 = player.rank1
+        player.rank1 = player.rank
+        player.rank = rank_count
+        if (player.rank7 != 9999)
+        player.rank_change = player.rank7 - player.rank
+        end
       end
       
       if (player_type == 'SP' || player_type == 'RP')
@@ -1438,6 +1475,26 @@ def parse_player_list(url, player_type)
         end 
       end
       
+      if (player_type == 'seven' && url == ALL_PITCHERS7_URL)
+        if ((row/"td")[13].innerHTML.strip.to_s.index('-').nil?)
+          player.ip_7day = (row/"td")[8].innerHTML.to_f
+          player.win_7day = (row/"td")[9].innerHTML.to_i
+          player.sv_7day = (row/"td")[10].innerHTML.to_i
+          player.k_7day = (row/"td")[11].innerHTML.to_i
+          player.era_7day = (row/"td")[12].innerHTML.to_f
+          player.whip_7day = (row/"td")[13].innerHTML.to_f
+          player.rank_7day = rank_count
+        else
+          player.ip_7day = 0
+          player.win_7day = 0
+          player.sv_7day = 0
+          player.k_7day = 0
+          player.era_7day = 0
+          player.whip_7day = 0
+          player.rank_7day = rank_count
+        end 
+      end
+      
       if(player_type == 'BAT')
         if ((row/"td")[13].innerHTML.strip.to_s.index('-').nil?)
           player.hit = (row/"td")[8].innerHTML.split('/').first.strip
@@ -1455,6 +1512,29 @@ def parse_player_list(url, player_type)
           player.rbi = 0
           player.sb = 0
           player.avg = 0
+        end
+        
+      end
+      
+      if(player_type == 'seven' && url == ALL_BATTER7_URL)
+        if ((row/"td")[13].innerHTML.strip.to_s.index('-').nil?)
+          player.hit_7day = (row/"td")[8].innerHTML.split('/').first.strip
+          player.ab_7day = (row/"td")[8].innerHTML.split('/').last.strip
+          player.run_7day = (row/"td")[9].innerHTML.to_i
+          player.hr_7day = (row/"td")[10].innerHTML.to_i
+          player.rbi_7day = (row/"td")[11].innerHTML.to_i
+          player.sb_7day = (row/"td")[12].innerHTML.to_i
+          player.avg_7day = (row/"td")[13].innerHTML.to_f
+          player.rank_7day = rank_count
+        else
+          player.hit_7day = 0
+          player.ab_7day = 0
+          player.run_7day = 0
+          player.hr_7day = 0
+          player.rbi_7day = 0
+          player.sb_7day = 0
+          player.avg_7day = 0
+          player.rank_7day = rank_count
         end
         
       end

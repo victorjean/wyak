@@ -1,14 +1,6 @@
-/* 	RotoStarter CSS v2 by LL */
+/* 	RotoStarter CSS v2 by LL 
 
-/* Sample Fonts
-
-	Century Gothic, sans-serif
-	Verdana, Geneva, sans-serif
-	Arial, Helvetica, sans-serif
-*/
-
-/*	RotoStarter Colors
-
+	RS Colors
 	background-color: #5A4A42;
 	background-color: #FFFFFF;
 	background-color: #00AEEF
@@ -40,19 +32,28 @@ body {
 }
 
 #RSHeader {
-       background-color: #eeebe9;
-       width: 100%;
-       height: 100%;
-       min-height: 100%;
-       padding-top: 10px;
-       padding-bottom: 10px;
+	background-color: #eeebe9;
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+    
 }
 
 #RSNav {
 	background-color: #906e59;
 	width: 100%;
 	
+
 }
+
+#RSText {
+	background-color: #f7f7f8;
+	padding-left: 15px;
+	
+}
+
 
 #RSSidebar {
 	background-color: #FFFFFF;
@@ -76,6 +77,7 @@ body {
 #RSFooter {
 	background-color: #906e59;
 	width: 100%;
+	
 	
 }
 
@@ -140,7 +142,7 @@ body {
 .SideHeader {
 	color: #5A4A42;
 	font: bold 14px Verdana, Geneva, sans-serif;
-	
+
 }
 
 .SideInactive {
@@ -224,7 +226,7 @@ body {
 	text-align: right;
 	padding-top: 4px;
 	padding-bottom: 4px;
-	
+
 }
 
 .MainHeader {
@@ -241,7 +243,7 @@ body {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	background-color: #e0f2fe;
-	
+
 }
 
 .MainOption {
@@ -278,7 +280,7 @@ body {
 }
 
 .RankFont {
-	
+
 	font: normal 10px Arial, Helvetica, sans-serif;	
 
 }
@@ -419,7 +421,7 @@ body {
 	border-right-width: 1px;	
 	border-top-width: 1px;
 	border-bottom-width: 1px;
-	
+
 }
 
 .HomeSectionsBrown {
@@ -477,3 +479,4 @@ body {
 	color: red;
 	font: 12px Verdana, Geneva, sans-serif;
 }
+

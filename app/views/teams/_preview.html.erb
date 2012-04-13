@@ -1,0 +1,153 @@
+<%= stylesheet_link_tag '/stylesheets/style' %>
+
+<style>
+
+body{
+
+padding: 0;
+background-color: #BFDBFF;
+
+}
+</style>
+<!--START -->
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%"  >
+
+<tbody>
+	<tr>
+	<td class="MainTinyHeader">Slot</td>
+	<td class="MainTinyHeader">Batter</td>
+	
+	<td class="MainTinyHeader">Opponent</td>
+	</tr>
+    <%- @roster_list.each do |roster| -%>
+    <% if (roster.pos_text != DL_POSITION && roster.pos_text.index('P').nil? )
+    	player_array = @player_hash[roster.pos_text]
+    	player = nil
+    	if (!player_array.nil? && player_array.length!=0)
+    		player = player_array.pop
+    	end	
+    %>
+    <tr>
+    	<%if (player.nil?)%>
+        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow" colspan="4">
+        <img src="/images/RS_Red_Button10.png" alt="Red Button">
+         [ EMPTY SLOT ]
+    	</td>
+    	<%else%>
+    	<td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow">
+        <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
+       	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+       	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
+        <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+       	</td>
+    
+    	<td class="MainRowEnd">
+    		<%=player.game_status%>
+    	</td>
+    	<%end%>
+    </tr>
+    <%-end-%>
+    <%-end-%>
+    
+    <%if (!@player_hash['BN'].nil?)%>
+    <% @player_hash['BN'].each do |player|  %>
+	<% if (player.position_text.index('P').nil? )
+    		
+    %>
+    <tr>
+    
+    	<td class="MainRowBeg">BN</td>
+        <td class="MainRow">
+        <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
+       	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+       	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
+        <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+       	</td>
+    
+    	<td class="MainRowEnd">
+    		<%=player.game_status%>
+    	</td>
+    	<%end%>
+    </tr>
+    <%end%>
+    <%end%>
+    <tr>
+<td colspan="5" class="MainClose"><BR></td>
+</tr>
+    <tr>
+	<td class="MainTinyHeader">Slot</td>
+	<td class="MainTinyHeader">Pitcher</td>
+	
+	<td class="MainTinyHeader">Opponent</td>
+	</tr>
+    <%- @roster_list.each do |roster| -%>
+    <% if (roster.pos_text != DL_POSITION && !roster.pos_text.index('P').nil? )
+    	player_array = @player_hash[roster.pos_text]
+    	player = nil
+    	if (!player_array.nil? && player_array.length!=0)
+    		player = player_array.pop
+    	end	
+    %>
+    <tr>
+    	<%if (player.nil?)%>
+        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow" colspan="4">
+        <img src="/images/RS_Red_Button10.png" alt="Red Button">
+         [ EMPTY SLOT ]
+    	</td>
+    	<%else%>
+    	<td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="MainRow">
+        <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
+       	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+       	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
+        <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+       	</td>
+    	<td class="MainRowEnd">
+    		<%=player.game_status%>
+    	</td>
+    	<%end%>
+    </tr>
+    <%-end-%>
+    <%-end-%>
+    
+    <%if (!@player_hash['BN'].nil?)%>
+    <% @player_hash['BN'].each do |player|  %>
+	<% if (!player.position_text.index('P').nil? )
+    		
+    %>
+    <tr>
+    
+    	<td class="MainRowBeg">BN</td>
+        <td class="MainRow">
+        <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
+       	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+       	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
+        <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+       	</td>
+    
+    	<td class="MainRowEnd">
+    		<%=player.game_status%>
+    	</td>
+    	<%end%>
+    </tr>
+    <%end%>
+    <%end%>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="5" class="MainClose"></td>
+</tr>
+<tr>
+<td>
+<br>
+</td>
+</tr>
+</tfoot>
+</table>    
+
+<!--END -->
+</span>
