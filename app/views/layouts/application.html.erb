@@ -44,7 +44,7 @@
 
 	      	<u>How Does It Work?</u>
 	      	<span style="float:right;text-align: right;padding-right: 10px">
-	      	<%= link_to 'Log In', :action => 'login' %>
+	      	<%= link_to 'Log In', :controller => "user",:action => 'login' %>
 	      	</span>
 	      	<%-else-%>
 	      	<%= link_to "Dashboard Home", :controller => "teams", :action => "index" %> |

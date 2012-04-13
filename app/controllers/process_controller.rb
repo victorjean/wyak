@@ -29,6 +29,23 @@ class ProcessController < ApplicationController
   
   def players_seven
     @success = true
+    begin   
+      puts 'Get Pitcher Information Seven Day'
+      parse_player_list(ALL_PITCHERS7_URL, "seven")      
+    rescue => msg
+      puts "ERROR OCCURED (#{msg})"
+      log_error('sys', nil, 'parseplayer_pitcher_seven',msg)
+      @success = false
+    end
+    
+    begin   
+      puts 'Get Batter Information Seven Day'
+      parse_player_list(ALL_BATTER7_URL, "seven")      
+    rescue => msg
+      puts "ERROR OCCURED (#{msg})"
+      log_error('sys', nil, 'parseplayer_batter_seven',msg)
+      @success = false
+    end
     
     render(:partial => 'loading')
     
