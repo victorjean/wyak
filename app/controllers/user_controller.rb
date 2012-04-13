@@ -19,7 +19,7 @@ class UserController < ApplicationController
   def signup
     if request.post?
       @user = UserInfo.new  
-      @user.email = params[:email]
+      @user.email = params[:email].downcase
       @user.password = params[:pass]
       if(params[:pass]!=params[:repass])
         flash[:message] = "Passwords do not match"
@@ -35,13 +35,13 @@ class UserController < ApplicationController
 
   def login
     if request.post?
-      if session[:user] = UserInfo.authenticate(params[:email], params[:pass])
+      if session[:user] = UserInfo.authenticate(params[:email].downcase, params[:pass])
 
         #flash[:message]  = "Login successful"
 
         redirect_to_stored
       else
-        flash[:warning] = "Login unsuccessful for #{params[:email]}"
+        flash[:message] = "Login unsuccessful for #{params[:email]}"
       end
     end
   end
@@ -55,14 +55,40 @@ class UserController < ApplicationController
   
   def change_password
     @user=UserInfo.find_by_email(session[:user])
+    
     if request.post?
-      if(params[:pass]!=params[:repass])
+      flash[:message] = nil
+      if(UserInfo.authenticate(session[:user], params[:oldpass]).nil?)
+        flash[:message] = "Original password incorrect"
+      elsif(params[:pass]!=params[:repass])
         flash[:message] = "Passwords do not match"
       else
         @user.update_attributes(:password=>params[:pass])
         if @user.save
-          flash[:message]="Password Changed"
+          flash[:message]="Password Successfully Changed"
         end
+      end
+    end
+  end
+  
+  def forgot_password
+    flash[:message] = nil
+    @show = true
+    if request.post?
+      
+      @show = false
+      if (params[:email] == '')
+      @show = true
+          flash[:message]="Please enter a email address"
+      else
+        u= UserInfo.find_by_email(params[:email].downcase)
+        if (!u.nil?) 
+          u.send_new_password
+        else
+          @show = true
+          flash[:message]  = "Couldn't send password.  Email not found."
+        end
+        
       end
     end
   end

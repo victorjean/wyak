@@ -37,6 +37,14 @@ class UserInfo
     self.salt = UserInfo.random_string(10) if !self.salt?
     self.pass = UserInfo.encrypt(@password, self.salt)
   end
+  
+  def send_new_password
+    new_pass = UserInfo.random_string(10)
+    self.password = new_pass
+    self.save
+    
+    Notifications.em_password(self.email, self.email, new_pass).deliver
+  end
 
   protected
 

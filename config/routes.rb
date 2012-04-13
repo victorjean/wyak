@@ -1,7 +1,14 @@
 Wyak::Application.routes.draw do
   
 
-  resources :items
+  resources :process do
+    collection do
+      get 'yahoostart'
+      get 'espnstart'
+      get 'players'
+    end
+  end
+  
   resources :teams do
     collection do
       get 'update_all'
@@ -25,6 +32,8 @@ Wyak::Application.routes.draw do
     get 'logout'
     get 'change_password'
     post 'change_password'
+    get 'forgot_password'
+    post 'forgot_password'
     end
   end
   

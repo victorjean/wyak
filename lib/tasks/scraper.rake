@@ -137,6 +137,32 @@ namespace :scraper do
   end
 end
 
+namespace :scraper do
+  desc "Test using app server to run daily process"
+  task :testweb => :environment do
+    proxy = nil
+    
+    now = Time.now
+    puts now.to_s
+    
+    #agent = Mechanize.new
+    #page = agent.get("http://localhost:3000/process/yahoostart"
+    #open("http://localhost:3000/process/yahoostart", :proxy => proxy, 'User-Agent' => USER_AGENT, 'Accept' => ACCEPT, 'Accept-Charset' => ACCEPT_CHARSET)
+     EventMachine.run {
+      http = EventMachine::HttpRequest.new('http://localhost:3000/process/yahoostart').get
+      sleep 1
+      EM.stop 
+     }
+    
+    
+    finish = Time.now
+    puts finish.to_s
+    diff = finish - now
+    puts diff
+  end
+end
+
+
 #This is the cron/scheduler task used to set daily lineups
 namespace :scraper do
   desc "Refresh All Teams"

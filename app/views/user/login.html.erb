@@ -12,7 +12,9 @@
   <BR><BR>
 <input name="commit" src="/images/RSLogIn.png" type="image" value="Login"/>
 <BR>
-
+<div class="HomeTinyLinks">
+<%= link_to 'Forgot Your Password?', :action => 'forgot_password' %>
+</div>
   <% flash.each do |name, msg| %>
 	        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
 	      <% end %>

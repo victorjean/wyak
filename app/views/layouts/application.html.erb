@@ -50,7 +50,8 @@
 	      	<%= link_to "Dashboard Home", :controller => "teams", :action => "index" %> |
 			<u>How Does It Work?</u>
 			<span style="float:right;text-align: right;padding-right: 10px">
-			<%=session[:user]%> | 
+			 
+			<%= link_to session[:user], :controller => "user", :action => "change_password"  %> | 
 			<%= link_to "Log Out", :controller => "user", :action => "logout"  %>
 			</span> 
 			
