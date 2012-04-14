@@ -626,7 +626,7 @@ def parse_espn_team(team, first_time, tomm)
   
   
   page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id)
-  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=2")
+  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=20")
   
   document = Hpricot(page.parser.to_s)
   
@@ -665,19 +665,24 @@ def parse_espn_team(team, first_time, tomm)
     end
   end
   
+  
+  puts 'Get Game Status for Players'
   count = 0
-  puts = 'Get Game Status for Players'
-  document.search("td[@class=gameStatusDiv]").each do |item|
-    count += 1
+  (document/"tr.pncPlayerRow").each do |item|
+    count +=1
+    name_cell = item.search("a").first
+    opp_cell = item.search("td")[4].search("a").first
+    if (!name_cell.nil?)
+      if (opp_cell.nil?)
+        @statusHash[name_cell.innerHTML.strip] = STATUS_NO_GAME
+        
+      else
+        @statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip  
+        
+      end
+    end
     
-    if (item.search("a").first.nil?)
-      @statusHash[playerNameHash[count]] = STATUS_NO_GAME
-    else  
-      @statusHash[playerNameHash[count]] = item.search("a").first.inner_html.strip
-    end 
   end
-
-
   
   roster_str = []
   player_str = []
@@ -863,7 +868,11 @@ def parse_espn_team(team, first_time, tomm)
       @player.eligible_pos = textPosArray
       @player.position_text = pos_text
       @player.team_name = @teamHash[full_name]
+      if (playerInLineupHash[full_name])
+      @player.game_status = "^"+@statusHash[full_name]
+      else
       @player.game_status = @statusHash[full_name]
+      end
       @player.in_lineup = playerInLineupHash[full_name]
       @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
       
@@ -1222,7 +1231,7 @@ end
 
 def preview_yahoo_default(team)
   #update team in database
-  crumbHash = parse_yahoo_team(team, false, true)
+  #crumbHash = parse_yahoo_team(team, false, true)
   #Get roster list where position is not bench and dl and empty 
   roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )
@@ -1239,7 +1248,7 @@ end
 
 def preview_espn_default(team)
   #update team in database
-  scoring_period_id = parse_espn_team(team, false,true)
+  #scoring_period_id = parse_espn_team(team, false,true)
   #Get roster list where position is not bench and dl and empty 
   roster_list = Roster.where(:pos_text.ne=>BENCH_POSITION, :team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
   player_list = Player.find_all_by_league_id_and_team_id_and_team_type(team.league_id,team.team_id,team.team_type )

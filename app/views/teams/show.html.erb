@@ -366,7 +366,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
    	<%if (@team.weekly_team)%>
 	Team Lineup Set Weekly - Cannot Auto Start Players
 	<%else%>
-    <button type="button" onclick="submitLineup()">Submit Changes</button>
+    <button type="button" onclick="submitLineup()">Save Changes</button>
     <button type="button" onclick="showPreview()">Preview Tomorrow</button>
     <%end%>
     
@@ -466,16 +466,22 @@ function failureFunc(response){
 
 function showPreview() {
 	
-	
+$('status_span').innerHTML = "Loading Preview Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";	
 
-var win = new Window({className: "bluelighting", title: "Preview Lineup Tommorow", 
-                      width:370, height:420, 
-                      url: "/teams/preview_lineup?id=<%=@team._id%>", showEffectOptions: {duration:1.5}})
-win.showCenter();
-win.updateWidth();
+var win = new Window({className: "bluelighting", title: "Preview Lineup For Tomorrow", 
+                      width:370, height:420,  
+                      showEffectOptions: {duration:1.5}})
+                      
+win.setCloseCallback(clearStatus);
+win.setAjaxContent("/teams/preview_lineup?id=<%=@team._id%>", {method: 'get'}, true, false);
 
 
  
+}
+
+function clearStatus(){
+	$('status_span').innerHTML = '';	
+	return true;
 }
 
 </SCRIPT>

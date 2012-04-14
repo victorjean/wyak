@@ -1,15 +1,10 @@
 <%= stylesheet_link_tag '/stylesheets/style' %>
 
-<style>
 
-body{
-
-padding: 0;
-background-color: #BFDBFF;
-
-}
-</style>
 <!--START -->
+<SCRIPT>
+	$('status_span').innerHTML = "Previewing Saved Lineup <img src=\"/images/RSBigArrowUp10.png\"  >";
+</SCRIPT>
 
 <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%"  >
 
@@ -30,13 +25,13 @@ background-color: #BFDBFF;
     %>
     <tr>
     	<%if (player.nil?)%>
-        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="PopRowBeg"><%=roster.pos_text%></td>
         <td class="MainRow" colspan="4">
         <img src="/images/RS_Red_Button10.png" alt="Red Button">
          [ EMPTY SLOT ]
     	</td>
     	<%else%>
-    	<td class="MainRowBeg"><%=roster.pos_text%></td>
+    	<td class="PopRowBeg"><%=roster.pos_text%></td>
         <td class="MainRow">
         <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
@@ -61,6 +56,7 @@ background-color: #BFDBFF;
     
     	<td class="MainRowBeg">BN</td>
         <td class="MainRow">
+        <%if(player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
         <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
@@ -93,13 +89,13 @@ background-color: #BFDBFF;
     %>
     <tr>
     	<%if (player.nil?)%>
-        <td class="MainRowBeg"><%=roster.pos_text%></td>
+        <td class="PopRowBeg"><%=roster.pos_text%></td>
         <td class="MainRow" colspan="4">
         <img src="/images/RS_Red_Button10.png" alt="Red Button">
          [ EMPTY SLOT ]
     	</td>
     	<%else%>
-    	<td class="MainRowBeg"><%=roster.pos_text%></td>
+    	<td class="PopRowBeg"><%=roster.pos_text%></td>
         <td class="MainRow">
         <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
@@ -123,6 +119,7 @@ background-color: #BFDBFF;
     
     	<td class="MainRowBeg">BN</td>
         <td class="MainRow">
+        <%if(player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%> 	
         <%if(player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
@@ -150,4 +147,4 @@ background-color: #BFDBFF;
 </table>    
 
 <!--END -->
-</span>
+<div align="center"><input type="button" value="Close" onclick="Dialog.okCallback()" class="ok_button"></div>

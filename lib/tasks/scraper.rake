@@ -92,7 +92,7 @@ namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
     team_parse = Team.find_by_league_id("130711")
-    parse_espn_team(team_parse, true, false)
+    parse_espn_team(team_parse, false, false)
     
   end
 end
