@@ -1,0 +1,6 @@
+<table border=1>
+	<tr><td>Email</td><td>Method</td><td>Created</td><td>Msg</td><tr>
+	<% @log_list.each do |log| %>
+	<tr><td><%=log.email%></td><td><%=log.method%></td><td><%=log.created_at%></td><td><%=log.msg%></td><tr>
+	<%end%>
+</table>

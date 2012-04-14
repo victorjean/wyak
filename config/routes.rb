@@ -7,6 +7,8 @@ Wyak::Application.routes.draw do
       get 'espnstart'
       get 'players'
       get 'players_seven'
+      get 'logs'
+      get 'users'
     end
   end
   

@@ -97,5 +97,16 @@ class ProcessController < ApplicationController
     
     render(:partial => 'loading')
   end
+  
+  def logs
+    @log_list = Log.all
+    render(:partial => 'logs')
+  end
+  
+  def users
+    @user_list = UserInfo.sort(:updated_at.desc)
+    render(:partial => 'users')
+  end
+
 
 end

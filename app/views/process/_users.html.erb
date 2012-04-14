@@ -1,0 +1,6 @@
+<table border=1>
+	<tr><td>Email</td><td>Login Count</td><td>Updated</td><td>Created</td><tr>
+	<% @user_list.each do |user| %>
+	<tr><td><%=user.email%></td><td><%=user.login_count%></td><td><%=user.updated_at%></td><td><%=user.created_at%></td><tr>
+	<%end%>
+</table>
