@@ -5,8 +5,8 @@ class TeamsController < ApplicationController
   before_filter :login_required, :only=>['index', 'show', 'create', 'set_lineup', 'showbatters', 'showpitchers' ]
   
   def index
-    four_hours = 4*60*60
-    #four_hours = 1
+    refresh_time = 2*60*60
+    #refresh_time = 1
       
     user_info = UserInfo.find_by_email(session[:user])
     @espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
@@ -25,7 +25,7 @@ class TeamsController < ApplicationController
     
     if (!last_update.nil?) 
       diff = now - last_update
-      if (diff > four_hours)
+      if (diff > refresh_time)
         @update = true
       end
     end
