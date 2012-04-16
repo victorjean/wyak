@@ -114,7 +114,7 @@ def parse_yahoo_team(team, first_time, tomm)
     statusHash[count] = item.inner_text.strip
     
     if (item.inner_text.strip.length == 1)
-      statusHash[count] = STATUS_NO_GAME
+      statusHash[count] = ''
     else
       statusHash[count] = item.inner_text.strip
     end
@@ -263,7 +263,7 @@ def parse_yahoo_team(team, first_time, tomm)
       @player.team_name = team_name
       @player.current_slot = @currentRosterAssignHash[count]
       @player.game_status = statusHash[count]
-      @player.game_today = (statusHash[count] != STATUS_NO_GAME )
+      @player.game_today = (statusHash[count] != '' )
       @player.in_lineup = (!statusHash[count].index('^').nil?)
       
       plyr_stats = PlayerStats.find_by_yahoo_id(yahoo_id)
@@ -674,7 +674,7 @@ def parse_espn_team(team, first_time, tomm)
     opp_cell = item.search("td")[4].search("a").first
     if (!name_cell.nil?)
       if (opp_cell.nil?)
-        @statusHash[name_cell.innerHTML.strip] = STATUS_NO_GAME
+        @statusHash[name_cell.innerHTML.strip] = ''
         
       else
         @statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip  
@@ -874,7 +874,7 @@ def parse_espn_team(team, first_time, tomm)
       @player.game_status = @statusHash[full_name]
       end
       @player.in_lineup = playerInLineupHash[full_name]
-      @player.game_today = (@statusHash[full_name] != STATUS_NO_GAME )
+      @player.game_today = (@statusHash[full_name] != '' )
       
       plyr_stats = PlayerStats.find_by_espn_id(espn_id)
       if (!plyr_stats.nil?)
@@ -983,7 +983,7 @@ def assign_player_position(roster_list)
 end
 
 def set_assigned_player_in_empty_roster(player, roster_list)
-  if (player.team_name == 'true')
+  if (player.scratched)
     roster_list.each do |item|
       if (player.temp_pos == item.pos_text && !item.leave_empty && item.pos_text != DL_POSITION)
            player.assign_slot = player.temp_slot
@@ -1067,10 +1067,10 @@ def player_assignment_daily(player_list, roster_list)
   #if no game today set to BENCH and player_set true
   player_list.each do |item|
     if (!item.game_today && !item.player_set)
-      #set :team_name temp field to indicate player was assigned to fill
+      #set :scratched temp field to indicate player was assigned to fill
       #empty spots if there are no bench players to fill that slot
       if (item.assign_pos != BENCH_POSITION)
-        item.team_name = 'true'
+        item.scratched = true
         item.temp_pos = item.assign_pos
         item.temp_slot = item.assign_slot
       end
