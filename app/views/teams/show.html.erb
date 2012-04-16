@@ -86,7 +86,7 @@
 <table cellpadding="0" cellspacing="0" border="0">
 <thead>
 <tr class="MainTitle">
-<td colspan="4" class="MainTitle">
+<td colspan="5" class="MainTitle">
 <%=@team.team_name%>
 <div class="MainTitleBrown"><%=@team.league_name%></div>
 </td>
@@ -123,7 +123,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <br>
 <%=(@pitch)?'Pitcher':'Batter'%> Starting Lineup
 </td>
-<td colspan="2" align="right">
+<td colspan="3" align="right">
 	<span id="refresh_span" style="display:none; padding-right: 3px">Refreshing Team <img src="/images/refresh-animated.gif"></span>
 </td>
 </tr>
@@ -134,6 +134,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
 <td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
+<td class="MainTinyHeader" align="left" >7 Day<BR>Trend</td>
 
 <td class="MainTinyHeader">Start <br>Position</td>
 <td class="MainTinyHeader">Start <br>Frequency</td>
@@ -152,7 +153,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
         	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
         	<%-end-%>
        	</td>
        	<td class="MainRow" align="right" style="padding-right: 0">
@@ -186,6 +187,15 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%=roster.player.assign_pos%>
         	 </FONT>     	
        		    	
+       		<%end%>
+        <%end%>	
+        </td>
+        <td class="MainRow" style="padding-left: 0px;" align="right">
+        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
+        	<%if(roster.player.player_stats.rank_change >=0)%>
+       		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
+       		<%else%>
+       		<FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
        		<%end%>
         <%end%>	
         </td>
@@ -227,15 +237,16 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 
 
 <tr>
-<td colspan="5" class="MainClose"></td>
+<td colspan="8" class="MainClose"></td>
 </tr>
 <tr>
-<td colspan="5" class="MainHeader"><br><%=(@pitch)?'Pitcher':'Batter'%> Bench Priority</td>
+<td colspan="8" class="MainHeader"><br><%=(@pitch)?'Pitcher':'Batter'%> Bench Priority</td>
 </tr>
 <tr>
 <td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
 <td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
+<td class="MainTinyHeader">7 Day<BR>Trend</td>
 <td class="MainTinyHeader">Start <br>Position</td>
 <td class="MainTinyHeader">Start <br>Frequency</td>
 <td class="MainTinyHeader">Bench <br>Priority</td>
@@ -257,7 +268,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
         	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<%=roster.player.full_name%> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
        	</td>
        	<td class="MainRow" align="right" style="padding-right: 0">
        	<% color = ''
@@ -289,6 +300,15 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
        		<FONT class="RankFont" color="<%=color%>">
         	<%=roster.player.assign_pos%>
         	 </FONT>     	
+       		<%end%>
+        <%end%>	
+        </td>
+        <td class="MainRow" style="padding-left: 0px;" align="right">
+        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
+        	<%if(roster.player.player_stats.rank_change >=0)%>
+       		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
+       		<%else%>
+       		<FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
        		<%end%>
         <%end%>	
         </td>
@@ -327,7 +347,8 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     <%if(@pitch && !player.position_text.index('P').nil?)%> 
     <tr>
         <td class="MainRowBeg">DL</td>
-        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
+        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> (<%=player.team_name%> - <%=player.position_text%>)</td>
         <td class="MainRow"></td>
     	<td class="MainRow"></td>
     	<td class="MainRow"></td>
@@ -338,7 +359,8 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 	<%if(!@pitch && player.position_text.index('P').nil?)%> 
     <tr>
         <td class="MainRowBeg">DL</td>
-        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
+        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> (<%=player.team_name%> - <%=player.position_text%>)</td>
         <td class="MainRow"></td>
     	<td class="MainRow"></td>
     	<td class="MainRow"></td>
@@ -483,5 +505,17 @@ function clearStatus(){
 	$('status_span').innerHTML = '';	
 	return true;
 }
+
+
+
+function showStat(id, name, espnid){
+	var winStat = new Window({className: "bluelighting", title: name, 
+                      width:300, height:140,  
+                      showEffectOptions: {duration:1.5}})
+	
+	winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, true, false);
+
+}
+
 
 </SCRIPT>

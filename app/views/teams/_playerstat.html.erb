@@ -1,0 +1,104 @@
+<%= stylesheet_link_tag '/stylesheets/style' %>
+
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%"  >
+
+<tbody>
+	<%if(@pitch)%>
+	<tr><td colspan="7" align="center">Season Total</td></tr>
+	<tr>
+	<td class="PopupHeader" align="center">Overall<BR>Rank</td>
+	<td class="PopupHeader">IP</td>
+	<td class="PopupHeader">W</td>
+	<td class="PopupHeader">SV</td>
+	<td class="PopupHeader">K</td>
+	<td class="PopupHeader">ERA</td>
+	<td class="PopupHeader">WHIP</td>
+	</tr>
+	<tr>
+	<td class="PopRowBeg" align="center"><%=@player.rank%></td>
+	<td class="PopRowBegNoBold"><%=@player.ip%></td>
+	<td class="PopRowBegNoBold"><%=@player.win%></td>
+	<td class="PopRowBegNoBold"><%=@player.sv%></td>
+	<td class="PopRowBegNoBold"><%=@player.k%></td>
+	<td class="PopRowBegNoBold"><%=("%.2f" % @player.era)%></td>
+	<td class="PopRowBegNoBold"><%=("%.2f" % @player.whip)%></td>
+	</tr>
+	<TR><TD><BR></TD></TR>
+	<tr><td colspan="7" align="center">7 Day Total</td></tr>
+	<tr>
+	<td class="PopupHeader" align="center">Rank<BR>Change</td>
+	<td class="PopupHeader">IP</td>
+	<td class="PopupHeader">W</td>
+	<td class="PopupHeader">SV</td>
+	<td class="PopupHeader">K</td>
+	<td class="PopupHeader">ERA</td>
+	<td class="PopupHeader">WHIP</td>
+	</tr>
+	<tr>
+	<td class="PopRowBegNoBold" align="center">
+		<%if (@player.rank_change < 0)%>
+		<FONT color="red"><%=@player.rank_change%></font>
+		<%else%>
+		<FONT color="green">+<%=@player.rank_change%></font>
+		<%end%>
+	</td>
+	<td class="PopRowBegNoBold"><%=@player.ip_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.win_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.sv_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.k_7day%></td>
+	<td class="PopRowBegNoBold"><%=("%.2f" % @player.era_7day)%></td>
+	<td class="PopRowBegNoBold"><%=("%.2f" % @player.whip_7day)%></td>
+	</tr>
+	<%else%>
+	<tr><td colspan="7" align="center">Season Total</td></tr>
+	<tr>
+	<td class="PopupHeader" align="center">Overall<BR>Rank</td>
+	<td class="PopupHeader">H/AB</td>
+	<td class="PopupHeader">R</td>
+	<td class="PopupHeader">HR</td>
+	<td class="PopupHeader">RBI</td>
+	<td class="PopupHeader">SB</td>
+	<td class="PopupHeader">AVG</td>
+	</tr>
+	<tr>
+	<td class="PopRowBeg" align="center"><%=@player.rank%></td>
+	<td class="PopRowBegNoBold"><%=@player.hit%>/<%=@player.ab%></td>
+	<td class="PopRowBegNoBold"><%=@player.run%></td>
+	<td class="PopRowBegNoBold"><%=@player.hr%></td>
+	<td class="PopRowBegNoBold"><%=@player.rbi%></td>
+	<td class="PopRowBegNoBold"><%=@player.sb%></td>
+	<td class="PopRowBegNoBold"><%=("%.3f" % @player.avg)[1..-1]%></td>
+	</tr>
+	<TR><TD><BR></TD></TR>
+	<tr><td colspan="7" align="center">7 Day Total</td></tr>
+	<tr>
+	<td class="PopupHeader" align="center">Rank<BR>Change</td>
+	<td class="PopupHeader">H/AB</td>
+	<td class="PopupHeader">R</td>
+	<td class="PopupHeader">HR</td>
+	<td class="PopupHeader">RBI</td>
+	<td class="PopupHeader">SB</td>
+	<td class="PopupHeader">AVG</td>
+	</tr>
+	<tr>
+	<td class="PopRowBegNoBold" align="center">
+		<%if (@player.rank_change < 0)%>
+		<FONT color="red"><%=@player.rank_change%></font>
+		<%else%>
+		<FONT color="green">+<%=@player.rank_change%></font>
+		<%end%>
+	</td>
+	<td class="PopRowBegNoBold"><%=@player.hit_7day%>/<%=@player.ab_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.run_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.hr_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.rbi_7day%></td>
+	<td class="PopRowBegNoBold"><%=@player.sb_7day%></td>
+	<td class="PopRowBegNoBold"><%=("%.3f" % @player.avg_7day)[1..-1]%></td>
+	</tr>
+	<%end%>
+</tbody>
+</table>    
+
+<!--END -->
+

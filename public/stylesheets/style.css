@@ -241,11 +241,21 @@ body {
 .MainTinyHeader {
 	font: bold 10px Verdana, Geneva, sans-serif;
 	padding-left:10px;
-	padding-right: 10px;
+	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	background-color: #e0f2fe;
 
+}
+
+.PopupHeader {
+	font: bold 10px Verdana, Geneva, sans-serif;
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	background-color: #e0f2fe;
+	width: 20px;
 }
 
 .MainOption {
@@ -268,10 +278,23 @@ body {
 	font: bold 12px Arial, Helvetica, sans-serif;
 	background-color: #f7f7f8;
 }
+.PopRowBegNoBold {
+	padding-left:10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border: 0 solid #FFFFFF; 
+	border-left-width:1px;
+	border-top-width:1px;
+	color:black;
+	border-right-width:1px;	
+	font: normal 12px Arial, Helvetica, sans-serif;
+	background-color: #f7f7f8;
+}
 
 .MainRowBeg {
 	padding-left:10px;
-	padding-right: 10px;
+	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	border: 0 solid #FFFFFF; 
@@ -285,7 +308,7 @@ body {
 
 .MainRow {
 	padding-left:10px;
-	padding-right: 10px;
+	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	border: 0 solid #FFFFFF; 
@@ -303,7 +326,7 @@ body {
 
 .MainRowEnd {
 	padding-left:10px;
-	padding-right: 10px;
+	padding-right: 5px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	border: 0 solid #FFFFFF;

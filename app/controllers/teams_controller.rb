@@ -338,6 +338,19 @@ class TeamsController < ApplicationController
     render(:partial => 'set')
   end
   
+  def show_stat
+    if (params[:yahooid]!='')
+    @player = PlayerStats.find_by_yahoo_id(params[:yahooid])
+    end
+    if (params[:espnid]!='')
+    @player = PlayerStats.find_by_espn_id(params[:espnid])
+    end
+    
+    @pitch = (params[:pitch]=='true')
+    
+    render(:partial => 'playerstat')
+  end
+  
   def manage
     @teamType = params[:teamType]
     user_info = UserInfo.find_by_email(session[:user])

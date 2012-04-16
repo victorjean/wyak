@@ -28,6 +28,7 @@ Wyak::Application.routes.draw do
       get 'manage'
       get 'setup'
       get 'preview_lineup'
+      get 'show_stat'
       post 'manage'
       post 'set_lineup'
       post 'refresh_lineup'
