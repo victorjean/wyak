@@ -13,8 +13,17 @@
      var $j = jQuery.noConflict();
      </script>
      
-     <script type="text/javascript">
-
+	  <meta property="og:title" content="RotoStarter" /> 
+	  <meta property="og:image" content="http://www.rotostarter.com/images/RotoStarterLogoBlue200.png" /> 
+	  <meta property="og:description" content="Free service that automatically starts your fantasy players" /> 
+	  <meta property="og:url" content="http://www.rotostarter.com">
+	  <meta property="og:type" content="website">
+	    
+    <%= csrf_meta_tag %>
+    <%= yield(:head) %>
+    
+	<script type="text/javascript">
+	
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-30965893-1']);
 	  _gaq.push(['_trackPageview']);
@@ -26,16 +35,7 @@
 	  })();
 	
 	</script>
-     
-
-	  <meta property="og:title" content="RotoStarter" /> 
-	  <meta property="og:image" content="http://www.rotostarter.com/images/RotoStarterLogoBlue200.png" /> 
-	  <meta property="og:description" content="Free service that automatically starts your fantasy players" /> 
-	  <meta property="og:url" content="http://www.rotostarter.com">
-	  <meta property="og:type" content="website">
-	    
-    <%= csrf_meta_tag %>
-    <%= yield(:head) %>
+    
   </head>
   <body <%= content_for?(:body_attributes) ? yield(:body_attributes) : "" %>>
   	<div id="fb-root"></div>
