@@ -153,7 +153,9 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
         	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> 
+        	(<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<span class="dl_tag"><%=(roster.player.on_dl)?'DL':''%></span>
         	<%-end-%>
        	</td>
        	<td class="MainRow" align="right" style="padding-right: 0">
@@ -268,7 +270,9 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
         	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )">
+        		<%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+        		<span class="dl_tag"><%=(roster.player.on_dl)?'DL':''%></span>
        	</td>
        	<td class="MainRow" align="right" style="padding-right: 0">
        	<% color = ''
@@ -348,7 +352,10 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     <tr>
         <td class="MainRowBeg">DL</td>
         <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
-        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
+        (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
+        </td>
         <td class="MainRow"></td>
     	<td class="MainRow"></td>
     	<td class="MainRow"></td>
@@ -360,7 +367,10 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
     <tr>
         <td class="MainRowBeg">DL</td>
         <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
-        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> (<%=player.team_name%> - <%=player.position_text%>)</td>
+        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
+        (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
+        </td>
         <td class="MainRow"></td>
     	<td class="MainRow"></td>
     	<td class="MainRow"></td>

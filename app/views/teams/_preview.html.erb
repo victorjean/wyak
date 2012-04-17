@@ -37,6 +37,7 @@
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
        	</td>
     
     	<td class="MainRowEnd">
@@ -61,6 +62,7 @@
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
        	</td>
     
     	<td class="MainRowEnd">
@@ -101,6 +103,7 @@
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
        	</td>
     	<td class="MainRowEnd">
     		<%=player.game_status%>
@@ -124,6 +127,7 @@
        	<%if(player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
        	<%if(player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
         <%=player.full_name%> (<%=player.team_name%> - <%=player.position_text%>)
+        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
        	</td>
     
     	<td class="MainRowEnd">

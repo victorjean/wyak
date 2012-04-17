@@ -241,6 +241,7 @@ def parse_yahoo_team(team, first_time, tomm)
     nametag = player.search("a").first
     idtag = player.search("a").last
     postag = player.search("span").first
+    statustag = player.search("span[@class=status]").first
     
     if (!nametag.nil? && !idtag.nil? && !postag.nil?)
       full_name = nametag.inner_html.strip            
@@ -273,6 +274,13 @@ def parse_yahoo_team(team, first_time, tomm)
       
       if (@player.current_slot == DL_POSITION)
         @player.roster_id = nil  
+      end
+      
+      #Check if DL Status is Marked next to Player
+      if (!statustag.nil? && statustag.inner_html.strip == DL_POSITION)
+        @player.on_dl = true
+      else
+        @player.on_dl = false  
       end
       
       @player.save     
@@ -648,6 +656,7 @@ def parse_espn_team(team, first_time, tomm)
   
   playerNameHash = {}
   playerInLineupHash = {}
+  playerDLHash = {}
   count = 0
   puts = 'Get Team Hash Table for Players'
   document.search("td[@class=playertablePlayerName]").each do |item|
@@ -662,6 +671,12 @@ def parse_espn_team(team, first_time, tomm)
     else
       #Check here for ! mark or P for real time for now set to TRUE
       playerInLineupHash[player_name] = true
+    end
+    dl_tag = item.search("span").first
+    if (!dl_tag.nil? && !dl_tag.inner_html.strip.index(DL_POSITION).nil?)
+      playerDLHash[player_name] = true
+    else
+      playerDLHash[player_name] = false
     end
   end
   
@@ -875,6 +890,7 @@ def parse_espn_team(team, first_time, tomm)
       end
       @player.in_lineup = playerInLineupHash[full_name]
       @player.game_today = (@statusHash[full_name] != '' )
+      @player.on_dl = playerDLHash[full_name]
       
       plyr_stats = PlayerStats.find_by_espn_id(espn_id)
       if (!plyr_stats.nil?)
@@ -1058,6 +1074,15 @@ def player_assignment_daily(player_list, roster_list)
   #set any player with never start to player_set true and bench
   player_list.each do |item|
     if (item.action == NEVER_START_OPTION && !item.player_set)
+      item.assign_pos = BENCH_POSITION
+      item.assign_slot = ESPN_BENCH_SLOT
+      item.player_set = true
+    end
+  end
+  
+  #set any player on DL to the BENCH
+  player_list.each do |item|
+    if (item.on_dl  && !item.player_set)
       item.assign_pos = BENCH_POSITION
       item.assign_slot = ESPN_BENCH_SLOT
       item.player_set = true
