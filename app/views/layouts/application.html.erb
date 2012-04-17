@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
   <head>
     <title>RotoStarter</title>
 
@@ -12,11 +12,21 @@
      <script>
      var $j = jQuery.noConflict();
      </script>
-    
+
+	    
     <%= csrf_meta_tag %>
     <%= yield(:head) %>
   </head>
   <body <%= content_for?(:body_attributes) ? yield(:body_attributes) : "" %>>
+  	<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+  	
 	<div id="RSWrapper">
 		<div id="RSHeader" style="float:left; margin:0;">
 			<table cellpadding="0" cellspacing="0" border="0">
@@ -33,6 +43,7 @@
 			noun</div>
 			<div class="HeaderTitleBrown">Free service that automatically starts your fantasy baseball players for you every morning</div>
 			</td>
+			
 			</tr>
 			</table>
 		</div>
@@ -76,6 +87,9 @@
       	<%= link_to "Privacy", :controller => "static", :action => "privacy" %> |
 		<%= link_to "Terms", :controller => "static", :action => "terms" %> |
 		<%= link_to "Contact Us", :controller => "static", :action => "contact" %>
+		<span style="float:right;text-align: right;">
+<fb:like href="http://www.rotostarter.com" send="true" layout="button_count" width="50" show_faces="true"></fb:like>
+		</span>
 		</div>
 		</div>
 		<div id="RSEdge" style="float:left; margin:0;">
