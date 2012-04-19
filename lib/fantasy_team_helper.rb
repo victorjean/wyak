@@ -59,7 +59,7 @@ def parse_yahoo_team(team, first_time, tomm)
   @total_players = 0
   
   #If Team empty reload entire team set first_time true
-  if (team.empty_team || team.weekly_team) 
+  if (team.empty_team.nil? || team.empty_team || team.weekly_team) 
     first_time = true
   end
     
@@ -412,7 +412,7 @@ end
 
 def load_yahoo_first_time(user_info)
   #First Load Yahoo Teams into Database
-  load_yahoo_teams(user_info)
+  load_yahoo_teams(user_info,true)
   #parse through each team page and store data
   Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE).each do |team|
     parse_yahoo_team(team,true, true)
@@ -421,25 +421,36 @@ end
 
 def load_espn_first_time(user_info)
   #First Load ESPN Teams into Database
-  load_espn_teams(user_info)
+  load_espn_teams(user_info,true)
   #parse through each team page and store data
   Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE).each do |team|
     parse_espn_team(team,true, true)
   end
 end
 
-def load_yahoo_teams(user_info)
+def load_yahoo_teams(user_info, reload)
   
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,YAHOO_AUTH_TYPE)
   agent = authenticate_yahoo(auth_user)
   
   puts 'Loading all Yahoo Teams into Database for User - '+user_info.email
-  puts 'Deleting Teams from DB...'
   team_list = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
   
+  if (reload)    
+    puts 'Deleting Teams from DB...'
+      
+    team_list.each do |item|
+      item.destroy
+      puts item.league_id + ' Deleted'
+    end
+  end
+  
+  #Delete any AUTO league teams until drafted
   team_list.each do |item|
-    item.destroy
-    puts item.league_id + ' Deleted'
+      if (item.league_id == 'auto')
+      item.destroy
+      puts item.league_id + ' Deleted'
+      end
   end
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL)
@@ -455,7 +466,8 @@ def load_yahoo_teams(user_info)
       #Get League and Team ID String
       league_team_ids = team_href_tag.get_attribute("href").strip.gsub(YAHOO_BASEBALL_PAGE_URL,'')
        
-      team = Team.new
+      #team = Team.new
+      team = Team.find_or_create_by_league_id_and_team_id_and_team_type(league_team_ids.split('/').first.strip,league_team_ids.split('/').last.strip,YAHOO_AUTH_TYPE)
       team.team_type = YAHOO_AUTH_TYPE
       team.auth_info = auth_user
       team.user_info = user_info
@@ -472,17 +484,20 @@ def load_yahoo_teams(user_info)
   end
 end
 
-def load_espn_teams(user_info)
+def load_espn_teams(user_info, reload)
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,ESPN_AUTH_TYPE)
   agent = authenticate_espn(auth_user)
   
   puts 'Loading all ESPN Teams into Database for User - '+user_info.email
-  puts 'Deleting Teams from DB...'
   team_list = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
   
-  team_list.each do |item|
-    item.destroy
-    puts item.league_id + ' Deleted'
+  if (reload)
+    puts 'Deleting Teams from DB...'
+      
+    team_list.each do |item|
+      item.destroy
+      puts item.league_id + ' Deleted'
+    end
   end
   
   page = agent.get(ESPN_BASEBALL_PAGE_URL)
@@ -530,7 +545,8 @@ def load_espn_teams(user_info)
         end    
       end
       
-      team = Team.new
+      #team = Team.new
+      team = Team.find_or_create_by_league_id_and_team_id_and_team_type(league_id,team_id,ESPN_AUTH_TYPE)
       team.team_type = ESPN_AUTH_TYPE
       team.auth_info = auth_user
       team.user_info = user_info
@@ -618,7 +634,7 @@ def parse_espn_team(team, first_time, tomm)
   @statusHash = {}
   
   #If Team empty reload entire team set first_time true
-  if (team.empty_team) 
+  if (team.empty_team.nil? || team.empty_team) 
     first_time = true
   end
     
@@ -1292,8 +1308,7 @@ def rank_player(player, pos, rank)
   if (player.pos_rank.nil?)
     player.pos_rank = {}
   end
-  player.scratched = false
-  player.processed = false
+
   player.pos_rank[pos] = rank 
   
   player.save
@@ -1476,6 +1491,8 @@ def parse_player_list(url, player_type)
       player.yahoo_id = yahooid
       player.team = team_short_name.upcase
       player.owned = percent_owned.to_i
+      player.scratched = false
+      player.processed = false
       
       if (player_type != 'seven')
         player.rank7 = player.rank6

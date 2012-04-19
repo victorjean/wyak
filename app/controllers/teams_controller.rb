@@ -272,6 +272,8 @@ class TeamsController < ApplicationController
   
   def update_all
     logger.info("Update All Function For #{session[:user]}")
+    user_info = UserInfo.find_by_email(session[:user])
+    
     
     yahoo_update= false
     espn_update = false
@@ -280,15 +282,19 @@ class TeamsController < ApplicationController
     if (mode == 'all')
       yahoo_update = true
       espn_update = true
+      load_espn_teams(user_info,false)
+      load_yahoo_teams(user_info,false)
     end
     if(mode == 'yahoo')
       yahoo_update = true
+      load_yahoo_teams(user_info,false)
     end
     if(mode == 'espn')
       espn_update = true
+      load_espn_teams(user_info,false)
     end
     
-    user_info = UserInfo.find_by_email(session[:user])
+    
     espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
     yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
     @success = true
