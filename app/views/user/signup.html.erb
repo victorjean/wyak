@@ -35,9 +35,11 @@ Your Fantasy Lineups<br>
 <% flash.each do |name, msg| %>
 	        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
 	      <% end %>
+ <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
+                     </div><BR>
 <input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
 <div class="HomeTinyLinks">
-<%= link_to 'Log In', :action => 'login' %> or <%= link_to 'Forgot Your Password?', :action => 'forgot_password' %><br>
+<%= link_to 'Log In', :action => 'login' %> or <%= link_to 'Forgot Your Password?', :action => 'forgot_password' %>
 </div>
 </h3>
 <% end %>
