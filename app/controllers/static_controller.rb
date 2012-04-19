@@ -11,5 +11,14 @@ class StaticController < ApplicationController
   def contact
     
   end
+  
+  def howitworks
+    @logged = false
+    if session[:user]
+      
+      @logged = true
+    end
+      @user = UserInfo.new
+  end
 
  end

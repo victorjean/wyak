@@ -1,0 +1,82 @@
+<div id="RSText" style="float:left; margin:0; width: 98%">
+	  <ul class="DashHeaderTop">How It Works
+	      <li class="DashHeaderTopBrown">Overview For Getting Started</li>
+	  </ul>
+	  <img style="width:200px;height:180px;float:right;padding: 10px;" src="/images/HIW-team.png" alt="Team Page Snapshot">
+	  <ul class="DashHeaderTop"> Step 1: Prioritize Your Batter and Pitchers
+	      <br>
+	      	<li>
+	   			
+	   			<p class="DashHeaderRight">
+		      	Set up your Batter and your Pitcher preferences for each team knowing that RotoStarter will always try to maximize your lineup.<br>
+		      	<br>
+		      	- Put players you always want to start in your "Starting Lineup".<br>
+		      	- Use your "Bench" for players you could start at multiple positions or at a flex or utility spot.<br>
+		      	- Rank or prioritize your "Bench" so RotoStarter will fill your lineup using your bench.<br>
+				<br>
+				For more on basic setup and preferences, see Recommended Settings.<br>
+				For other common questions, see the Frequently Asked Questions or FAQ.<br>
+		        </p>
+		     </li>
+
+	  </ul>
+
+	  <img style="width:auto;height:160px;float:right;padding: 10px;" src="/images/HIW-preview.png" alt="Preview Tomorrow Snapshot">
+	  <ul class="DashHeaderTop"> Step 2: RotoStarter Starts Your Players Once Every Morning
+	      <br>
+	      <p class="DashHeaderRight">
+	        RotoStarter is a "Personal Assistant" or a "Basic Autopilot" for your fantasy baseball teams.<br>
+	        <br>
+	          Every morning at 6am-7am EST, RotoStarter will maximize your lineup based on the preferences and priorities you set up.  <br>
+	        <br>
+	        To preview how RotoStarter is going to set your lineup, log in and click on a team's "Batters" or "Pitchers" and then click "Preview Tomorrow".  If you don't like how the lineup is being set, adjust the team priorities.  Make sure to save your changes before previewing.<br>
+	      </p>
+	  </ul>
+	  
+	  
+<img style="width:200px;height:200px;float:right;padding: 10px;" src="/images/HIW-yahoo.png" alt="Preview Tomorrow Snapshot">
+	  <ul class="DashHeaderTop"> Step 3: Manage Your Team As Your Normally Would
+	      <br>	  
+	      <p class="DashHeaderRight">
+	        Let's face it, baseball is a really long season.  <br>
+	        RotoStarter is a "no brainer" safety net that will make sure you're not at a disadvantage if and when life gets busy.  <br>  
+	        <br>
+	        The great thing about RotoStarter is that it will maximize your lineup but still allow you the manual control and flexibility to adjust your lineup when life isn't so busy.  <br>
+	        <br>
+	        For example, RotoStarter starts Justin Verlander in your Yahoo league because he's pitching against the Yankees today.  However, you want to bench him because you don't like the matchup.  You can log into Yahoo and bench him as you normally would.<br>
+	      </p>
+	  </ul>
+	  <%if (!@logged)%>
+	  <ul>
+		<%= form_tag '/user/signup' do %>
+		<div style="margin:0;padding:0;display:inline">
+		
+		</div>
+		<h3 class="HomeSignUp">
+		<b>Sign Up Now, It's Free</b><br><br>
+		<label for="email">Email:</label>
+		<%= text_field_tag('email', @user.email) %>
+		<br>
+		<label for="pass">Password:</label>
+		<%= password_field_tag(:pass) %>
+		<br>
+		<label for="repass">Confirm Password:</label>
+		<%= password_field_tag(:repass) %>
+		  
+		<br>
+		<br>
+		<span class="flash_message"><%= @user.errors.full_messages.first if @user.errors.any? %></span>
+		<% flash.each do |name, msg| %>
+			        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+			      <% end %>
+		 <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
+		                     </div><BR>
+		<input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
+		<div class="HomeTinyLinks">
+		<%= link_to 'Log In', :controller => "user",:action => 'login' %> or <%= link_to 'Forgot Your Password?', :controller => "user",:action => 'forgot_password' %>
+		</div>
+		</h3>
+		<% end %>
+	</ul>
+	<%end%>
+</div>

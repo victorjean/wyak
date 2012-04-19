@@ -17,6 +17,7 @@ Wyak::Application.routes.draw do
       get 'privacy'
       get 'terms'
       get 'contact'
+      get 'howitworks'
     end
   end
   
