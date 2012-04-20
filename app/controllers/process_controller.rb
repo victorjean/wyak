@@ -1,7 +1,9 @@
 require "fantasy_team_helper"
+require "real_time_helper"
 
 class ProcessController < ApplicationController
   def players
+    Game.delete_all()
     @success = true
     begin   
       puts 'Get Pitcher Information'
@@ -91,6 +93,48 @@ class ProcessController < ApplicationController
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
         log_error('sys', team, 'dailystartespn',msg)
+        @success = false
+      end  
+    end
+    
+    render(:partial => 'loading')
+  end
+  
+  def espnrealtime
+    @success = true
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where(:team_type=>ESPN_AUTH_TYPE, :empty_team=>false,
+    :$or => [
+    {:real_time_batter => true},
+    {:real_time_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      begin  
+        parse_espn_team_realtime(team,true)
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', team, 'espnrealtime',msg)
+        @success = false
+      end  
+    end
+    
+    render(:partial => 'loading')
+  end
+  
+  def yahoorealtime
+    @success = true
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where(:team_type=>YAHOO_AUTH_TYPE, :empty_team=>false,
+    :$or => [
+    {:real_time_batter => true},
+    {:real_time_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    team_list.each do |team|
+      begin  
+        parse_yahoo_team_realtime(team,true)
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', team, 'yahoorealtime',msg)
         @success = false
       end  
     end

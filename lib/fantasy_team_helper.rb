@@ -132,7 +132,7 @@ def parse_yahoo_team(team, first_time, tomm)
     posdropdown = item.search("option")
     posinput = item.search("input")
     #check in case roster spot is empty need to validate drop down or input in edit td
-    if (posdropdown.length != 0 || posinput != 0)
+    if (posdropdown.length != 0 || posinput.length != 0)
       @total_players+=1
     end
     

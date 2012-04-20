@@ -1,4 +1,5 @@
 require "fantasy_team_helper"
+require "real_time_helper"
 
 
 #This is the cron/scheduler task used to set daily lineups
@@ -78,13 +79,28 @@ namespace :scraper do
   end
 end
 
+namespace :scraper do
+  desc "Check Scoreboard for Real Time Scratches"
+  task :scoreboard => :environment do
+    parse_days_scoreboard('')
+  end
+end
+
 
 namespace :scraper do
   desc "Fetch yahoo team"
   task :yahoo => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("auto","187997")
-    parse_yahoo_team(team_parse, true, true)
+    team_parse = Team.find_by_league_id_and_team_id("207097","2")
+    parse_yahoo_team(team_parse, false, true)
     
+  end
+end
+
+namespace :scraper do
+  desc "Fetch yahoo team for real time table"
+  task :yahoorealtime => :environment do
+    team_parse = Team.find_by_league_id_and_team_id("21947","1")
+    parse_yahoo_team_realtime(team_parse,false)
   end
 end
 
@@ -94,6 +110,22 @@ namespace :scraper do
     team_parse = Team.find_by_league_id("130711")
     parse_espn_team(team_parse, false, false)
     
+  end
+end
+
+namespace :scraper do
+  desc "Fetch espn team for real time table"
+  task :espnrealtime => :environment do
+    team_parse = Team.find_by_league_id_and_team_id("32280","7")
+    parse_espn_team_realtime(team_parse,false)
+  end
+end
+
+namespace :scraper do
+  desc "Fetch espn team for real time table"
+  task :espnscratch => :environment do
+    team_parse = Team.find_by_league_id_and_team_id("32280","7")
+    set_espn_scratch(team_parse)
   end
 end
 
@@ -137,30 +169,6 @@ namespace :scraper do
   end
 end
 
-namespace :scraper do
-  desc "Test using app server to run daily process"
-  task :testweb => :environment do
-    proxy = nil
-    
-    now = Time.now
-    puts now.to_s
-    
-    #agent = Mechanize.new
-    #page = agent.get("http://localhost:3000/process/yahoostart"
-    #open("http://localhost:3000/process/yahoostart", :proxy => proxy, 'User-Agent' => USER_AGENT, 'Accept' => ACCEPT, 'Accept-Charset' => ACCEPT_CHARSET)
-     EventMachine.run {
-      http = EventMachine::HttpRequest.new('http://localhost:3000/process/yahoostart').get
-      sleep 1
-      EM.stop 
-     }
-    
-    
-    finish = Time.now
-    puts finish.to_s
-    diff = finish - now
-    puts diff
-  end
-end
 
 
 #This is the cron/scheduler task used to set daily lineups
@@ -193,18 +201,30 @@ namespace :scraper do
   desc "Process to Bench and Replace Scratched Players"
   task :scratch => :environment do
     team_list = []
+    
     #Read Scoreboard and Update PlayerStat table for scratched player
+    parse_days_scoreboard('')
     
     #Get Scratched Player List
-    player_list = PlayerStats.find_all_by_scratched_and_processed(true,false)
+    player_list = PlayerStats.find_all_by_processed(true)
     player_list.each do |player_stat|
-      #add to team array
-      
-      player_stat.processed = true
+      #add to team array if scratched
+      if (player_stat.scratched)
+        player_stat.player_realtimes.each do |p|
+          puts "#{p.full_name}"
+          p.scratched = true
+          p.save
+          team_list.push(p.team)
+        end
+      end
+      player_stat.processed = false
       player_stat.save
     end
     
     #Process Teams with Real Time Activated
+    team_list.each do |t|
+      #puts t.inspect
+    end
     
   end
 end

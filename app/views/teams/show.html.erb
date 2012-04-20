@@ -134,7 +134,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
 <td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
-<td class="MainTinyHeader" align="left" >7 Day<BR>Trend</td>
+<td class="MainTinyHeader" align="center" >7 Day<BR>Rank Chg</td>
 
 <td class="MainTinyHeader">Start <br>Position</td>
 <td class="MainTinyHeader">Start <br>Frequency</td>
@@ -192,7 +192,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
        		<%end%>
         <%end%>	
         </td>
-        <td class="MainRow" style="padding-left: 0px;" align="right">
+        <td class="MainRow" style="padding-left: 0px;" align="center">
         <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
         	<%if(roster.player.player_stats.rank_change >=0)%>
        		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
@@ -248,7 +248,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <td class="MainTinyHeader">Slot</td>
 <td class="MainTinyHeader">Player</td>
 <td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
-<td class="MainTinyHeader">7 Day<BR>Trend</td>
+<td class="MainTinyHeader" align="center">7 Day<BR>Rank Chg</td>
 <td class="MainTinyHeader">Start <br>Position</td>
 <td class="MainTinyHeader">Start <br>Frequency</td>
 <td class="MainTinyHeader">Bench <br>Priority</td>
@@ -307,7 +307,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
        		<%end%>
         <%end%>	
         </td>
-        <td class="MainRow" style="padding-left: 0px;" align="right">
+        <td class="MainRow" style="padding-left: 0px;" align="center">
         <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
         	<%if(roster.player.player_stats.rank_change >=0)%>
        		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
@@ -415,6 +415,7 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <INPUT type="hidden" name="id" value="<%=@team._id%>">
 <%end%>
 <SCRIPT>
+
 function refreshLineup() {
 	$('refresh_span').style.display = '';
 	
@@ -519,13 +520,23 @@ function clearStatus(){
 
 
 function showStat(id, name, espnid){
+	
 	var winStat = new Window({className: "bluelighting", title: name, 
                       width:300, height:140,  
                       showEffectOptions: {duration:1.5}})
 	
-	winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, true, false);
-
+	winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, false, false);
+	winStat.setLocation(posY, posX);
 }
 
+var posX;
+var posY
+$j(document).ready(function(){
+   $j(document).click(function(e){
+      //alert(e.pageX +', '+ e.pageY);
+      posX = e.pageX;
+      posY = e.pageY;
+   }); 
+})
 
 </SCRIPT>

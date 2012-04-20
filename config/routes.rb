@@ -9,6 +9,8 @@ Wyak::Application.routes.draw do
       get 'players_seven'
       get 'logs'
       get 'users'
+      get 'espnrealtime'
+      get 'yahoorealtime'
     end
   end
   

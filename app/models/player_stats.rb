@@ -48,4 +48,5 @@ class PlayerStats
   key :rank_7day, Integer
   
   many :players
+  many :player_realtimes
 end
