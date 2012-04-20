@@ -148,7 +148,8 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
         <td class="MainRow">
         	<%- if (roster.player.nil?)-%>
         	<img src="/images/RS_Red_Button10.png" alt="Red Button">
-        	[ EMPTY SLOT ]
+        	<%=(roster.leave_empty)?'[LEAVE SLOT EMPTY]':'[ FILL FROM BENCH ]'%>
+        	
         	<%-else-%>
         	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
         	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
