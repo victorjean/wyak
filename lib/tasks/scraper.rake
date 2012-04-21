@@ -210,49 +210,52 @@ namespace :scraper do
   task :scratch => :environment do
     t = Time.now
     
-    puts t.hour
+    if (t.hour < 20 || t.hour >= 7)
+    puts 'Running Realtime Scratch Process'
     
-    return
     
-    team_list = {}
     
-    #Read Scoreboard and Update PlayerStat table for scratched player
-    parse_days_scoreboard('')
-    
-    #Get Scratched Player List
-    player_list = PlayerStats.find_all_by_processed(true)
-    player_list.each do |player_stat|
-      #add to team array if scratched
-      if (player_stat.scratched)
-        player_stat.player_realtimes.each do |p|
-          puts "#{p.full_name} - |#{p.assign_pos}|"
-          p.scratched = true
-          p.save
-          if(p.assign_pos.index('P').nil? && p.assign_pos != BENCH_POSITION&& p.assign_pos!=ESPN_BENCH_SLOT && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
-            team_list[p.team._id]=p.team
+      team_list = {}
+      
+      #Read Scoreboard and Update PlayerStat table for scratched player
+      parse_days_scoreboard('')
+      
+      #Get Scratched Player List
+      player_list = PlayerStats.find_all_by_processed(true)
+      player_list.each do |player_stat|
+        #add to team array if scratched
+        if (player_stat.scratched)
+          player_stat.player_realtimes.each do |p|
+            puts "#{p.full_name} - |#{p.assign_pos}|"
+            p.scratched = true
+            p.save
+            if(p.assign_pos.index('P').nil? && p.assign_pos != BENCH_POSITION&& p.assign_pos!=ESPN_BENCH_SLOT && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+              team_list[p.team._id]=p.team
+            end
           end
         end
+        player_stat.processed = false
+        player_stat.save
       end
-      player_stat.processed = false
-      player_stat.save
-    end
-    
-    #Process Teams with Real Time Activated
-    team_list.values.each do |t|
-      begin
-        if (t.team_type == YAHOO_AUTH_TYPE)
-          set_yahoo_scratch(t)
-        end
-        if (t.team_type == ESPN_AUTH_TYPE)
-          set_espn_scratch(t)
-        end
-      rescue => msg
-        puts "ERROR OCCURED (#{msg})"
-        log_error('sys', team, 'realtimeprocess',msg)
-        @success = false
-      end 
-    end
-    
+      
+      #Process Teams with Real Time Activated
+      team_list.values.each do |t|
+        begin
+          if (t.team_type == YAHOO_AUTH_TYPE)
+            set_yahoo_scratch(t)
+          end
+          if (t.team_type == ESPN_AUTH_TYPE)
+            set_espn_scratch(t)
+          end
+        rescue => msg
+          puts "ERROR OCCURED (#{msg})"
+          log_error('sys', team, 'realtimeprocess',msg)
+          @success = false
+        end 
+      end
+    else
+      puts 'skipping - ' + t.hour
+    end # Time Block if Close
   end
 end
 
