@@ -647,7 +647,7 @@ def player_assignment_scratch(player_list)
     # Get List of Position Scratched To Be Filled
     player_list.each do |item|
       
-      if (item.assign_pos.index('P').nil? && !item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
+      if (item.position_text.index('P').nil? && !item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
         eligible_players[item.current_slot] = []
         if (scratch_players[item.current_slot].nil?)
           scratch_players[item.current_slot] = []
@@ -663,7 +663,7 @@ def player_assignment_scratch(player_list)
     #Get List of Available Players on Bench 
     #That are not locked, on bench, not DL, has game today, not scratched
     player_list.each do |item|
-      if (item.assign_pos.index('P').nil? && !item.player_set && item.assign_pos == BENCH_POSITION && !item.on_dl && item.game_today && !item.scratched)
+      if (item.position_text.index('P').nil? && !item.player_set && item.assign_pos == BENCH_POSITION && !item.on_dl && item.game_today && !item.scratched)
         avail_players.push(item)
       end
     end
