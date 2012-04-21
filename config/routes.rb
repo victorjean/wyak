@@ -20,7 +20,8 @@ Wyak::Application.routes.draw do
       get 'terms'
       get 'contact'
       get 'howitworks'
-    end
+      get 'recsettings'
+   end
   end
   
   resources :teams do

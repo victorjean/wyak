@@ -1,0 +1,112 @@
+<div id="RSText" style="float:left; margin:0;">
+	  <div class="RecSetHeader">Recommended Settings
+	    	<div class="RecSetHeaderBrown">Basic Setup and Advanced Tips To Get You Started
+	    	</div>
+	    	<br>
+	    	<div id="RecSetNav">
+	    		<ul id="RecSetNavList">
+	    		   	<li id="active"><a href="#RecBatterSettings" id="current">Recommended Batter Settings</a></li>
+	    		   	<li><a href="#RecPitcherSettings">Recommended Pitcher Settings</a></li>
+	    		   	<li><a href="#AdvancedGeneralTips">Advanced General Tips</a></li>
+	    		   	<li><a href="#AdvancedBatterTips">Advanced Batter Tips</a></li>
+	    		</ul>
+	    	</div>
+	    </div>
+	  <div class="RecSetText"></div>
+	  
+	  <div class="RecSetHeader" id="RecBatterSettings"> Recommended Batter Settings
+	      <br>
+		  <img style="width:750px;padding: 10px;" src="/images/RecSet-recbatter.png" alt="Recommended Batter Settings">
+		  	<ol class="RecSetText">
+		  		<li>If you prefer a hitter at a certain position, you should put him into your starting lineup with "If Game".</li>
+		  		<li>For all flex (CI, MI, 2B/SS, 1B/3B) or Utility slots, you should leave these slots empty so that RotoStarter will start your top ranked bench player.</li>
+		  		<li>If you are rotating multiple players in a position (platoon), you should leave the "Starting Lineup" with "Fill From Bench".  (But don't check the "Leave Empty" box.)</li>
+		  		<li>Rank your "Bench" in the order in which you need the batters to be filled into your starting roster. For example, if you need steals, you should rank any base stealers a little bit higher.</li>
+		  	</ol>
+	  </div>
+	  
+	  <div class="RecSetText"></div>
+
+	  <div class="RecSetHeader" id="RecPitcherSettings"> Recommended Pitcher Settings
+	    <br>
+	      	<img style="width:750px;padding: 10px;" src="/images/RecSet-recpitcher.png" alt="Recommended Pitcher Settings">
+	  	  	<ol class="RecSetText">
+	  	  		<li>Put all your "Stud" closers in the "Starting Lineup" with "If Game".</li>
+	  	  		<li>Put all your "Stud" starting pitchers in the "Starting Lineup" with "If Probable Pitcher"
+					<BR>(or on the "Bench" with a high priority where 1 > 2 > 3 > 4 > 5).</li>
+	  	  		<li>Put all your "Other" closers on the "Bench" with "If Game" with lower priority.</li>
+	  	  		<li>Put all your "Other" starting pitchers on the "Bench" with "If Probable Pitcher" and lower priority.</li>
+	  	  	</ol>
+	    </div>
+	 
+	  <div class="RecSetText"></div>
+	 
+	 
+	  <div class="RecSetHeader" id="AdvancedGeneralTips"> Advanced General Tips
+	    <br>
+	      	<img style="width:750px;padding: 10px;" src="/images/RecSet-advgeneral.png" alt="Advanced General Tips Example">
+		  	<ol class="RecSetText">
+		  		<li>RotoStarter will always try to maximize your lineup and try to start someone who is eligible and has a game that day.</li>
+		  		<li>Every day, RotoStarter will fill your roster from top to bottom in that order. <br>
+		  			(For example, C > 1B > 2B > 3B > SS > OF > 2B/SS > 1B/3B > Util).</li>
+		  		<li>RotoStarter will try to fill each position in the following order:<br>
+		  			a) With a player in "Starting Lineup" with "Always Start" (with or without game today)<br>
+		  			b) With a player in "Starting Lineup" with "If Game" (with game today)<br>
+		  			c) With the highest priority player with a game today (1 > 2 > 3 > 4 > 5)<br></li>
+		  		<li>Remember, you should probably leave a position in your "Starting Lineup" empty if you have multiple players that could start in that slot (like a Util spot).</li>
+		  	</ol>
+	    </div>	
+	  
+	  <div class="RecSetText"></div>
+
+	  <div class="RecSetHeader" id="AdvancedBatterTips"> Advanced Batters Tips
+	    <br>
+	      	<img style="width:750px;padding: 10px;" src="/images/RecSet-advbatter.png" alt="Advanced Batter DL Example">
+	  	  	<ol class="RecSetText">
+	  	  		<li>If a player in the "Starting Lineup" does not have a game or is on the DL, RotoStarter will try to start someone on the "Bench" instead.</li>
+	  	  		<li>RotoStarter will bench anyone with a "DL" tag if he is set to "If Game" (unless he is "Always Start").<br>
+	  	  			<br>
+	  	  			"Awesome free feature eh?  Show us your support by "Liking" us on Facebook" <fb:like href="http://www.rotostarter.com" send="true" layout="button_count" width="50" show_faces="true"></fb:like></li>
+	  	  		<li>If you set a player to "Always Start", RotoStarter will always start him:<br>
+	  	  		 - Even if he does NOT have a game<br>
+	  	  		 - Even if he is on the DL<br>
+	  	  		 <br>
+	  	  		 This setting may not make sense for you, unless you are way ahead of pace in starts at a position.<br></li>
+	  	  		<li>You probably don't want to use "Never Start" unless you want RotoStarter to completely avoid starting this player. You could lower the player's priority instead so that he is the very last option.</li>
+	  	  	</ol>
+	  </div>
+	  	   	
+	  <%if (!@logged)%>
+	  <ul>
+		<%= form_tag '/user/signup' do %>
+		<div style="margin:0;padding:0;display:inline">
+		
+		</div>
+		<h3 class="HomeSignUp">
+		<b>Sign Up Now, It's Free</b><br><br>
+		<label for="email">Email:</label>
+		<%= text_field_tag('email', @user.email) %>
+		<br>
+		<label for="pass">Password:</label>
+		<%= password_field_tag(:pass) %>
+		<br>
+		<label for="repass">Confirm Password:</label>
+		<%= password_field_tag(:repass) %>
+		  
+		<br>
+		<br>
+		<span class="flash_message"><%= @user.errors.full_messages.first if @user.errors.any? %></span>
+		<% flash.each do |name, msg| %>
+			        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+			      <% end %>
+		 <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
+		                     </div><BR>
+		<input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
+		<div class="HomeTinyLinks">
+		<%= link_to 'Log In', :controller => "user",:action => 'login' %> or <%= link_to 'Forgot Your Password?', :controller => "user",:action => 'forgot_password' %>
+		</div>
+		</h3>
+		<% end %>
+	  </ul>
+	  <%end%>
+</div>

@@ -52,18 +52,21 @@
 		<div id="RSHeader" style="float:left; margin:0;">
 			<table cellpadding="0" cellspacing="0" border="0" width="98%">
 			<tr>
-			<td>
+			<td>	
 			&nbsp;
-			<a href="/">
-			<img src="/images/RotoStarterLogoBlue200.png" alt="RotoStarter Logo">
+			<a href="/" >
+			<img src="/images/RotoStarterLogoBlue200.png" alt="RotoStarter Logo" style="border:none;">
 			</a>
 			</td>
 			<td>
+			
 			<div class="HeaderTitle">RotoStarter
 			<font color="#5A4A42"> [roh-toh stahr-ter]</font>
-			noun</div>
+			noun
+			<div style="float:right; margin:0;"><fb:like href="http://www.rotostarter.com" send="true" layout="button_count" width="50" show_faces="true"></fb:like></div>	
+			</div>
 			<div class="HeaderTitleBrown">Free service that automatically starts your fantasy baseball players for you every morning</div>
-			<div style="float:right; margin:0;"><fb:like href="http://www.rotostarter.com" send="true" layout="button_count" width="50" show_faces="true"></fb:like></div>
+			<br>
 			</td>
 			
 			</tr>
@@ -75,13 +78,15 @@
 			<%-if (session[:user].nil?)-%>
 			<%= link_to "Home", "/" %> |
 
-	      	<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %>
+	      	<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
+	      	<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
 	      	<span style="float:right;text-align: right;padding-right: 10px">
 	      	<%= link_to 'Log In', :controller => "user",:action => 'login' %>
 	      	</span>
 	      	<%-else-%>
 	      	<%= link_to "Dashboard Home", :controller => "teams", :action => "index" %> |
-			<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %>
+			<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
+			<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
 			<span style="float:right;text-align: right;padding-right: 10px">
 
 			<%= link_to session[:user], :controller => "user", :action => "change_password"  %> | 

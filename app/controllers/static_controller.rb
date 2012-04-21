@@ -20,5 +20,14 @@ class StaticController < ApplicationController
     end
       @user = UserInfo.new
   end
+  
+  def recsettings
+    @logged = false
+    if session[:user]
+      
+      @logged = true
+    end
+      @user = UserInfo.new
+  end
 
  end

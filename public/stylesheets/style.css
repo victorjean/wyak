@@ -12,6 +12,8 @@
 	ebe5e2 brown
 */
 
+
+
 body {
 	margin: auto;
 	height:100%;
@@ -104,12 +106,12 @@ body {
 
 .HeaderTitle {
 	color: #00AEEF;
-	padding-left: 20px;
+	padding-left: 15px;
 	font: bold 20px Arial, Helvetica, sans-serif;
 }
 
 .HeaderTitleBrown {
-	padding-left: 20px;
+	padding-left: 15px;
 	color: #5A4A42;
 	font: 14px Arial, Helvetica, sans-serif;
 }
@@ -524,3 +526,85 @@ body {
 	font: 10px Verdana, Geneva, sans-serif;
 }
 
+/* Recommended Settings Page Styles */
+
+.RecSetHeader {
+	color: #00AEEF;
+	font: bold 20px Verdana, Geneva, sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #e0f2fe;
+}
+
+.RecSetHeader ul li { list-style-type: none; }
+
+.RecSetHeaderBrown {
+	color: #5A4A42;
+	font: 16px Verdana, Geneva, sans-serif;
+}
+
+.RecSetHeaderBrown ul li { list-style-type: none; }
+
+.RecSetText {
+	color: #5A4A42;
+	font: 14px Arial, Geneva, sans-serif;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #f7f7f8;
+}
+.RecSetText li {
+	margin-bottom: 1em;
+}
+/*Fat Erik's Pipelist*/
+
+#RecSetNav { 
+	margin-left: 30px; 
+	font: 12px Verdana, Geneva, sans-serif;
+	color: #5A4A42;
+}
+
+#RecSetNavList
+{
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+#RecSetNavList a {
+color: #5A4A42;
+}
+
+#RecSetNavList li 
+{
+display: inline;
+padding: 0;
+margin: 0;
+}
+
+#RecSetNavList li:before { content: "| "; }
+#RecSetNavList li:first-child:before { content: ""; }
+
+/*IE workaround*/
+/*All IE browsers*/
+* html #RecSetNavList li
+{
+border-left: 1px solid black;
+padding: 0 0.4em 0 0.4em;
+margin: 0 0.4em 0 -0.4em;
+}
+
+/*Win IE browsers - hide from Mac IE\*/
+* html #RecSetNavList { height: 1%; }
+
+* html #RecSetNavList li
+{
+display: block;
+float: left;
+}
+
+/*End hide*/
+/*Mac IE 5*/
+* html #RecSetNavList li:first-child { border-left: 0; }
