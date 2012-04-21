@@ -84,7 +84,10 @@ def parse_box(gid)
   doc.search("td[@class=yspsctnhdln]/a").each do |teamrow|
     #puts teamrow.inner_html.strip
     teamShortNameHash[teamrow.inner_html.strip] = teamrow[:href].gsub('/mlb/teams/','').strip.upcase
-    team_list.push(teamrow[:href].gsub('/mlb/teams/','').strip.upcase)
+    #team_name_box = teamrow[:href].gsub('/mlb/teams/','').strip.upcase
+    team_name_box = change_team_text(teamrow[:href].gsub('/mlb/teams/','').strip.upcase)
+    team_list.push(team_name_box)
+    
     puts teamrow.inner_html.strip + teamShortNameHash[teamrow.inner_html.strip]
     
   end
@@ -134,6 +137,23 @@ def parse_box(gid)
 
 end  #method end
 
+def change_team_text(team_text)
+  return_text = team_text
+  if (team_text == 'CHW')
+    return_text = 'CWS'
+  elsif(team_text == 'KAN')
+    return_text = 'KC'
+  elsif(team_text == 'SDG')
+    return_text = 'SD'
+  elsif(team_text == 'SFO')
+    return_text = 'SF'
+  elsif(team_text == 'TAM')
+    return_text = 'TB'
+  else
+    return_text = team_text
+  end
+  return_text
+end
 
 def parse_espn_team_realtime(team, clear)
   slotToPosHash = {}
@@ -342,7 +362,7 @@ def parse_espn_team_realtime(team, clear)
       #player_save.eligible_pos = textPosArray
       player_save.assign_slot = curr_slot
       player_save.assign_pos = assignPosHash[full_name]
-      
+      player_save.position_text = pos_text
   
       if (playerInLineupHash[full_name])
       player_save.game_status = "^"+statusHash[full_name]
@@ -514,7 +534,7 @@ def parse_yahoo_team_realtime(team, clear)
       position_elig = split_postag.last.chomp(')').strip
       player_save = PlayerRealtime.find_or_create_by_yahoo_id_and_team_id(yahoo_id, team._id)
       player_save.team = team
-      
+      player_save.position_text = position_elig    
       player_save.yahoo_id = yahoo_id
       player_save.full_name = full_name
       if(!positionHash[count].nil? && positionHash[count].length != 0)
@@ -585,13 +605,27 @@ end  #method end
 
 def set_espn_scratch(team)
   #update team in database
-  #scoring_period_id = parse_espn_team_realtime(team,false)
+  scoring_period_id = parse_espn_team_realtime(team,false)
   #Get roster list where position is not bench and dl and empty 
   
   player_list = PlayerRealtime.find_all_by_team_id(team._id )
   player_list = player_assignment_scratch(player_list)
   
-  #set_espn_lineup(team, player_list, scoring_period_id)  
+  set_espn_lineup(team, player_list, scoring_period_id,true)  
+end
+
+def set_yahoo_scratch(team)
+  #update team in database
+  scoring_period_id = parse_yahoo_team_realtime(team,false)
+  #Get roster list where position is not bench and dl and empty 
+  
+  player_list = PlayerRealtime.find_all_by_team_id(team._id )
+  player_list = player_assignment_scratch(player_list)
+  
+  player_list.each do |p|
+      puts "#{p.full_name} - #{p.assign_pos}"
+  end
+  set_yahoo_lineup(team, player_list, scoring_period_id,false, true)  
 end
 
 def player_assignment_scratch(player_list)
@@ -613,33 +647,143 @@ def player_assignment_scratch(player_list)
     
     # Get List of Position Scratched To Be Filled
     player_list.each do |item|
-      #puts "#{item.full_name} #{item.player.priority} "
-      if (!item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
+      
+      if (item.assign_pos.index('P').nil? && !item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
         eligible_players[item.current_slot] = []
-        scratch_players[item.current_slot] = item
+        if (scratch_players[item.current_slot].nil?)
+          scratch_players[item.current_slot] = []
+          scratch_players[item.current_slot].push(item)
+        else
+          scratch_players[item.current_slot].push(item)  
+        end
+        
+        puts "#{item.full_name} #{item.assign_pos} #{item.player.priority} "
       end
     end
     
     #Get List of Available Players on Bench 
     #That are not locked, on bench, not DL, has game today, not scratched
     player_list.each do |item|
-      if (!item.player_set && item.assign_pos == BENCH_POSITION && !item.on_dl && item.game_today && !item.scratched)
+      if (item.assign_pos.index('P').nil? && !item.player_set && item.assign_pos == BENCH_POSITION && !item.on_dl && item.game_today && !item.scratched)
         avail_players.push(item)
       end
     end
     
-    #Assign Eligible players to Eligible Hash for Each Position
-    scratch_players.keys.each do |key|
-      avail_players.each do |p|
-        if (!p.eligible_slot.index(key).nil?)
-          eligible_players[key].push(p)
+    
+     #loop through open roster spots until all spot are filled
+      not_all_zero = true
+      begin
+        #clear roster slots of playera
+        eligible_players.keys.each do |key|
+          eligible_players[key] = []
         end
+        
+        #Assign Eligible players to Eligible Hash for Each Position
+        scratch_players.keys.each do |key|
+          avail_players.each do |p|
+            if (!p.eligible_slot.index(key).nil?)
+              eligible_players[key].push(p)
+            end
+          end
+        end
+        
+        not_all_zero = assign_player_scratch(eligible_players,scratch_players,avail_players)
+      end while not_all_zero
+    
+    puts 'Left Over Slots Not Filled'
+    eligible_players.keys.each do |key|
+      puts key
+    end
+    
+    not_all_zero = true
+    begin
+      not_all_zero = find_player_in_lineup_for_scratch(eligible_players,scratch_players,avail_players,player_list)
+    end while not_all_zero
+    
+    player_list    
+end
+
+
+def find_player_in_lineup_for_scratch(elig_hash,scratch_players,avail_players,player_list)
+    avail_players.each do |avail|
+      avail.eligible_slot.each do |slot|
+        if (slot!=BENCH_POSITION && slot!=ESPN_BENCH_SLOT) 
+          player_list.each do |p|
+            if (!p.eligible_slot.index(slot).nil? && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT)
+              #Check to See if Player Can fill Any Position in Elig Hash
+              elig_hash.keys.each do |key|
+                if (!p.eligible_slot.index(key).nil?)
+                  puts "#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}"
+                  puts "#{p.full_name} goes to scratch position - #{key}"
+                  
+                  avail.assign_pos = p.assign_slot
+                  avail.assign_slot = p.assign_slot
+                  p.assign_pos = key
+                  p.assign_slot = key
+                  plyr = scratch_players[key].pop
+                  plyr.assign_pos = BENCH_POSITION
+                  plyr.assign_slot = ESPN_BENCH_SLOT
+                  plyr.player_set = true
+                  
+                  avail_players.delete(avail)
+                  if (scratch_players[key].length == 0)
+                  scratch_players.delete(key)
+                  elig_hash.delete(key)
+                  end
+                  
+                  
+                  return true  
+                end
+              end 
+            end
+          end
+        end
+      end
+    end 
+    false
+end
+
+def assign_player_scratch(elig_hash,scratch_players,avail_players)
+    elig_hash.keys.each do |key|
+      if(elig_hash[key].length==1)
+        puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        plyr = scratch_players[key].pop
+        plyr.assign_pos = BENCH_POSITION
+        plyr.assign_slot = ESPN_BENCH_SLOT
+        plyr.player_set = true
+        elig_hash[key].first.assign_pos = key
+        elig_hash[key].first.assign_slot = key
+        
+        avail_players.delete(elig_hash[key].first)
+        if (scratch_players[key].length == 0)
+          scratch_players.delete(key)
+          elig_hash.delete(key)
+        end
+        
+        return true
       end
     end
     
-    #Assign Pos for Slot Equal 1
-    #Assign for Slot Equal 2
-    #For Elig = 0 Apply Algorithm
+    elig_hash.keys.each do |key|
+      if(elig_hash[key].length>1)
+        puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        plyr = scratch_players[key].pop
+        plyr.assign_pos = BENCH_POSITION
+        plyr.assign_slot = ESPN_BENCH_SLOT
+        plyr.player_set = true
+        elig_hash[key].first.assign_pos = key
+        elig_hash[key].first.assign_slot = key
+        
+        avail_players.delete(elig_hash[key].first)
+        if (scratch_players[key].length == 0)
+          scratch_players.delete(key)
+          elig_hash.delete(key)
+        end
+        
+        return true
 
-    
+      end
+    end
+  
+    false  
 end

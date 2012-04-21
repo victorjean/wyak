@@ -1204,7 +1204,7 @@ def set_espn_default(team, tomm)
   set_espn_lineup(team, player_list, scoring_period_id)  
 end
 
-def set_yahoo_lineup(team,player_list,crumbHash,tomm)
+def set_yahoo_lineup(team,player_list,crumbHash,tomm, real = false)
   agent = authenticate_yahoo(team.auth_info)
   
   curr_date = Date.today
@@ -1218,28 +1218,39 @@ def set_yahoo_lineup(team,player_list,crumbHash,tomm)
   postHash['crumb'] = crumbHash['crumb_value']
   #postHash['jsubmit'] = 'submit changes'
   
-  player_list.each do |item|
-    #ignore any player in DL position
-    if (item.current_slot == DL_POSITION)
-      postHash[item.yahoo_id] = DL_POSITION
-    #start batters only if team batters active
-    elsif (team.daily_auto_batter && item.position_text.index('P').nil?)
-      postHash[item.yahoo_id] = item.assign_pos
-    #start pitchers only if team pitchers active
-    elsif(team.daily_auto_pitcher && !item.position_text.index('P').nil?)
-      postHash[item.yahoo_id] = item.assign_pos
-    else
-      postHash[item.yahoo_id] = item.current_slot
+  if (real)
+    puts "REAL TIME"
+    player_list.each do |item|
+      #ignore any player in DL position
+      if (item.current_slot == DL_POSITION)
+        postHash[item.yahoo_id] = DL_POSITION
+      else
+        postHash[item.yahoo_id] = item.assign_pos
+      end 
+    end
+  else
+  
+    player_list.each do |item|
+      #ignore any player in DL position
+      if (item.current_slot == DL_POSITION)
+        postHash[item.yahoo_id] = DL_POSITION
+      #start batters only if team batters active
+      elsif (team.daily_auto_batter && item.position_text.index('P').nil?)
+        postHash[item.yahoo_id] = item.assign_pos
+      #start pitchers only if team pitchers active
+      elsif(team.daily_auto_pitcher && !item.position_text.index('P').nil?)
+        postHash[item.yahoo_id] = item.assign_pos
+      else
+        postHash[item.yahoo_id] = item.current_slot
+      end 
     end
     
-    
   end
-  
   page = agent.post(YAHOO_BASEBALL_PAGE_URL+"#{team.league_id}/#{team.team_id}/editroster",postHash)
   puts 'done posting'
 end
 
-def set_espn_lineup(team,player_list,scoring_period_id)
+def set_espn_lineup(team,player_list,scoring_period_id,real = false)
   
   agent = authenticate_espn(team.auth_info)
   
@@ -1250,13 +1261,18 @@ def set_espn_lineup(team,player_list,scoring_period_id)
   player_list.each do |item|
     
     if (item.current_slot != ESPN_DL_SLOT && item.assign_slot != item.current_slot)
-      #start batters only if team batters active
-      if (team.daily_auto_batter && item.position_text.index('P').nil?)
+      
+      if (real)
         set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
-      end
-      #start pitchers only if team pitchers active
-      if (team.daily_auto_pitcher && !item.position_text.index('P').nil?)
-        set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+      else
+        #start batters only if team batters active
+        if (team.daily_auto_batter && item.position_text.index('P').nil?)
+          set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+        end
+        #start pitchers only if team pitchers active
+        if (team.daily_auto_pitcher && !item.position_text.index('P').nil?)
+          set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"
+        end
       end
       
     end

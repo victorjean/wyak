@@ -7,7 +7,7 @@ class PlayerRealtime
   key :game_today, Boolean, :default=>false
   key :assign_slot, String
   key :current_slot, String
-  
+  key :position_text, String
   key :eligible_slot, Array
   key :player_set, Boolean, :default=>false
   key :scratched, Boolean, :default=>false

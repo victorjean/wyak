@@ -105,6 +105,14 @@ namespace :scraper do
 end
 
 namespace :scraper do
+  desc "Fetch esyahoopn team for real time table"
+  task :yahooscratch => :environment do
+    team_parse = Team.find_by_league_id_and_team_id("116135","6")
+    set_yahoo_scratch(team_parse)
+  end
+end
+
+namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
     team_parse = Team.find_by_league_id("130711")
@@ -200,7 +208,13 @@ end
 namespace :scraper do
   desc "Process to Bench and Replace Scratched Players"
   task :scratch => :environment do
-    team_list = []
+    t = Time.now
+    
+    puts t.hour
+    
+    return
+    
+    team_list = {}
     
     #Read Scoreboard and Update PlayerStat table for scratched player
     parse_days_scoreboard('')
@@ -211,10 +225,12 @@ namespace :scraper do
       #add to team array if scratched
       if (player_stat.scratched)
         player_stat.player_realtimes.each do |p|
-          puts "#{p.full_name}"
+          puts "#{p.full_name} - |#{p.assign_pos}|"
           p.scratched = true
           p.save
-          team_list.push(p.team)
+          if(p.assign_pos.index('P').nil? && p.assign_pos != BENCH_POSITION&& p.assign_pos!=ESPN_BENCH_SLOT && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+            team_list[p.team._id]=p.team
+          end
         end
       end
       player_stat.processed = false
@@ -222,8 +238,19 @@ namespace :scraper do
     end
     
     #Process Teams with Real Time Activated
-    team_list.each do |t|
-      #puts t.inspect
+    team_list.values.each do |t|
+      begin
+        if (t.team_type == YAHOO_AUTH_TYPE)
+          set_yahoo_scratch(t)
+        end
+        if (t.team_type == ESPN_AUTH_TYPE)
+          set_espn_scratch(t)
+        end
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', team, 'realtimeprocess',msg)
+        @success = false
+      end 
     end
     
   end
