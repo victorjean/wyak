@@ -611,7 +611,8 @@ def set_espn_scratch(team)
   player_list = PlayerRealtime.find_all_by_team_id(team._id )
   player_list = player_assignment_scratch(player_list)
   
-  set_espn_lineup(team, player_list, scoring_period_id,true)  
+  set_espn_lineup(team, player_list, scoring_period_id,true)
+  log_error('sys', team, 'scratch','lineup espn set success')  
 end
 
 def set_yahoo_scratch(team)
@@ -622,10 +623,8 @@ def set_yahoo_scratch(team)
   player_list = PlayerRealtime.find_all_by_team_id(team._id )
   player_list = player_assignment_scratch(player_list)
   
-  player_list.each do |p|
-      puts "#{p.full_name} - #{p.assign_pos}"
-  end
-  set_yahoo_lineup(team, player_list, scoring_period_id,false, true)  
+  set_yahoo_lineup(team, player_list, scoring_period_id,false, true)
+  log_error('sys', team, 'scratch','lineup yahoo set success')  
 end
 
 def player_assignment_scratch(player_list)
@@ -715,6 +714,9 @@ def find_player_in_lineup_for_scratch(elig_hash,scratch_players,avail_players,pl
                 if (!p.eligible_slot.index(key).nil?)
                   puts "#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}"
                   puts "#{p.full_name} goes to scratch position - #{key}"
+                  log_error('sys', nil, 'scratchalgorithm',"#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}")
+                  log_error('sys', nil, 'scratchalgorithm',"#{p.full_name} goes to scratch position - #{key}")
+                  
                   
                   avail.assign_pos = p.assign_slot
                   avail.assign_slot = p.assign_slot
@@ -747,6 +749,8 @@ def assign_player_scratch(elig_hash,scratch_players,avail_players)
     elig_hash.keys.each do |key|
       if(elig_hash[key].length==1)
         puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        log_error('sys', nil, 'scratchalgorithm',"assign player #{elig_hash[key].first.full_name} to #{key}")
+        
         plyr = scratch_players[key].pop
         plyr.assign_pos = BENCH_POSITION
         plyr.assign_slot = ESPN_BENCH_SLOT
@@ -767,6 +771,8 @@ def assign_player_scratch(elig_hash,scratch_players,avail_players)
     elig_hash.keys.each do |key|
       if(elig_hash[key].length>1)
         puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        log_error('sys', nil, 'scratchalgorithm',"assign player #{elig_hash[key].first.full_name} to #{key}")
+        
         plyr = scratch_players[key].pop
         plyr.assign_pos = BENCH_POSITION
         plyr.assign_slot = ESPN_BENCH_SLOT

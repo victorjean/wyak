@@ -229,8 +229,9 @@ namespace :scraper do
             puts "#{p.full_name} - |#{p.assign_pos}|"
             p.scratched = true
             p.save
-            if(p.assign_pos.index('P').nil? && p.assign_pos != BENCH_POSITION&& p.assign_pos!=ESPN_BENCH_SLOT && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+            if(p.assign_pos.index('P').nil? && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
               team_list[p.team._id]=p.team
+              log_error('sys', team, 'scratch',p.full_name)
             end
           end
         end
