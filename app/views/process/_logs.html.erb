@@ -1,6 +1,11 @@
 <table border=1>
-	<tr><td>Email</td><td>Method</td><td>Created</td><td>Msg</td><tr>
+	<tr><td>Email</td><td>League ID</td><td>Team ID</td><td>Method</td><td>Created</td><td>Msg</td><tr>
 	<% @log_list.each do |log| %>
-	<tr><td><%=log.email%></td><td><%=log.method%></td><td><%=log.created_at%></td><td><%=log.msg%></td><tr>
+	<tr><td><%=log.email%></td>
+		<td><%=(log.league_id.nil?)?'':log.league_id%></td>
+		<td><%=(log.team_id.nil?)?'':log.team_id%></td>
+		<td><%=log.method%></td>
+		<td><%=log.created_at%></td>
+		<td><%=log.msg%></td><tr>
 	<%end%>
 </table>
