@@ -9,6 +9,38 @@ require 'fantasy_team_helper'
 SCOREBOARD_URL = "http://sports.yahoo.com/mlb/scoreboard?d="
 BOX_URL = "http://sports.yahoo.com/mlb/boxscore?gid="
 
+
+def store_game(gid)
+        #skip parse if game is in DB
+        
+        gamerecord = Game.find_by_game_id(gid)
+        if (gamerecord.nil?)
+          begin
+            puts 'Storing PPD Game - '+gid
+            gamerecord = Game.new
+            gamerecord.game_id = gid
+            gamerecord.save
+            
+            player_list = PlayerStats.where(:team => gid).all
+  
+            player_list.each do |player|
+              #puts "#{player.full_name} - #{player.team}"
+              player.processed = true
+              player.scratched = true
+              player.save
+            end
+            
+          rescue => msg
+            puts "ERROR OCCURED Saving PPD - (#{msg})"
+            log_error('realtime_parser_ppd', nil,gid,msg)
+          end
+        else
+            puts 'Game ID Found Skipping - '+gid
+        end
+  
+end
+
+
 def parse_days_scoreboard(score_date)
   
   curr_date = Date.today
@@ -48,6 +80,31 @@ def parse_days_scoreboard(score_date)
               
       end  # Close If Box Score
     end # Close Loop
+    
+  #Get PPD Games
+  ppd_found = false
+  doc.search("tr[@class=ysptblclbg5]").each do |item|
+    
+    teamrow = item.search("a").first
+    team_name = teamrow[:href].gsub('/mlb/teams/','').strip.upcase
+    team_name = change_team_text(team_name)
+    
+    if (ppd_found)
+      puts "Processing PPD #{team_name}"
+      store_game(team_name)
+      ppd_found = false  
+    end
+    
+    if (!item.search("span").first.nil?)
+      status = item.search("span").first.inner_html.strip
+      if (status == 'Ppd.')
+        #Process Team PPD
+        puts "Processing PPD #{team_name}"
+        store_game(team_name)
+        ppd_found = true
+      end
+    end
+  end
   
 end
 
