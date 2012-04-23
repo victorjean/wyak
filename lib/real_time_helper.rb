@@ -706,9 +706,9 @@ end
 def find_player_in_lineup_for_scratch(elig_hash,scratch_players,avail_players,player_list)
     avail_players.each do |avail|
       avail.eligible_slot.each do |slot|
-        if (slot!=BENCH_POSITION && slot!=ESPN_BENCH_SLOT) 
+        if (slot!=BENCH_POSITION && slot!=ESPN_BENCH_SLOT)
           player_list.each do |p|
-            if (!p.eligible_slot.index(slot).nil? && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT)
+            if (p.assign_slot==slot && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT)
               #Check to See if Player Can fill Any Position in Elig Hash
               elig_hash.keys.each do |key|
                 if (!p.eligible_slot.index(key).nil?)
