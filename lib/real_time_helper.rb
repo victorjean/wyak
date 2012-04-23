@@ -282,6 +282,7 @@ def parse_espn_team_realtime(team, clear)
     pos_cell = item.search("td")[0].inner_html
     name_cell = item.search("a").first
     opp_cell = item.search("td")[4].search("a").first
+    double_opp_cell = item.search("td")[4].search("a")[1]
     status_cell = item.search("td")[5].search("a").first
     
     
@@ -291,7 +292,11 @@ def parse_espn_team_realtime(team, clear)
       if (opp_cell.nil?)
         statusHash[name_cell.innerHTML.strip] = ''
       else
-        statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip
+        if (double_opp_cell.nil?)
+          statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip
+        else
+          statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip+","+opp_cell.innerHTML.strip
+        end
       end
       
       if (!status_cell.nil?)
@@ -702,9 +707,10 @@ def player_assignment_scratch(player_list)
     player_list = player_list.sort_by{|x| [x.player.priority]}
     
     # Get List of Position Scratched To Be Filled
+    # If Double Header, Don't Mark as Scratched
     player_list.each do |item|
       
-      if (item.position_text.index('P').nil? && !item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
+      if (item.game_status.index(',').nil? && item.position_text.index('P').nil? && !item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != DL_POSITION)
         eligible_players[item.current_slot] = []
         if (scratch_players[item.current_slot].nil?)
           scratch_players[item.current_slot] = []
