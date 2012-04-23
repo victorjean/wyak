@@ -210,7 +210,7 @@ namespace :scraper do
   task :scratch => :environment do
     t = Time.now
     puts "Current Time Hour - #{t.hour}"
-    if (t.hour < 20 || t.hour >= 7)
+    if (t.hour < 20 && t.hour >= 7)
     puts 'Running Realtime Scratch Process'
     
     
