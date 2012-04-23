@@ -255,7 +255,7 @@ namespace :scraper do
         end 
       end
     else
-      puts 'skipping - ' + t.hour
+      puts "Skipping < 20 && >=7 - #{t.hour}"
     end # Time Block if Close
   end
 end
