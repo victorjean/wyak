@@ -181,8 +181,8 @@ end
 namespace :scraper do
   desc "Iron Test"
   task :ironworker => :environment do
-    yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
-    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
+    #yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
+    #espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
     
     start = Time.now
     puts start
@@ -193,14 +193,14 @@ namespace :scraper do
     #  parse_espn_team(t, false, true)
     #end
       worker = TeamRealtimeWorker.new
-      worker.team_list = yahoo_team_list
+      #worker.team_list = yahoo_team_list
       resp = worker.queue
       puts resp
       
-      workerE = TeamRealtimeWorker.new
-      workerE.team_list = espn_team_list
-      respE = workerE.queue
-      puts respE
+     # workerE = TeamRealtimeWorker.new
+     # workerE.team_list = espn_team_list
+     # respE = workerE.queue
+     # puts respE
       
     finish = Time.now
     puts finish

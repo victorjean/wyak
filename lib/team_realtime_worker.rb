@@ -21,7 +21,9 @@ class TeamRealtimeWorker < IronWorker::Base
   attr_accessor :team_list
 
   def run
-    team_list.each do |t|
+    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
+    
+    espn_team_list.each do |t|
         begin
           if (t.team_type == YAHOO_AUTH_TYPE)
             parse_yahoo_team(t, false, true)
