@@ -27,7 +27,7 @@ class TeamRealtimeWorker < IronWorker::Base
     
     team_list.each do |t|
         begin
-          team = Team.find_by_id(t._id)
+          team = Team.find_by_id(t)
           if (team.team_type == YAHOO_AUTH_TYPE)
             parse_yahoo_team(team, false, true)
           end
