@@ -12,15 +12,23 @@ class TeamsController < ApplicationController
     @espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
     @yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
     @update = false
+    @demo = true
+    @demo_team = nil
     #get current time, if team's have not been updated in four hours, refresh
     last_update = nil
     now = Time.now
     
     if (@espn_teams.length != 0)
       last_update = @espn_teams.first.updated_at
+      @demo = false
     end
     if (@yahoo_teams.length != 0)
       last_update = @yahoo_teams.first.updated_at
+      @demo = false
+    end
+    
+    if (@demo)
+      @demo_team = Team.find_by_league_id_and_team_id("202052","12")
     end
     
     if (!last_update.nil?) 

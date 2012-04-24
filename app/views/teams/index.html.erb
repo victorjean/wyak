@@ -42,6 +42,66 @@
 		</tr>
 	</thead>
 	<tbody>
+		<%if (@demo)%>
+		<tr>
+			<td colspan="3" class="SideHeader">
+			
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			
+			RotoStarter Demo
+			</td>
+			<td colspan="2" class="MainSubTitleLinks" >
+			
+			<br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a><br>
+				<div class="DashActiveBrown">RotoStarter Demo League</div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=@demo_team._id%>">
+				<%if (@demo_team.daily_auto_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showbatters?id=<%=@demo_team._id%>"><font color=green>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;					
+				<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showbatters?id=<%=@demo_team._id%>"><font color=red>Batters</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+					
+					<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+					
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=@demo_team._id%>">
+				<%if (@demo_team.daily_auto_pitcher)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/teams/showpitchers?id=<%=@demo_team._id%>"><font color=green>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="pr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/teams/showpitchers?id=<%=@demo_team._id%>"><font color=red>Pitchers</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+					
+					<span id="pr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
+					
+				<%end%>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<br>
+			</td>
+		</tr>
+		<%end%>
+		
 		<tr>
 			<td colspan="3" class="SideHeader">
 			<%- if (@yahoo_teams.length == 0) -%>
@@ -176,7 +236,9 @@
 			</td>
 			
 		</tr>
-		<%end%>		
+		<%end%>
+		
+				
 	</tbody>
 </table>
 
