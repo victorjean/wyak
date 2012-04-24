@@ -10,6 +10,7 @@ class TeamRealtimeWorker < IronWorker::Base
   unmerge_gem 'nokogiri'
   
   merge_folder "../app/models/"
+  unmerge "../app/models/notifications.rb"
   
   merge "fantasy_team_helper.rb"
   merge "real_time_helper.rb"
