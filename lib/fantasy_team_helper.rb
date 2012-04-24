@@ -458,27 +458,34 @@ def load_yahoo_teams(user_info, reload)
   team_list_tag = doc.search("ul[@class=ysf-teamlist]").first
   #If Properly Logged In, User Should have a Team Tag Check for Nil
   if (!team_list_tag.nil?)
-    team_list_tag.search("li") do |teamlink|
-      #Get Tag Containing Team URL
-      team_href_tag = teamlink.search("a[@class=yuimenuitemlabel name]").first
-      #Get Tag Containing League ID
-      league_href_tag = teamlink.search("a[@class=yuimenuitemlabel]").first
-      #Get League and Team ID String
-      league_team_ids = team_href_tag.get_attribute("href").strip.gsub(YAHOO_BASEBALL_PAGE_URL,'')
-       
-      #team = Team.new
-      team = Team.find_or_create_by_league_id_and_team_id_and_team_type(league_team_ids.split('/').first.strip,league_team_ids.split('/').last.strip,YAHOO_AUTH_TYPE)
-      team.team_type = YAHOO_AUTH_TYPE
-      team.auth_info = auth_user
-      team.user_info = user_info
-      team.team_name = team_href_tag.inner_html.strip
-      team.league_id =  league_team_ids.split('/').first.strip
-      team.team_id = league_team_ids.split('/').last.strip
-      team.league_name = league_href_tag.inner_html.strip
-      team.save
+    doc.search("ul[@class=ysf-teamlist]") do |fantasy_team_tag|
+    
+      fantasy_team_tag.search("li") do |teamlink|
+            
+        #Get Tag Containing Team URL
+        team_href_tag = teamlink.search("a[@class=yuimenuitemlabel name]").first
+        if (!team_href_tag.get_attribute("href").index(YAHOO_BASEBALL_PAGE_URL).nil?)
+          #Get Tag Containing League ID
+          league_href_tag = teamlink.search("a[@class=yuimenuitemlabel]").first
+          #Get League and Team ID String
+          league_team_ids = team_href_tag.get_attribute("href").strip.gsub(YAHOO_BASEBALL_PAGE_URL,'')
+           
+          #team = Team.new
+          team = Team.find_or_create_by_league_id_and_team_id_and_team_type(league_team_ids.split('/').first.strip,league_team_ids.split('/').last.strip,YAHOO_AUTH_TYPE)
+          team.team_type = YAHOO_AUTH_TYPE
+          team.auth_info = auth_user
+          team.user_info = user_info
+          team.team_name = team_href_tag.inner_html.strip
+          team.league_id =  league_team_ids.split('/').first.strip
+          team.team_id = league_team_ids.split('/').last.strip
+          team.league_name = league_href_tag.inner_html.strip
+          team.save
+          
+          puts 'Team Saved - '+team.inspect
+        end# end baseball check
+      end #end loop through teams
       
-      puts 'Team Saved - '+team.inspect
-    end
+    end #Outer Team List Loop
   else
     puts 'No Teams found for the Yahoo User Info Provided'
   end
