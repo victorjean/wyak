@@ -1453,7 +1453,7 @@ def log_error(email, team, method, message)
     end
     l.save
   rescue => msg
-      logger.error("LOG ERROR Could not write to DB - (#{msg})")
+      puts "LOG ERROR Could not write to DB - (#{msg})"
   end
   
 end

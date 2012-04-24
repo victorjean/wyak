@@ -3,7 +3,7 @@ require "hpricot"
 require "open-uri"
 require "date"
 require 'timeout'
-require 'fantasy_team_helper'
+
 
 
 SCOREBOARD_URL = "http://sports.yahoo.com/mlb/scoreboard?d="

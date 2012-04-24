@@ -1,6 +1,7 @@
 require "fantasy_team_helper"
 require "real_time_helper"
-
+require "iron_worker"
+require 'team_realtime_worker'
 
 #This is the cron/scheduler task used to set daily lineups
 namespace :scraper do
@@ -82,7 +83,7 @@ end
 namespace :scraper do
   desc "Check Scoreboard for Real Time Scratches"
   task :scoreboard => :environment do
-    parse_days_scoreboard('')
+    parse_days_scoreboard('2012-04-10')
   end
 end
 
@@ -174,6 +175,36 @@ namespace :scraper do
     
     load_espn_first_time(user_info)
     
+  end
+end
+
+namespace :scraper do
+  desc "Iron Test"
+  task :ironworker => :environment do
+    yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
+    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
+    
+    start = Time.now
+    puts start
+    #yahoo_team_list.each do |t|
+    #  parse_yahoo_team(t, false, true)
+    #end
+    #espn_team_list.each do |t|
+    #  parse_espn_team(t, false, true)
+    #end
+      worker = TeamRealtimeWorker.new
+      worker.team_list = yahoo_team_list
+      resp = worker.queue
+      puts resp
+      
+      workerE = TeamRealtimeWorker.new
+      workerE.team_list = espn_team_list
+      respE = workerE.queue
+      puts respE
+      
+    finish = Time.now
+    puts finish
+    puts finish-start 
   end
 end
 

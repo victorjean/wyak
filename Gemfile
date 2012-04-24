@@ -12,6 +12,8 @@ gem 'bson_ext'
 gem 'hpricot'
 gem 'mechanize'
 gem 'actionmailer'
+gem 'iron_worker'
+
 
 # Gems used only for assets and not required
 # in production environments by default.

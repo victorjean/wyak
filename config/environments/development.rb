@@ -27,4 +27,8 @@ Wyak::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+  
+  # Iron Worker Variables
+  ENV['IRON_WORKER_TOKEN'] = 'HSthQESP0FGcjy2hGPRLHcZ3wKE'
+  ENV['IRON_WORKER_PROJECT_ID'] = '4f86c2b20dbfbd082c0094ee'
 end
