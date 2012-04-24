@@ -141,7 +141,9 @@ Switch to <%=(@pitch)?'Batters':'Pitchers'%>
 <td class="MainTinyHeader">Start <br>Behavior</td>
 </tr>
 
-    <%- @roster_list.each do |roster| -%>
+    <%- 
+    @roster_list = @roster_list.sort_by{|x| [x.order]} 
+    @roster_list.each do |roster| -%>
     <%- if (roster.pos_text != BENCH_POSITION )-%>
     <tr>
         <td class="MainRowBeg"><%=roster.pos_text%></td>

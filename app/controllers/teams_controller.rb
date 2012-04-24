@@ -281,7 +281,7 @@ class TeamsController < ApplicationController
   def update_all
     logger.info("Update All Function For #{session[:user]}")
     user_info = UserInfo.find_by_email(session[:user])
-    
+    @success = true
     
     yahoo_update= false
     espn_update = false
@@ -290,22 +290,39 @@ class TeamsController < ApplicationController
     if (mode == 'all')
       yahoo_update = true
       espn_update = true
-      load_espn_teams(user_info,false)
-      load_yahoo_teams(user_info,false)
+      begin
+        load_espn_teams(user_info,false)
+        load_yahoo_teams(user_info,false)
+      rescue => msg
+        @success = false
+        logger.error("ERROR OCCURED while Updating Teams Info #{user_info.email} - (#{msg})")
+        log_error(session[:user], nil, 'update_all_team_list',"Error Updating Team List - #{msg}")
+      end
     end
     if(mode == 'yahoo')
       yahoo_update = true
+      begin
       load_yahoo_teams(user_info,false)
+      rescue => msg
+        @success = false
+        logger.error("ERROR OCCURED while Updating Yahoo Teams Info #{user_info.email} - (#{msg})")
+        log_error(session[:user], nil, 'update_yahoo_team_list',"Error Updating Yahoo Team List - #{msg}")
+      end
     end
     if(mode == 'espn')
       espn_update = true
+      begin
       load_espn_teams(user_info,false)
+      rescue => msg
+        @success = false
+        logger.error("ERROR OCCURED while Updating ESPN Teams Info #{user_info.email} - (#{msg})")
+        log_error(session[:user], nil, 'update_espn_team_list',"Error Updating ESPN Team List - #{msg}")
+      end
     end
-    
     
     espn_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE)
     yahoo_teams = Team.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
-    @success = true
+    
     
     if (yahoo_update)
     yahoo_teams.each do |team|
