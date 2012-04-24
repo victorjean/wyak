@@ -15,12 +15,18 @@ class TeamRealtimeWorker < IronWorker::Base
   merge "fantasy_team_helper.rb"
   merge "real_time_helper.rb"
   
-  
-  
-  
   attr_accessor :team_list
 
   def run
+    MongoMapper.config = { 
+    Rails.env => { 'uri' => 'mongodb://rotostarter:rotopass@ds031847.mongolab.com:31847/heroku_app2029342' } 
+    }
+    MongoMapper.connect(Rails.env)
+    
+    puts 'connected to mongo db'
+    #user_info = UserInfo.find_by_email("demo@example.com")
+    #puts user_info.inspect
+    
     espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
     
     espn_team_list.each do |t|
@@ -37,4 +43,6 @@ class TeamRealtimeWorker < IronWorker::Base
         end 
       end
   end
+  
+
 end
