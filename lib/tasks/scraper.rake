@@ -2,6 +2,7 @@ require "fantasy_team_helper"
 require "real_time_helper"
 require "iron_worker"
 require 'team_realtime_worker'
+require 'socket'
 
 #This is the cron/scheduler task used to set daily lineups
 namespace :scraper do
@@ -197,18 +198,20 @@ namespace :scraper do
     
     end
     
+    puts UDPSocket.open {|s| s.connect('64.233.187.99', 1); s.addr.last }
+    
     start = Time.now
     puts start
     
-      worker = TeamRealtimeWorker.new
-      worker.team_list = list_one
-      resp = worker.queue
-      puts resp
+      #worker = TeamRealtimeWorker.new
+      #worker.team_list = list_one
+      #resp = worker.queue
+      #puts resp
       
-      workerE = TeamRealtimeWorker.new
-      workerE.team_list = list_two
-      respE = workerE.queue
-      puts respE
+      #workerE = TeamRealtimeWorker.new
+      #workerE.team_list = list_two
+      #respE = workerE.queue
+      #puts respE
       
     finish = Time.now
     puts finish
@@ -269,7 +272,10 @@ namespace :scraper do
             p.scratched = true
             p.save
             if(p.position_text.index('P').nil? && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
-              team_list[p.team._id]=p.team
+              if (team_list[p.team.auth_info].nil?)
+                team_list[p.team.auth_info] = []
+              end 
+              team_list[p.team.auth_info].push(p.team._id)
               log_error('sys', p.team, 'scratch',p.full_name)
             end
           end
@@ -281,15 +287,12 @@ namespace :scraper do
       #Process Teams with Real Time Activated
       team_list.values.each do |t|
         begin
-          if (t.team_type == YAHOO_AUTH_TYPE)
-            set_yahoo_scratch(t)
-          end
-          if (t.team_type == ESPN_AUTH_TYPE)
-            set_espn_scratch(t)
-          end
+          worker = TeamRealtimeWorker.new
+          worker.team_list = t
+          resp = worker.queue
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
-          log_error('sys', team, 'realtimeprocess',msg)
+          log_error('sys', nil, 'ironworker',msg)
           @success = false
         end 
       end

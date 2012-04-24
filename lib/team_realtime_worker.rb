@@ -1,4 +1,5 @@
 require 'iron_worker'
+require 'socket'
 
 
 class TeamRealtimeWorker < IronWorker::Base
@@ -18,6 +19,7 @@ class TeamRealtimeWorker < IronWorker::Base
   attr_accessor :team_list
 
   def run
+    puts UDPSocket.open {|s| s.connect('64.233.187.99', 1); s.addr.last }
     MongoMapper.config = { 
     Rails.env => { 'uri' => 'mongodb://rotostarter:rotopass@ds031847.mongolab.com:31847/heroku_app2029342' } 
     }
@@ -29,10 +31,10 @@ class TeamRealtimeWorker < IronWorker::Base
         begin
           team = Team.find_by_id(t)
           if (team.team_type == YAHOO_AUTH_TYPE)
-            parse_yahoo_team(team, false, true)
+            set_yahoo_scratch(team)
           end
           if (team.team_type == ESPN_AUTH_TYPE)
-            parse_espn_team(team, false, true)
+            set_espn_scratch(team)
           end
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
