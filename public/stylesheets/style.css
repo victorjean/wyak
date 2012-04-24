@@ -50,7 +50,7 @@ body {
 
 }
 
-#RSText ul li { list-style-type: none; }
+
 
 #RSText {
 	background-color: #f7f7f8;
@@ -525,6 +525,37 @@ body {
 	color: red;
 	font: 10px Verdana, Geneva, sans-serif;
 }
+
+/* How It Works Page Styles */
+
+.HIWHeader {
+	color: #00AEEF;
+	font: bold 20px Verdana, Geneva, sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #e0f2fe;
+}
+
+.HIWHeaderBrown {
+	color: #5A4A42;
+	font: 16px Verdana, Geneva, sans-serif;
+}
+
+.HIWText {
+	color: #5A4A42;
+	font: 14px Verdana, Geneva, sans-serif;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #f7f7f8;
+}
+.HIWText li {
+	margin-bottom: 1em;
+}
+
+
 
 /* Recommended Settings Page Styles */
 
