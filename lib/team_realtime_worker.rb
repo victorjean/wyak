@@ -24,22 +24,19 @@ class TeamRealtimeWorker < IronWorker::Base
     MongoMapper.connect(Rails.env)
     
     puts 'connected to mongo db'
-    #user_info = UserInfo.find_by_email("demo@example.com")
-    #puts user_info.inspect
     
-    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
-    
-    espn_team_list.each do |t|
+    team_list.each do |t|
         begin
-          if (t.team_type == YAHOO_AUTH_TYPE)
-            parse_yahoo_team(t, false, true)
+          team = Team.find_by_id(t._id)
+          if (team.team_type == YAHOO_AUTH_TYPE)
+            parse_yahoo_team(team, false, true)
           end
-          if (t.team_type == ESPN_AUTH_TYPE)
-            parse_espn_team(t, false, true)
+          if (team.team_type == ESPN_AUTH_TYPE)
+            parse_espn_team(team, false, true)
           end
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
-          log_error('sys', t, 'realtimeworker',msg)
+          log_error('sys', team, 'realtimeworker',msg)
         end 
       end
   end
