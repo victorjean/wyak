@@ -271,11 +271,13 @@ namespace :scraper do
             puts "#{p.full_name} - |#{p.assign_pos}|"
             p.scratched = true
             p.save
-            if(p.position_text.index('P').nil? && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
-              if (team_list[p.team.auth_info].nil?)
-                team_list[p.team.auth_info] = []
+            if(!p.team.nil? && p.position_text.index('P').nil? && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+              if (team_list[p.team.auth_info_id].nil?)
+                team_list[p.team.auth_info_id] = []
               end 
-              team_list[p.team.auth_info].push(p.team._id)
+              if (team_list[p.team.auth_info_id].index(p.team._id).nil?)
+                team_list[p.team.auth_info_id].push(p.team._id)
+              end
               log_error('sys', p.team, 'scratch',p.full_name)
             end
           end
@@ -287,6 +289,7 @@ namespace :scraper do
       #Process Teams with Real Time Activated
       team_list.values.each do |t|
         begin
+          #puts t.inspect
           worker = TeamRealtimeWorker.new
           worker.team_list = t
           resp = worker.queue
