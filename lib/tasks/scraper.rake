@@ -100,7 +100,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team for real time table"
   task :yahoorealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("21947","1")
+    team_parse = Team.find_by_league_id_and_team_id("21947","5")
     parse_yahoo_team_realtime(team_parse,false)
   end
 end
@@ -125,7 +125,7 @@ end
 namespace :scraper do
   desc "Fetch espn team for real time table"
   task :espnrealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("32280","7")
+    team_parse = Team.find_by_league_id_and_team_id("32280","1")
     parse_espn_team_realtime(team_parse,false)
   end
 end
@@ -161,7 +161,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team from scratch"
   task :yahoofull => :environment do
-    user_info = UserInfo.find_by_email("victor.jean@gmail.com")
+    user_info = UserInfo.find_by_email("none")
     
     load_yahoo_first_time(user_info)
     
@@ -171,7 +171,7 @@ end
 namespace :scraper do
   desc "Fetch espn team from scratch"
   task :espnfull => :environment do
-    user_info = UserInfo.find_by_email("victor.jean@gmail.com")
+    user_info = UserInfo.find_by_email("none")
     
     load_espn_first_time(user_info)
     
@@ -181,8 +181,8 @@ end
 namespace :scraper do
   desc "Iron Test"
   task :ironworker => :environment do
-    yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
-    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
+    #yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
+    #espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
     
     start = Time.now
     puts start
@@ -193,14 +193,14 @@ namespace :scraper do
     #  parse_espn_team(t, false, true)
     #end
       worker = TeamRealtimeWorker.new
-      worker.team_list = yahoo_team_list
+     # worker.team_list = yahoo_team_list
       resp = worker.queue
       puts resp
       
-      workerE = TeamRealtimeWorker.new
-      workerE.team_list = espn_team_list
-      respE = workerE.queue
-      puts respE
+      #workerE = TeamRealtimeWorker.new
+      #workerE.team_list = espn_team_list
+      #respE = workerE.queue
+      #puts respE
       
     finish = Time.now
     puts finish
