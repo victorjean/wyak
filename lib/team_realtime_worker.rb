@@ -9,21 +9,21 @@ class TeamRealtimeWorker < IronWorker::Base
   
   merge "fantasy_team_helper.rb"
   merge "real_time_helper.rb"
-  merge "../app/models/team.rb"
-  merge "../app/models/log.rb"
-  merge "../app/models/auth_info.rb"
-  merge "../app/models/player_realtime.rb"
-  merge "../app/models/player_stats.rb"
-  merge "../app/models/player.rb"
-  merge "../app/models/roster.rb"
-  merge "../app/models/user_info.rb"
+  merge "../models/team.rb"
+  merge "../models/log.rb"
+  merge "../models/auth_info.rb"
+  merge "../models/player_realtime.rb"
+  merge "../models/player_stats.rb"
+  merge "../models/player.rb"
+  merge "../models/roster.rb"
+  merge "../models/user_info.rb"
   
   attr_accessor :team_list
 
   def run
-    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
+    #espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
     
-    espn_team_list.each do |t|
+    team_list.each do |t|
         begin
           if (t.team_type == YAHOO_AUTH_TYPE)
             parse_yahoo_team(t, false, true)
