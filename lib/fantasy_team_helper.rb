@@ -440,6 +440,8 @@ def load_yahoo_teams(user_info, reload)
     puts 'Deleting Teams from DB...'
       
     team_list.each do |item|
+      #Delete Real Time Player Info
+      PlayerRealtime.delete_all(:team_id=>item._id)
       item.destroy
       puts item.league_id + ' Deleted'
     end
@@ -502,6 +504,8 @@ def load_espn_teams(user_info, reload)
     puts 'Deleting Teams from DB...'
       
     team_list.each do |item|
+      #Delete Real Time Player Info
+      PlayerRealtime.delete_all(:team_id=>item._id)
       item.destroy
       puts item.league_id + ' Deleted'
     end
