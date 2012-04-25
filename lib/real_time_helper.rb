@@ -731,6 +731,16 @@ def player_assignment_scratch(player_list)
       end
     end
     
+    #attempt to shuffle roster to start top bench guys first
+    not_all_zero = true
+    begin
+      not_all_zero = find_player_in_lineup_for_scratch(eligible_players,scratch_players,avail_players,player_list)
+    end while not_all_zero
+    
+    puts 'Left Over Slots Not Filled'
+    eligible_players.keys.each do |key|
+      puts key
+    end
     
      #loop through open roster spots until all spot are filled
       not_all_zero = true
@@ -752,15 +762,9 @@ def player_assignment_scratch(player_list)
         not_all_zero = assign_player_scratch(eligible_players,scratch_players,avail_players)
       end while not_all_zero
     
-    puts 'Left Over Slots Not Filled'
-    eligible_players.keys.each do |key|
-      puts key
-    end
     
-    not_all_zero = true
-    begin
-      not_all_zero = find_player_in_lineup_for_scratch(eligible_players,scratch_players,avail_players,player_list)
-    end while not_all_zero
+    
+    
     
     player_list    
 end
@@ -771,10 +775,10 @@ def find_player_in_lineup_for_scratch(elig_hash,scratch_players,avail_players,pl
       avail.eligible_slot.each do |slot|
         if (slot!=BENCH_POSITION && slot!=ESPN_BENCH_SLOT)
           player_list.each do |p|
-            if (p.assign_slot==slot && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT)
+            if (p.assign_slot==slot && !p.scratched && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT)
               #Check to See if Player Can fill Any Position in Elig Hash
               elig_hash.keys.each do |key|
-                if (!p.eligible_slot.index(key).nil?)
+                if (key!=ESPN_UTIL_SLOT && key!=YAHOO_UTIL_SLOT && !p.eligible_slot.index(key).nil?)
                   puts "#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}"
                   puts "#{p.full_name} goes to scratch position - #{key}"
                   log_error('sys', nil, 'scratchalgorithm',"#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}")

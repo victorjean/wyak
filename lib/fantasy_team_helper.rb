@@ -49,6 +49,8 @@ ESPN_BENCH_POSITION = 'Bench'
 ESPN_BENCH_SLOT = '16'
 ESPN_DL_SLOT = '17'
 DL_POSITION = 'DL'
+ESPN_UTIL_SLOT = '12'
+YAHOO_UTIL_SLOT = 'Util'
 
 def parse_yahoo_team(team, first_time, tomm)
   @rosterHash = {}
