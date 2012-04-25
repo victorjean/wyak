@@ -19,7 +19,7 @@ class TeamRealtimeWorker < IronWorker::Base
   attr_accessor :team_list
 
   def run
-    puts UDPSocket.open {|s| s.connect('64.233.187.99', 1); s.addr.last }
+    
     MongoMapper.config = { 
     Rails.env => { 'uri' => 'mongodb://rotostarter:rotopass@ds031847.mongolab.com:31847/heroku_app2029342' } 
     }

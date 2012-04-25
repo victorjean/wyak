@@ -101,7 +101,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team for real time table"
   task :yahoorealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("21947","5")
+    team_parse = Team.find_by_league_id_and_team_id("21947","7")
     parse_yahoo_team_realtime(team_parse,false)
   end
 end
@@ -109,7 +109,7 @@ end
 namespace :scraper do
   desc "Fetch esyahoopn team for real time table"
   task :yahooscratch => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("116135","6")
+    team_parse = Team.find_by_league_id_and_team_id("21947","4")
     set_yahoo_scratch(team_parse)
   end
 end
@@ -180,38 +180,15 @@ namespace :scraper do
 end
 
 namespace :scraper do
-  desc "Iron Test"
+  desc "Iron Uploader"
   task :ironworker => :environment do
-    yahoo_team_list = Team.where(:auth_info_id=>"4f64f05b8a92f11890000002").all
-    espn_team_list = Team.where(:auth_info_id=>"4f6509368a92f11c94000001").all
-    
-    list_one = []
-    list_two = []
-    
-    yahoo_team_list.each do |t|
-      list_one.push(t._id)
-    
-    end
-    
-    espn_team_list.each do |t|
-      list_two.push(t._id)
-    
-    end
-    
-    puts UDPSocket.open {|s| s.connect('64.233.187.99', 1); s.addr.last }
     
     start = Time.now
     puts start
     
-      #worker = TeamRealtimeWorker.new
-      #worker.team_list = list_one
-      #resp = worker.queue
-      #puts resp
-      
-      #workerE = TeamRealtimeWorker.new
-      #workerE.team_list = list_two
-      #respE = workerE.queue
-      #puts respE
+    worker = TeamRealtimeWorker.new
+    worker.team_list = []
+    worker.upload
       
     finish = Time.now
     puts finish
@@ -290,6 +267,7 @@ namespace :scraper do
       team_list.values.each do |t|
         begin
           #puts t.inspect
+          IronWorker.config.no_upload = true
           worker = TeamRealtimeWorker.new
           worker.team_list = t
           resp = worker.queue
