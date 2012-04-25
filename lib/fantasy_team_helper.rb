@@ -429,8 +429,11 @@ def load_espn_first_time(user_info)
 end
 
 def load_yahoo_teams(user_info, reload)
-  
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,YAHOO_AUTH_TYPE)
+  if (auth_user.nil?)
+    return
+  end
+  
   agent = authenticate_yahoo(auth_user)
   
   puts 'Loading all Yahoo Teams into Database for User - '+user_info.email
@@ -495,6 +498,10 @@ end
 
 def load_espn_teams(user_info, reload)
   auth_user = AuthInfo.find_by_email_and_auth_type(user_info.email,ESPN_AUTH_TYPE)
+  if (auth_user.nil?)
+    return
+  end
+  
   agent = authenticate_espn(auth_user)
   
   puts 'Loading all ESPN Teams into Database for User - '+user_info.email
