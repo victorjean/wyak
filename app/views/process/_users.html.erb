@@ -1,6 +1,24 @@
 <table border=1>
-	<tr><td>Email</td><td>Login Count</td><td>Updated</td><td>Created</td><tr>
+	<tr><td>Email</td><td>Login Count</td><td>Updated</td><td>Created</td><td>Teams</td><td>Active Batter</td><td>Active Pitcher</td><tr>
 	<% @user_list.each do |user| %>
-	<tr><td><%=user.email%></td><td><%=user.login_count%></td><td><%=user.updated_at%></td><td><%=user.created_at%></td><tr>
+	<tr><td><%=user.email%></td>
+		<td><%=user.login_count%></td>
+		<td><%=user.updated_at%></td>
+		<td><%=user.created_at%></td>
+		<td><%=user.teams.length%></td>
+	<%active_bat_count = 0
+	  active_pitch_count = 0
+	  user.teams.each do |t|
+		if (t.daily_auto_batter)
+			active_bat_count += 1
+		end
+		if (t.daily_auto_pitcher)
+			active_pitch_count += 1
+		end  
+	  end
+	%>
+	<td><%=active_bat_count%></td>	
+	<td><%=active_pitch_count%></td>
+	<tr>
 	<%end%>
 </table>
