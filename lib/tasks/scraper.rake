@@ -101,7 +101,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team for real time table"
   task :yahoorealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("21947","7")
+    team_parse = Team.find_by_league_id_and_team_id("21947","2")
     parse_yahoo_team_realtime(team_parse,false)
   end
 end
@@ -126,7 +126,7 @@ end
 namespace :scraper do
   desc "Fetch espn team for real time table"
   task :espnrealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("32280","1")
+    team_parse = Team.find_by_league_id_and_team_id("32280","2")
     parse_espn_team_realtime(team_parse,false)
   end
 end
@@ -168,6 +168,23 @@ namespace :scraper do
     
   end
 end
+
+namespace :scraper do
+  desc "Mark Starting Pitcher - One Time Process"
+  task :mark_sp => :environment do
+    
+    p_list = PlayerStats.where( :position=>/SP,RP/).sort(:rank.asc)
+    
+    p_list.each do |player|
+      if (!player.ip.nil? && player.ip > 12 && !player.position.index('SP').nil?)
+        player.is_sp = true
+      end
+      player.save
+    end
+    
+  end
+end
+
 
 namespace :scraper do
   desc "Fetch espn team from scratch"

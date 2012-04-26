@@ -1443,7 +1443,7 @@ def rank_players_by_position()
   p_list = PlayerStats.where( :position=>/SP/).sort(:rank.asc)
   count = 0
   p_list.each do |player|
-    if (player.ip > 3)
+    if (!player.ip.nil? && player.ip > 3)
       count += 1
       rank_player(player,'SP', count)
     end

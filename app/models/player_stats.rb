@@ -46,6 +46,7 @@ class PlayerStats
   key :sb_7day, Integer
   key :avg_7day, Float
   key :rank_7day, Integer
+  key :is_sp, Boolean, :default=>false
   
   many :players
   many :player_realtimes
