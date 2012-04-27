@@ -272,6 +272,9 @@ def parse_yahoo_team(team, first_time, tomm)
       plyr_stats = PlayerStats.find_by_yahoo_id(yahoo_id)
       if (!plyr_stats.nil?)
         @player.player_stats = plyr_stats
+        if (plyr_stats.is_sp && first_time)
+          @player.action = PROB_PITCHER_START_OPTION 
+        end
       end
       
       if (@player.current_slot == DL_POSITION)
@@ -298,9 +301,12 @@ def parse_yahoo_team(team, first_time, tomm)
     puts 'First Time Assigning Players to Roster Positions'
     #Assign Only if Roster Position is not DL
     @rosterHash.keys.each do |counter|
-      if(@rosterHash[counter].pos_text != DL_POSITION)
+      if(@rosterHash[counter].pos_text != DL_POSITION && @rosterHash[counter].pos_text != YAHOO_UTIL_SLOT)
       @rosterHash[counter].player = @rosterPlayerHash[counter]
       @rosterHash[counter].save
+      end
+      if (@rosterHash[counter].pos_text == YAHOO_UTIL_SLOT)
+        @rosterHash[counter].save
       end
     end
     puts 'DL Players Assign to Bench'
@@ -931,10 +937,16 @@ def parse_espn_team(team, first_time, tomm)
       plyr_stats = PlayerStats.find_by_espn_id(espn_id)
       if (!plyr_stats.nil?)
         @player.player_stats = plyr_stats
+        if (plyr_stats.is_sp && first_time)
+          @player.action = PROB_PITCHER_START_OPTION 
+        end
       else
         plyr_stats = PlayerStats.find_by_full_name(full_name)
         if (!plyr_stats.nil?)
           @player.player_stats = plyr_stats
+          if (plyr_stats.is_sp && first_time)
+            @player.action = PROB_PITCHER_START_OPTION 
+          end
           plyr_stats.espn_id = espn_id
           plyr_stats.save
         end
@@ -955,9 +967,12 @@ def parse_espn_team(team, first_time, tomm)
   if (first_time)
     puts 'First Time Assigning Players to Roster Positions'
     @rosterHash.keys.each do |counter|
-      if (@rosterHash[counter].slot_number != ESPN_DL_SLOT)
+      if (@rosterHash[counter].slot_number != ESPN_DL_SLOT && @rosterHash[counter].slot_number != ESPN_UTIL_SLOT)
       @rosterHash[counter].player = get_player_by_roster_slot(@rosterHash[counter].slot_number)
       @rosterHash[counter].save
+      end
+      if (@rosterHash[counter].slot_number == ESPN_UTIL_SLOT)
+        @rosterHash[counter].save
       end
     end
     assign_players_bench(team)
