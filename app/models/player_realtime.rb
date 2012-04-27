@@ -12,6 +12,7 @@ class PlayerRealtime
   key :player_set, Boolean, :default=>false
   key :scratched, Boolean, :default=>false
   key :on_dl, Boolean
+  key :on_na, Boolean, :default=>false
   key :espn_id, String
   key :yahoo_id, String
   

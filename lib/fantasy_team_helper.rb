@@ -44,6 +44,7 @@ PROB_PITCHER_START_OPTION = 'P'
 BENCH_BATTER_TYPE = 'B'
 BENCH_PITCHER_TYPE = 'P'
 
+NA_TAG = 'NA'
 BENCH_POSITION = 'BN'
 ESPN_BENCH_POSITION = 'Bench'
 ESPN_BENCH_SLOT = '16'
@@ -286,6 +287,13 @@ def parse_yahoo_team(team, first_time, tomm)
         @player.on_dl = true
       else
         @player.on_dl = false  
+      end
+      
+      #Check if NA Status is Marked next to Player
+      if (!statustag.nil? && statustag.inner_html.strip == NA_TAG)
+        @player.on_na = true
+      else
+        @player.on_na = false  
       end
       
       @player.save     
@@ -1134,6 +1142,15 @@ def player_assignment_daily(player_list, roster_list)
   #set any player on DL to the BENCH
   player_list.each do |item|
     if (item.on_dl  && !item.player_set)
+      item.assign_pos = BENCH_POSITION
+      item.assign_slot = ESPN_BENCH_SLOT
+      item.player_set = true
+    end
+  end
+  
+  #set any player on NA to the BENCH
+  player_list.each do |item|
+    if (item.on_na  && !item.player_set)
       item.assign_pos = BENCH_POSITION
       item.assign_slot = ESPN_BENCH_SLOT
       item.player_set = true

@@ -628,6 +628,13 @@ def parse_yahoo_team_realtime(team, clear)
         player_save.on_dl = false  
       end
       
+      #Check if NA Status is Marked next to Player
+      if (!statustag.nil? && statustag.inner_html.strip == NA_TAG)
+        player_save.on_na = true
+      else
+        player_save.on_na = false  
+      end
+      
       plyr_info = Player.find_by_yahoo_id_and_league_id_and_team_id(yahoo_id, team.league_id, team.team_id)
       if (plyr_info.nil?)
         player_save.player = nil

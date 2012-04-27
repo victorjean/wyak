@@ -101,7 +101,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team for real time table"
   task :yahoorealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("21947","2")
+    team_parse = Team.find_by_league_id_and_team_id("21947","7")
     parse_yahoo_team_realtime(team_parse,false)
   end
 end
@@ -265,7 +265,7 @@ namespace :scraper do
             puts "#{p.full_name} - |#{p.assign_pos}|"
             p.scratched = true
             p.save
-            if(!p.team.nil? && p.position_text.index('P').nil? && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+            if(!p.team.nil? && p.position_text.index('P').nil? && !p.on_na && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
               if (team_list[p.team.auth_info_id].nil?)
                 team_list[p.team.auth_info_id] = []
               end 
