@@ -2,7 +2,7 @@ require "fantasy_team_helper"
 require "real_time_helper"
 require "iron_worker"
 require 'team_realtime_worker'
-require 'socket'
+require 'team_daily_worker'
 
 #This is the cron/scheduler task used to set daily lineups
 namespace :scraper do

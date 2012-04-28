@@ -1,5 +1,7 @@
 require "fantasy_team_helper"
 require "real_time_helper"
+require "iron_worker"
+require 'team_daily_worker'
 
 class ProcessController < ApplicationController
   def players
@@ -86,16 +88,24 @@ class ProcessController < ApplicationController
     
     send_team_list = []
     current_auth_id = ''
+    counter = 0
          
     team_list.each do |team|
       begin           
          
+         if (counter%75 == 0 && counter!=0)
+           #puts "#{counter}  Mod - #{counter%5}"
+           sleep 5
+         end
     
          if (current_auth_id != team.auth_info_id)
             if (send_team_list.length!=0)
               puts "Create and Send Worker for List"
-              puts send_team_list.inspect
-              
+              IronWorker.config.no_upload = true
+              worker = TeamDailyWorker.new
+              worker.team_list = send_team_list
+              resp = worker.queue
+              counter += 1
             end
             send_team_list = []
             #puts 'YAHOO DEFAULT '+team.league_name + '-' + team.team_name
@@ -113,8 +123,22 @@ class ProcessController < ApplicationController
       end  
     end
     
-    puts "Create and Send Worker for List"
-    puts send_team_list.inspect
+    if (send_team_list.length!=0)
+      begin
+        puts "Create and Send Worker for List"
+        IronWorker.config.no_upload = true
+        worker = TeamDailyWorker.new
+        worker.team_list = send_team_list
+        resp = worker.queue
+        counter += 1
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', nil, 'dailystartyahooworker',msg)
+        @success = false
+      end
+    end
+    
+    log_error('sys', nil, 'dailystartyahooworker',"Finished Daily Start Yahoo Total User Processed - #{counter}")
     
     render(:partial => 'loading')
   end
