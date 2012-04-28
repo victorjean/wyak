@@ -76,6 +76,49 @@ class ProcessController < ApplicationController
     render(:partial => 'loading')
   end
   
+  def yahoostartworker
+    
+    @success = true
+    #Get Team List that is not empty and where batter or pitcher daily is true
+    team_list = Team.where(:team_type=>YAHOO_AUTH_TYPE, 
+    :empty_team=>false,
+    :$or => [{:daily_auto_batter => true},{:daily_auto_pitcher => true}]).sort(:auth_info_id.desc)
+    
+    send_team_list = []
+    current_auth_id = ''
+         
+    team_list.each do |team|
+      begin           
+         
+    
+         if (current_auth_id != team.auth_info_id)
+            if (send_team_list.length!=0)
+              puts "Create and Send Worker for List"
+              puts send_team_list.inspect
+              
+            end
+            send_team_list = []
+            #puts 'YAHOO DEFAULT '+team.league_name + '-' + team.team_name
+            send_team_list.push(team._id)
+            current_auth_id = team.auth_info_id
+         else
+           #puts 'YAHOO DEFAULT '+team.league_name + '-' + team.team_name
+           send_team_list.push(team._id)
+         end
+      
+      rescue => msg
+        puts "ERROR OCCURED (#{msg})"
+        log_error('sys', team, 'dailystartyahooworker',msg)
+        @success = false
+      end  
+    end
+    
+    puts "Create and Send Worker for List"
+    puts send_team_list.inspect
+    
+    render(:partial => 'loading')
+  end
+  
   def espnstart
     @success = true
     #Get Team List that is not empty and where batter or pitcher daily is true

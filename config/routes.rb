@@ -4,6 +4,7 @@ Wyak::Application.routes.draw do
   resources :process do
     collection do
       get 'yahoostart'
+      get 'yahoostartworker'
       get 'espnstart'
       get 'players'
       get 'players_seven'

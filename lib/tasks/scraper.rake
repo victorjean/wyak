@@ -88,6 +88,12 @@ namespace :scraper do
   end
 end
 
+namespace :scraper do
+  desc "Check Scoreboard for Real Time Scratches"
+  task :gameparse => :environment do
+    parse_box('320427101')
+  end
+end
 
 namespace :scraper do
   desc "Fetch yahoo team"
@@ -204,6 +210,23 @@ namespace :scraper do
     puts start
     
     worker = TeamRealtimeWorker.new
+    worker.team_list = []
+    worker.upload
+      
+    finish = Time.now
+    puts finish
+    puts finish-start 
+  end
+end
+
+namespace :scraper do
+  desc "Iron Uploader for Daily Process"
+  task :dailyworker => :environment do
+    
+    start = Time.now
+    puts start
+    
+    worker = TeamDailyWorker.new
     worker.team_list = []
     worker.upload
       
