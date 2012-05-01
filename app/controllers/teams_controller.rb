@@ -396,6 +396,7 @@ class TeamsController < ApplicationController
     
     @success = true
     if (request.post?)
+      locale = Timeout::timeout(5) { Net::HTTP.get_response(URI.parse('http://api.hostip.info/country.php?ip=' + request.remote_ip )).body } rescue "US"
       #Reload Teams for Request
       if (params[:manageAction] == 'R')
         begin
@@ -417,6 +418,7 @@ class TeamsController < ApplicationController
           auth_info.email = user_info.email
           auth_info.login = params[:userid]
           auth_info.password = params[:pass]
+          auth_info.region = locale
           if (@teamType == 'ESPN')
             auth_info.auth_type = ESPN_AUTH_TYPE 
             auth_info.save!
@@ -456,9 +458,11 @@ class TeamsController < ApplicationController
             if(@authInfo.login != params[:userid])
               @authInfo.login = params[:userid]
               @authInfo.password = params[:pass]
+              @authInfo.region = locale
               @authInfo.save!
               load_espn_first_time(user_info)
             else
+              @authInfo.region = locale
               @authInfo.password = params[:pass]
               @authInfo.save!
               authenticate_espn(@authInfo)
@@ -468,9 +472,11 @@ class TeamsController < ApplicationController
             if(@authInfo.login != params[:userid])
               @authInfo.login = params[:userid]
               @authInfo.password = params[:pass]
+              @authInfo.region = locale
               @authInfo.save!
               load_yahoo_first_time(user_info)
             else
+              @authInfo.region = locale
               @authInfo.password = params[:pass]
               @authInfo.save!
               authenticate_yahoo(@authInfo)

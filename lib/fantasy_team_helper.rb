@@ -387,7 +387,14 @@ def authenticate_yahoo(auth)
     puts 'Starting Yahoo Authentication...'
     @agent = Mechanize.new
     @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    page = @agent.get(YAHOO_LOGIN_URL)
+    #Locale Check
+    login_url = YAHOO_LOGIN_URL
+    if (auth.region.nil? || auth.region == 'US')
+      
+    else
+      login_url = YAHOO_LOGIN_URL+'?.intl='+auth.region
+    end
+    page = @agent.get(login_url)
     form = page.form_with(:id => "login_form")
     form['login'] = auth.login
     form['passwd'] = auth.get_pass
@@ -398,7 +405,7 @@ def authenticate_yahoo(auth)
     #Throw Exception if Authentication Fails
     if (!page.uri.to_s.index('login?').nil?)
       @agent = nil
-      raise 'Authentication Failed for YAHOO ID - '+auth.login + '-' + page.uri.to_s
+      raise 'Authentication Failed for URL|'+login_url+'|YAHOO ID - '+auth.login + '-' + page.uri.to_s
     end
   end
   @agent

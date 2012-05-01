@@ -19,6 +19,7 @@
 			</div>
 			</td>
 		</tr>
+		
 		<tr>
 			<td colspan="1" class="DashHeaderLeft">
 			Step 1: Add Your Fantasy Sports Accounts<br>
@@ -35,6 +36,7 @@
 			5. You can safely modify your Yahoo or ESPN lineups for any last minute changes
 			</td>
 		</tr>
+		
 		<tr>
 			<td>
 			<br>
@@ -115,6 +117,7 @@
 			<%- if (@yahoo_teams.length == 0) -%>
 				<img src="/images/RSPlus10.png" alt="Add Icon">
 				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
+ 
 			<%else%>
 			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
 			<a href="javascript:updateTeams('yahoo')">Refresh</a>
@@ -237,8 +240,17 @@
 			
 		</tr>
 		<%end%>
-		
-				
+		<%if (@demo)%>
+		<TR><TD><BR></TD></TR>
+		<TR>
+			<TD class="DashActiveBrown" colspan="5">
+			<div class="HomeTinyLinks">
+			If you are having issues adding and authenticating your Yahoo or ESPN ID, 
+			please open your browser, logout of all Yahoo/ESPN sessions, and log back in. Afterwards, try adding your account again.
+			</div>
+			</TD>
+		</TR>
+		<%end%>		
 	</tbody>
 </table>
 

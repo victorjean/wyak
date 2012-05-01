@@ -6,6 +6,7 @@ class AuthInfo
   key :pass, String, :required => true
   key :auth_type, String, :required => true
   key :salt, String
+  key :region, String, :default=>'US'
   many :teams
   
   attr_accessor :password
