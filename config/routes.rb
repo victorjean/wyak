@@ -6,6 +6,7 @@ Wyak::Application.routes.draw do
       get 'yahoostart'
       get 'yahoostartworker'
       get 'espnstart'
+      get 'espnstartworker'
       get 'players'
       get 'players_seven'
       get 'logs'

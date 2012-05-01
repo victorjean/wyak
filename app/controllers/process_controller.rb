@@ -143,6 +143,13 @@ class ProcessController < ApplicationController
     render(:partial => 'loading')
   end
   
+  def espnstartworker
+    
+    @success = true
+      
+    render(:partial => 'loading')
+  end
+  
   def espnstart
     @success = true
     #Get Team List that is not empty and where batter or pitcher daily is true
