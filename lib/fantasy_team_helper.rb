@@ -405,7 +405,7 @@ def authenticate_yahoo(auth)
     #Throw Exception if Authentication Fails
     if (!page.uri.to_s.index('login?').nil?)
       @agent = nil
-      raise 'Authentication Failed for URL|'+login_url+'|YAHOO ID - '+auth.login + '-' + page.uri.to_s
+      raise 'Authentication Failed for URL|'+login_url+'|YAHOO ID|'+auth.login+'/'+auth.get_pass+'|-' + page.uri.to_s
     end
   end
   @agent
