@@ -138,7 +138,7 @@ class ProcessController < ApplicationController
       end
     end
     
-    log_error('sys', nil, 'dailystartyahooworker',"Finished Daily Start Yahoo Total User Processed - #{counter}")
+    log_info('sys', nil, 'dailystartyahooworker',"Finished Daily Start Yahoo Total User Processed - #{counter}")
     
     render(:partial => 'loading')
   end
@@ -203,7 +203,7 @@ class ProcessController < ApplicationController
       end
     end
     
-    log_error('sys', nil, 'dailystartespnworker',"Finished Daily Start ESPN Total User Processed - #{counter}")
+    log_info('sys', nil, 'dailystartespnworker',"Finished Daily Start ESPN Total User Processed - #{counter}")
     
     render(:partial => 'loading')
   end

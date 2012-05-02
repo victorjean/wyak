@@ -389,7 +389,7 @@ def authenticate_yahoo(auth)
     @agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
     #Locale Check
     login_url = YAHOO_LOGIN_URL
-    if (auth.region.nil? || auth.region == 'US')
+    if (auth.region.nil? || auth.region == 'US' || auth.region == 'XX')
       
     else
       login_url = YAHOO_LOGIN_URL+'?.intl='+auth.region
@@ -1511,11 +1511,31 @@ def log_error(email, team, method, message)
       l.team_id = team.team_id
     end
     l.save
+    Notifications.em_error(email, method, message, team).deliver
   rescue => msg
       puts "LOG ERROR Could not write to DB - (#{msg})"
   end
   
 end
+
+def log_info(email, team, method, message)
+  begin
+    l = Log.new
+    l.email = email
+    l.method = method
+    l.msg = message
+    l.type = 'I'
+    if (!team.nil?)
+      l.league_id = team.league_id
+      l.team_id = team.team_id
+    end
+    l.save
+  rescue => msg
+      puts "LOG ERROR Could not write to DB - (#{msg})"
+  end
+  
+end
+
 
 def parse_player_list(url, player_type)
   rank_count = 0

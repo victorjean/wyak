@@ -132,7 +132,7 @@ end
 namespace :scraper do
   desc "Fetch espn team for real time table"
   task :espnrealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("32280","2")
+    team_parse = Team.find_by_league_id_and_team_id("32280","7")
     parse_espn_team_realtime(team_parse,false)
   end
 end
@@ -295,7 +295,7 @@ namespace :scraper do
               if (team_list[p.team.auth_info_id].index(p.team._id).nil?)
                 team_list[p.team.auth_info_id].push(p.team._id)
               end
-              log_error('sys', p.team, 'scratch',p.full_name)
+              log_info('sys', p.team, 'scratch',p.full_name)
             end
           end
         end

@@ -1,0 +1,13 @@
+User:  <%=@em%>
+Method:  <%=@method %>
+<%if (!@team.nil?)%>
+Team Name:  <%=@team.team_name %>
+TeamID:  <%=@team.team_id %>
+League Name:  <%=@team.league_name %>
+LeagueID:  <%=@team.league_id %>
+<%end%>
+
+RotoStarter System Error Message:
+
+<%= @message %>
+

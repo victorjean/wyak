@@ -8,10 +8,11 @@ class TeamDailyWorker < IronWorker::Base
   merge_gem 'mongo_mapper'
   merge_gem 'hpricot'
   merge_gem 'mechanize'
+  merge_gem 'actionmailer'
   unmerge_gem 'nokogiri'
   
   merge_folder "../app/models/"
-  unmerge "../app/models/notifications.rb"
+  #unmerge "../app/models/notifications.rb"
   
   merge "fantasy_team_helper.rb"
   merge "real_time_helper.rb"
