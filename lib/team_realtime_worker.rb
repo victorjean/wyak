@@ -8,7 +8,7 @@ class TeamRealtimeWorker < IronWorker::Base
   merge_gem 'mongo_mapper'
   merge_gem 'hpricot'
   merge_gem 'mechanize'
-  merge_gem 'actionmailer'
+  merge_gem 'actionmailer',:require => 'action_mailer'
   unmerge_gem 'nokogiri'
   
   merge_folder "../app/models/"
