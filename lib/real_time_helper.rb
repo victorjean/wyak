@@ -681,7 +681,7 @@ def set_espn_scratch(team)
   player_list = player_assignment_scratch(player_list)
   
   set_espn_lineup(team, player_list, scoring_period_id,true)
-  log_info('sys', team, 'scratch','lineup espn set success')  
+  #log_info('sys', team, 'scratch','lineup espn set success')  
 end
 
 def set_yahoo_scratch(team)
@@ -693,7 +693,7 @@ def set_yahoo_scratch(team)
   player_list = player_assignment_scratch(player_list)
   
   set_yahoo_lineup(team, player_list, scoring_period_id,false, true)
-  log_info('sys', team, 'scratch','lineup yahoo set success')  
+  #log_info('sys', team, 'scratch','lineup yahoo set success')  
 end
 
 def player_assignment_scratch(player_list)

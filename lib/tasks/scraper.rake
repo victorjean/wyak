@@ -295,7 +295,7 @@ namespace :scraper do
               if (team_list[p.team.auth_info_id].index(p.team._id).nil?)
                 team_list[p.team.auth_info_id].push(p.team._id)
               end
-              log_info('sys', p.team, 'scratch',p.full_name)
+              #log_info('sys', p.team, 'scratch',p.full_name)
             end
           end
         end
