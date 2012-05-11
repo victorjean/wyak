@@ -10,7 +10,7 @@ gem 'rails', '3.1.3'
 gem 'mongo_mapper'
 gem 'bson_ext'
 gem 'hpricot'
-gem 'mechanize'
+gem 'mechanize', '2.4'
 gem 'actionmailer'
 gem 'iron_worker'
 
