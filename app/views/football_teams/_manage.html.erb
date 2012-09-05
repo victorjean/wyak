@@ -1,0 +1,53 @@
+<div id='team_popup' >
+
+
+<%= form_tag('/football_teams/manage', :id=>'manage_team') do %>
+<TABLE cellpadding="0" cellspacing="1"  width="400">
+		<tr  >
+			<td align="left" ><%=@teamType%> ID:</td>
+			<td align="left" >
+				<%-if (@authInfo.nil?)-%>
+				<%= text_field_tag('userid', '', options = {:size => 12,  :onfocus => "$('team_manage_submit').disabled = false"}) %>
+				<%= hidden_field_tag('current_user') %>
+				<%-else-%>
+				<%= text_field_tag('userid', @authInfo.login, options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
+:disabled  => true}) %> 
+				<img src="/images/editIcon.gif" alt="Edit Icon">
+				<a href="javascript:activateUserField()" class="LeftNavLink">Edit</a>
+				
+				<%= hidden_field_tag('current_user', @authInfo.login) %>
+				<%-end-%>
+			</td>
+			<td align="right" ><%-if (!@authInfo.nil?)-%>
+				
+				<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+				<a class="LeftNavLink" href="javascript:reload_team()">Reload Teams</a>
+				<%-end-%>
+			</td>
+		</tr>
+		<tr   >
+			<td align="left" >Password:</td>
+			<td align="left" >
+				<%-if (@authInfo.nil?)-%>
+				<%= password_field_tag(:pass,'',options ={:size => 12,:onfocus => "$('team_manage_submit').disabled = false"}) %> 
+				<%-else-%>
+				<%= password_field_tag(:pass,'', options = {:size => 12, :onfocus => "$('team_manage_submit').disabled = false",
+:disabled  => true}) %> 
+				<img src="/images/editIcon.gif" alt="Edit Icon">
+				<a href="javascript:activatePassField()" class="LeftNavLink">Edit</a>
+				
+				<%-end-%>
+				
+			</td>
+			<td align="right" >
+				<BUTTON  type="button" id='team_manage_submit' onclick="submit_team()" disabled="disabled">Submit</BUTTON>
+				</td>
+		</tr>
+	
+</table>
+<%= hidden_field_tag('teamType', @teamType) %>
+<%= hidden_field_tag('manageAction') %>
+
+<% end %>
+
+</div>

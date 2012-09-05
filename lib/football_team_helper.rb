@@ -46,6 +46,15 @@ def load_yahoo_football_teams(user_info, reload)
   puts 'Loading all Yahoo Teams into Database for User - '+user_info.email
   team_list = FootballTeam.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE)
   
+  if (reload)    
+    puts 'Deleting Teams from DB...'
+      
+    team_list.each do |item|
+      #Delete Real Time Player Info      
+      item.destroy
+      puts item.league_id + ' Deleted'
+    end
+  end
     
   #Delete any AUTO league teams until drafted
   team_list.each do |item|
@@ -106,11 +115,13 @@ def load_espn_football_teams(user_info, reload)
   
   if (reload)
     puts 'Deleting Teams from DB...'
-    team_list.each do |item|
+      
+    team_list.each do |item|      
       item.destroy
       puts item.league_id + ' Deleted'
     end
   end
+
   
   page = agent.get(ESPN_FOOTBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)
@@ -175,7 +186,23 @@ def load_espn_football_teams(user_info, reload)
   end
 end
 
+def load_yahoo_football_first_time(user_info)
+  #First Load Yahoo Teams into Database
+  load_yahoo_football_teams(user_info,true)
+  #parse through each team page and store data
+  FootballTeam.find_all_by_user_info_id_and_team_type(user_info._id, YAHOO_AUTH_TYPE).each do |team|
+    parse_yahoo_football_team(team,true)
+  end
+end
 
+def load_espn_football_first_time(user_info)
+  #First Load ESPN Teams into Database
+  load_espn_football_teams(user_info,true)
+  #parse through each team page and store data
+  FootballTeam.find_all_by_user_info_id_and_team_type(user_info._id, ESPN_AUTH_TYPE).each do |team|
+    parse_espn_football_team(team,true)
+  end
+end
 
 def parse_espn_football_team(team, first_time)
   @slotToPosHash = {}

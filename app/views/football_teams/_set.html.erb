@@ -1,0 +1,22 @@
+<%if (@player_type == 'b') %>
+<%if (@team.active)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<a href="/teams/showbatters?id=<%=@team._id%>"><font color=green>Player Priority</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="br_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<a href="/teams/showbatters?id=<%=@team._id%>"><font color=red>Player Priority</font></a>
+	<br>&nbsp;&nbsp;&nbsp;
+	<span id="br_<%=@team._id%>"><a href="javascript:setup('<%=@team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+<%end%>
+<%end%>
+<%if (@player_type == 'p') %>
+				<span id="pr_<%=@team._id%>">
+				<select class="MainSelect" id="freqselect_<%=@team._id%>" onchange="set_start_option('<%=@team._id%>',this,'p')">
+		    		<option class="MainOption" value="bench" <%=(@team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
+		    		<option class="MainOption" value="priority" <%=(@team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
+    				<option class="MainOption" value="projected" <%=(@team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+    			</select>
+    			</span>
+<%end%>

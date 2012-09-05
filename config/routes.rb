@@ -41,6 +41,23 @@ Wyak::Application.routes.draw do
       post 'start_lineup'
     end
   end
+  
+    resources :football_teams do
+    collection do
+      get 'update_all'
+      get 'showbatters'
+      get 'showpitchers'
+      get 'manage'
+      get 'setup'
+      get 'preview_lineup'
+      get 'show_stat'
+      post 'manage'
+      post 'set_lineup'
+      post 'refresh_lineup'
+      post 'start_lineup'
+    end
+  end
+  
   resources :user do
     collection do
     get 'login'

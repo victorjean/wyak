@@ -1,0 +1,397 @@
+<%= content_for :body_attributes, "onload='update_function();'" %>
+
+<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
+
+
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<thead>
+		<tr>
+			<td colspan="3" class="DashHeaderTop" width="40%" >
+			Football Dashboard 
+			<div class="DashHeaderTopBrown">Manage Football Accounts and Teams</div>
+			</td>
+			<td colspan="2" class="DashHeaderTop" align="right" >
+				<img src="/images/football.png" alt="Football" height="50" width="50">
+			<div id="updating" class="DashActiveBrown" style="display:<%if (!@update)%>none<%end%>">
+			Refreshing All Teams <%= image_tag '/images/refresh-animated.gif' %>
+			</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" class="DashHeaderLeft">
+			Step 1: Add Your Fantasy Football Sports Accounts<br>
+			Step 2: Set Football Player Priorities<br>			
+			Step 3: Set Inactive Behavior to Bench, Priority, or Projected<br>
+			Step 4: Sit Back and Relax<br>			
+			</td>
+			<td colspan="4" class="DashHeaderRight">
+			1. Log into your Yahoo or ESPN account from RotoStarter<br>
+			2. For basic setup, prioritize your players top to bottom on your team pages<br>			
+			2. Bench will automatically bench any inactives, Priority will sub inactives based on settings, Projected will sub based on highest projected points<br>
+			4. RotoStarter will automatically monitor for any inactives and sub them out if needed<br>			
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<br>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<%if (@demo)%>
+		<tr>
+			<td colspan="3" class="SideHeader">
+			
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			
+			RotoStarter Demo
+			</td>
+			<td colspan="2" class="MainSubTitleLinks" >
+			
+			<br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a><br>
+				<div class="DashActiveBrown">RotoStarter Demo League</div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=@demo_team._id%>">
+				<%if (@demo_team.active)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/football_teams/showbatters?id=<%=@demo_team._id%>"><font color=green>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;					
+				<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/football_teams/showbatters?id=<%=@demo_team._id%>"><font color=red>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+					
+					<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+					
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=@demo_team._id%>">
+				<span id="pr_<%=@demo_team._id%>">
+				<select class="MainSelect" id="freqselect_<%=@demo_team._id%>" onchange="set_start_option('<%=@demo_team._id%>',this,'p')">
+		    		<option class="MainOption" value="bench" <%=(@demo_team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
+		    		<option class="MainOption" value="priority" <%=(@demo_team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
+    				<option class="MainOption" value="projected" <%=(@demo_team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+    			</select>
+    			</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<br>
+			</td>
+		</tr>
+		<%end%>
+		
+		<tr>
+			<td colspan="3" class="SideHeader">
+			<%- if (@yahoo_teams.length == 0) -%>
+			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
+			<%else%>
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			<%end%>
+			Yahoo Teams
+			</td>
+			<td colspan="2" class="MainSubTitleLinks" <% if (@yahoo_teams.length == 0) %>style="text-align:left"<%end%>>
+			<%- if (@yahoo_teams.length == 0) -%>
+				<img src="/images/RSPlus10.png" alt="Add Icon">
+				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
+ 
+			<%else%>
+			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+			<a href="javascript:updateTeams('yahoo')">Refresh</a>
+			<img src="/images/editIcon.gif" alt="Edit Icon">
+			<a href="javascript:teamWindow('YAHOO')">Edit</a>
+			<%end%>
+			<br>
+			</td>
+		</tr>
+		<%- @yahoo_teams.each do |team| -%>
+		<tr>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
+				<div class="DashActiveBrown"><%=team.league_name%></div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=team._id%>">
+				<%if (team.active)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;					
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;	
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=team._id%>">
+				<span id="pr_<%=team._id%>">
+				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">
+		    		<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
+		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
+    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+    			</select>
+    			</span>
+				</div>
+			</td>
+			
+		</tr>
+		<%end%>
+		<tr>
+			<td>
+			<br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="SideHeader">
+			<%- if (@espn_teams.length == 0) -%>
+			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
+			<%else%>
+			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+			<%end%>
+			ESPN Teams
+			</td>
+			<td colspan="2" class="MainSubTitleLinks" <% if (@espn_teams.length == 0) %>style="text-align:left"<%end%>>
+			<%- if (@espn_teams.length == 0) -%>
+				<img src="/images/RSPlus10.png" alt="Add Icon">
+				<a href="javascript:teamWindow('ESPN')">Add Account</a>
+			<%else%>
+			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+			<a href="javascript:updateTeams('espn')">Refresh</a>
+			<img src="/images/editIcon.gif" alt="Edit Icon">
+			<a href="javascript:teamWindow('ESPN')">Edit</a>
+			<%end%>
+			<br>
+			</td>
+		</tr>
+		<%- @espn_teams.each do |team| -%>
+		<tr>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
+				<div class="DashActiveBrown"><%=team.league_name%></div>
+			</td>
+	
+			<td class="DashInactive">
+				<div id="b_<%=team._id%>">
+				<%if (team.active)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
+				</div>
+			</td>
+			<td class="DashInactive">
+				<div id="p_<%=team._id%>">
+				<span id="pr_<%=team._id%>">
+				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">
+		    		<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
+		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
+    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+    			</select>
+    			</span>
+				</div>
+			</td>
+			
+		</tr>
+		<%end%>
+		<%if (@demo)%>
+		<TR><TD><BR></TD></TR>
+		<TR>
+			<TD class="DashActiveBrown" colspan="5">
+			<div class="HomeTinyLinks">
+			If you are having issues adding and authenticating your Yahoo or ESPN ID, 
+			please open your browser, logout of all Yahoo/ESPN sessions, and log back in.  Afterwards, try adding your account again.  
+			If you are still encountering issues, please contact us for support at <a href="mailto:support@rotostarter.com">support@rotostarter.com</a>
+			</div>
+			</TD>
+		</TR>
+		<%end%>		
+	</tbody>
+</table>
+
+
+
+<SCRIPT>
+
+function setup(teamid, setbool, type) {
+	old_inner_html = $(type+'r_'+teamid).innerHTML;
+	$(type+'r_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
+	
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: 'teamid='+escape(teamid)+'&setvalue='+escape(setbool)+'&playertype='+escape(type),
+        cache: false,
+        async: true, 
+        url: '/football_teams/setup',
+        success: function(html) {
+            $(type+'_'+teamid).innerHTML = html;
+        },
+        error: function () {
+			$(type+'r_'+teamid).innerHTML = old_inner_html;
+        },
+        complete: function () {
+			
+        }
+    });
+}
+
+
+
+function set_start_option(teamid, setbool, type) {
+	old_inner_html = $(type+'r_'+teamid).innerHTML;
+	$('pr_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+		
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: 'teamid='+escape(teamid)+'&setvalue='+escape(setbool.value)+'&playertype='+escape(type),
+        cache: false,
+        async: true, 
+        url: '/football_teams/setup',
+        success: function(html) {
+            $(type+'_'+teamid).innerHTML = html;
+        },
+        error: function () {
+			$(type+'r_'+teamid).innerHTML = old_inner_html;
+        },
+        complete: function () {
+			
+        }
+    });
+
+
+}
+
+
+function update_function(){
+	<%-if (@update)-%>	
+	updateTeams('all');
+	<%-end-%>
+}
+
+
+function teamWindow(type) {
+Dialog.alert({url: "/football_teams/manage?teamType="+type, options: {method: 'get'}}, 
+            { title:"Manage "+type+" Teams",className:"bluelighting", width:400, okLabel: "Close"});
+            
+}
+
+function reload_team(){
+	
+	if (!confirm('Are you sure you want to reload all teams?  You will lose all player roster settings if you continue.')) return;
+	
+	$('manageAction').value = "R";
+	$('manage_team').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	$('team_popup').style.textAlign = "center";
+	$('team_popup').innerHTML = "<H3>Loading Team Information <IMAGE SRC=\"/images/refresh-animated.gif\"></H3>"
+
+}
+
+function submit_team(){
+	
+	
+	if (($('current_user').value != '')&&($('current_user').value != $('userid').value)){
+		if (!confirm('Are you sure you want to change user id?  You will lose all player roster settings and reload new teams if you continue.')) return;
+	}
+	
+	//Check User ID and Password Fields
+	$('userid').disabled = false;
+	if (($('userid').value == '') || ($('pass').value == '')){
+		alert('User ID Field and/or Password Field can not be empty!')
+		return;
+	}
+	
+	$('manageAction').value = "U";
+	$('manage_team').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	$('team_popup').style.textAlign = "center";
+	$('team_popup').innerHTML = "<H3>Loading Team Information <IMAGE SRC=\"/images/refresh-animated.gif\"></H3>"
+
+}
+
+
+function successFunc(response){
+	
+	if (response.responseText == 'true') window.location = "/football_teams";
+	else {
+	    var container = $('team_popup');    
+    	container.update('Could not load team information.  Check ID / Password and try again.');
+		}
+    
+}
+
+function failureFunc(response){
+
+    var container = $('team_popup');
+    
+    container.update('Error while loading information.  Please try again later.');
+    
+}
+
+function activateUserField(){
+	$('userid').disabled = false;
+}
+
+function activatePassField(){
+	$('pass').disabled = false;
+}
+  
+function updateTeams(mode) {
+	$('updating').style.display = "";
+	
+	if (mode!='all') {
+		$('updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
+	}
+
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: 'mode='+escape(mode),
+        cache: false,
+        async: true, 
+        url: '/football_teams/update_all',
+        success: function(html) {
+			
+            $j("#updating").html(html);
+            //new Popup('popup_gamelog','popup_link_gamelog',{position:'center',trigger:'click'})
+			//$('popup_gamelog').popup.show();
+        },
+        error: function () {
+			$('updating').innerHTML = "Error Refreshing!";
+        },
+        complete: function () {
+			
+        }
+    });
+}
+</SCRIPT>
