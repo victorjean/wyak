@@ -13,6 +13,7 @@ class FootballPlayer
   key :in_lineup, Boolean, :default=>false
   key :action, String, :default=>""
   key :priority, Integer, :default => 99
+  key :proj_points, Float, :default => 0  
   key :assign_slot, String
   key :current_slot, String
   key :eligible_slot, Array

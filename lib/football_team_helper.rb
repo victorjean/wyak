@@ -230,7 +230,8 @@ def parse_espn_football_team(team, first_time)
   agent = authenticate_espn(team.auth_info)
   
   
-  page = agent.get(ESPN_FOOTBALL_LEAGUE_URL+team.league_id)
+  page = agent.get(ESPN_FOOTBALL_LEAGUE_URL+team.league_id+"&view=projections")
+  puts ESPN_FOOTBALL_LEAGUE_URL+team.league_id+"&view=projections"
   #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=20")
   
   document = Hpricot(page.parser.to_s)
@@ -261,6 +262,7 @@ def parse_espn_football_team(team, first_time)
   end
   
   
+  proj_hash = {}
   
   puts 'Get Game Status for Players'
   count = 0
@@ -268,6 +270,7 @@ def parse_espn_football_team(team, first_time)
     count +=1
     name_cell = item.search("a").first
     opp_cell = item.search("td")[4].search("a").first
+    proj_cell = item.search("td[@class=playertableStat appliedPoints]").first
     if (!name_cell.nil?)
       if (opp_cell.nil?)
         @statusHash[name_cell.innerHTML.strip] = ''
@@ -275,6 +278,11 @@ def parse_espn_football_team(team, first_time)
         @statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip
       end
       puts name_cell.innerHTML.strip + '-' + @statusHash[name_cell.innerHTML.strip]
+      if (proj_cell.nil?)
+        proj_hash[name_cell.innerHTML.strip] = 0
+      else
+        proj_hash[name_cell.innerHTML.strip] = proj_cell.innerHTML.strip
+      end
     end
     
   end
@@ -462,7 +470,7 @@ def parse_espn_football_team(team, first_time)
       @player.team_name = teamHash[full_name]      
       @player.game_status = @statusHash[full_name]
       @player.game_today = (@statusHash[full_name] != '' )
-      
+      @player.proj_points = proj_hash[full_name]      
       
       #TODO:  IR
       #@player.on_dl = playerDLHash[full_name]
@@ -560,8 +568,8 @@ def parse_yahoo_football_team(team, first_time)
   agent = authenticate_yahoo(team.auth_info)
   
   
-  puts YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id
-  page = agent.get(YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id)
+  puts YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id+"/team?stat1=P&ssort=W"
+  page = agent.get(YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id+"/team?stat1=P&ssort=W")
   #page = agent.get('http://localhost:3000/yahooteam.html')
  
   
@@ -619,6 +627,15 @@ def parse_yahoo_football_team(team, first_time)
       statusHash[count] = item.inner_text.strip
     end
     #puts statusHash[count]
+  end
+  
+  puts 'Getting Week Proj Point'
+  #Get Positions from Drop Down
+  count = 0
+  projHash = {}
+  document.search("td[@class=pts last]").each do |item|
+    count+=1
+    projHash[count] = item.inner_text.strip
   end
    
   
@@ -760,6 +777,7 @@ def parse_yahoo_football_team(team, first_time)
       @player.current_slot = @currentRosterAssignHash[count]
       @player.game_status = statusHash[count]
       @player.game_today = (statusHash[count] != '' )
+      @player.proj_points = projHash[count]
       
       plyr_stats = FootballPlayerStats.find_by_yahoo_id(yahoo_id)
       if (!plyr_stats.nil?)
@@ -806,7 +824,7 @@ def parse_yahoo_football_team(team, first_time)
       #  @rosterHash[counter].save
       #end
     end
-    puts 'DL Players Assign to Bench'
+    
     assign_football_players_bench(team)
   else
     #If Roster Player Hash Empty or No Players, then don't delete
@@ -821,6 +839,10 @@ def parse_yahoo_football_team(team, first_time)
       end
       assign_football_players_bench(team)
     end
+    
+    #TODO:  Assign Update Team to Roster Info
+    puts 'First Time Assigning Players to Roster Positions'
+    
     
   
   end #End Else Statement
