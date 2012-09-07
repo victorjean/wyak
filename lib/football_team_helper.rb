@@ -230,9 +230,8 @@ def parse_espn_football_team(team, first_time)
   agent = authenticate_espn(team.auth_info)
   
   
-  page = agent.get(ESPN_FOOTBALL_LEAGUE_URL+team.league_id+"&view=projections")
-  puts ESPN_FOOTBALL_LEAGUE_URL+team.league_id+"&view=projections"
-  #page = agent.get(ESPN_BASEBALL_LEAGUE_URL+team.league_id+"&teamId=5&scoringPeriodId=20")
+  page = agent.get(ESPN_FOOTBALL_LEAGUE_URL+team.league_id)
+
   
   document = Hpricot(page.parser.to_s)
   
@@ -270,7 +269,8 @@ def parse_espn_football_team(team, first_time)
     count +=1
     name_cell = item.search("a").first
     opp_cell = item.search("td")[4].search("a").first
-    proj_cell = item.search("td[@class=playertableStat appliedPoints]").first
+    proj_cell = item.search("td[@class=playertableStat appliedPoints]").last
+    
     if (!name_cell.nil?)
       if (opp_cell.nil?)
         @statusHash[name_cell.innerHTML.strip] = ''
@@ -527,7 +527,7 @@ def parse_espn_football_team(team, first_time)
           @dbplayerHash[yid].destroy
         end
       end
-      assign_football_players_bench(team)
+      assign_football_players(team)
     end
   
   end #End Else Statement
@@ -837,14 +837,9 @@ def parse_yahoo_football_team(team, first_time)
           @dbplayerHash[yid].destroy
         end
       end
-      assign_football_players_bench(team)
-    end
+      assign_football_players(team)
+    end    
     
-    #TODO:  Assign Update Team to Roster Info
-    puts 'First Time Assigning Players to Roster Positions'
-    
-    
-  
   end #End Else Statement
   
   #Check if players are empty
@@ -879,13 +874,33 @@ def load_espn_football_first_time(user_info)
   end
 end
 
+def assign_football_players(team)
+  
+  roster_list = FootballRoster.all(:league_id=>team.league_id, :team_id=>team.team_id,:team_type=>team.team_type )
+  roster_list.each do |rosterspot|
+    rosterspot.football_player = nil  
+  end
+  
+  @rosterPlayerHash.keys.each do |counter|
+    @rosterPlayerHash[counter].football_roster_id = nil
+    i = 0
+    begin
+    if (roster_list[i].slot_number == @rosterPlayerHash[counter].current_slot && roster_list[i].football_player.nil?)
+      roster_list[i].football_player = @rosterPlayerHash[counter]
+      roster_list[i].save
+    end
+    i += 1
+    end while @rosterPlayerHash[counter].football_roster_id.nil?   
+  end
+   
+end
 
 def assign_football_players_bench(team)
     
     benchHash = {}
     puts 'Get Empty Bench Slot List'
     count = 0
-    Roster.all(:pos_text=>BENCH_POSITION, :league_id=>team.league_id, :team_id=>team.team_id,:team_type=>team.team_type ).each do |bench|
+    FootballRoster.all(:pos_text=>BENCH_POSITION, :league_id=>team.league_id, :team_id=>team.team_id,:team_type=>team.team_type ).each do |bench|
       if (bench.football_player.nil?)
         count += 1
         benchHash[count] = bench

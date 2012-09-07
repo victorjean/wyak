@@ -22,7 +22,7 @@ namespace :football do
   desc "Fetch players."
   task :parse_espn => :environment do    
     team_parse = FootballTeam.find_by_league_id("856806")
-    parse_espn_football_team(team_parse, true)    
+    parse_espn_football_team(team_parse, false)    
   end
 end
 
@@ -30,7 +30,7 @@ namespace :football do
   desc "Fetch players."
   task :parse_yahoo => :environment do    
     team_parse = FootballTeam.find_by_league_id("388110")
-    puts team_parse.inspect
+    
     parse_yahoo_football_team(team_parse, false)    
   end
 end
