@@ -69,6 +69,63 @@ end
 
 namespace :football do
   desc "Fetch players."
+  task :parse_inactive_page => :environment do
+    
+    team_list = {}
+    parse_inactive_page()
+    week = get_week()
+    #Get Scratched Player List
+    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+    inactive_list.each do |plyr|
+           
+        stat = FootballPlayerStats.find_by_full_name_and_team(plyr.full_name,plyr.team)
+        if (!stat.nil?)
+          puts stat.full_name + '- Found'
+          plyr.processed = true
+          plyr.save
+          stat.football_players.each do |p|
+            puts "#{p.full_name} - |#{p.assign_pos}|"
+            p.scratched = true
+            p.save
+            if(!p.football_team.nil? && !p.on_dl && p.assign_pos!=IR_POSITION && p.assign_pos!=ESPN_IR_SLOT)
+              #Only Add to List of Team is Active
+              if (p.football_team.active)
+                if (team_list[p.football_team.auth_info_id].nil?)
+                  team_list[p.football_team.auth_info_id] = []
+                end 
+                if (team_list[p.football_team.auth_info_id].index(p.football_team._id).nil?)
+                  team_list[p.football_team.auth_info_id].push(p.football_team._id)
+                end
+                #log_info('sys', p.football_team, 'scratch',p.full_name)
+              end
+            end
+          end
+        else
+          #puts plyr.full_name + '- Not Found'
+        end  
+        
+    end  #End Player Loop
+    
+    #Process Teams with Real Time Activated
+      team_list.values.each do |t|
+        begin
+          puts t.inspect
+          #IronWorker.config.no_upload = true
+          #worker = TeamRealtimeWorker.new
+          #worker.team_list = t
+          #resp = worker.queue
+        rescue => msg
+          puts "ERROR OCCURED (#{msg})"
+          log_error('sys', nil, 'ironworker',msg)
+          @success = false
+        end 
+      end
+    
+  end
+end
+
+namespace :football do
+  desc "Fetch players."
   task :parse_all_players => :environment do
     parse_football_player_list(YAHOO_OFFENSE_SEASON_FOOTBALL_URL, 'OFF')
     parse_football_player_list(YAHOO_DEFENSE_SEASON_FOOTBALL_URL, 'DEF')

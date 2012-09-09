@@ -491,6 +491,7 @@ def parse_espn_football_team(team, first_time)
       @player.game_today = (@statusHash[full_name] != '' )
       @player.proj_points = proj_hash[full_name]      
       @player.player_set = gameTimeHash[full_name]
+      @player.football_team = team
       
       #If First time prioritize based on starting lineup
       if (first_time)
@@ -817,6 +818,7 @@ def parse_yahoo_football_team(team, first_time)
       @player.game_status = statusHash[count]
       @player.game_today = (statusHash[count] != 'Bye' )
       @player.proj_points = projHash[count]
+      @player.football_team = team
       
       plyr_stats = FootballPlayerStats.find_by_yahoo_id(yahoo_id)
       if (!plyr_stats.nil?)
@@ -1052,6 +1054,56 @@ def assign_football_players_bench(team)
         benchHash[count].football_player = @rosterPlayerHash[counter]
         benchHash[count].save
       end
+    end
+end
+
+def parse_inactive_page()
+  
+  week = get_week()
+  puts "http://www.nfl.com/inactives?week=#{week.to_s}"
+  doc = Hpricot(open_url("http://www.nfl.com/inactives?week=#{week.to_s}"))  
+  
+  current_team = ''
+  doc.search("table[@class=data-table1]") do |teamtable|
+    teamtable.search("tr") do |row|
+      if (!row[:class].nil?)
+        if (!row[:class].strip.index("colors").nil?)
+          current_team = row.search("b").first.innerHTML          
+        end
+        
+        #Player Row
+        if (!row[:class].strip.index("tbdy1").nil?)
+          if (!row.search("a").first.nil?)
+            player_name = row.search("a").first.innerHTML.strip
+            inactive_bool = (!row.innerHTML.strip.index("Inactive").nil?)
+            
+            #puts player_name +'-'+current_team+'-'+inactive_bool.to_s
+            player = FootballInactive.find_or_create_by_full_name_and_team_and_week(player_name,current_team,week)
+            player.inactive = inactive_bool
+            player.save
+            
+          end          
+        end
+        
+      end
+    end
+  end
+  
+end
+
+def get_week(date=Time.now)
+    #set to Tuesday 3am EST, assumption of when games for prev week is over
+    first_tuesday = DateTime.new(2012,9,11,8)
+    if date <= first_tuesday
+      return 1
+    else
+      week = 2
+      football_tues = first_tuesday + 7
+      while date > football_tues && week <= 17
+        football_tues += 7
+        week += 1
+      end
+      return week
     end
 end
 

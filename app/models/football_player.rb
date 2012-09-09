@@ -29,4 +29,5 @@ class FootballPlayer
   key :on_dl, Boolean, :default=>false
   belongs_to :football_roster
   belongs_to :football_player_stats
+  belongs_to :football_team
 end
