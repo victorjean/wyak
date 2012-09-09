@@ -53,9 +53,27 @@ end
 
 namespace :football do
   desc "Fetch players."
-  task :parse_all_offense => :environment do
+  task :set_yahoo_lineup => :environment do
+    team_parse = FootballTeam.find_by_league_id("388110")
+    set_yahoo_inactive(team_parse)
+  end
+end
+
+namespace :football do
+  desc "Fetch players."
+  task :set_espn_lineup => :environment do
+    team_parse = FootballTeam.find_by_league_id("856806")
+    set_espn_inactive(team_parse)
+  end
+end
+
+namespace :football do
+  desc "Fetch players."
+  task :parse_all_players => :environment do
     parse_football_player_list(YAHOO_OFFENSE_SEASON_FOOTBALL_URL, 'OFF')
     parse_football_player_list(YAHOO_DEFENSE_SEASON_FOOTBALL_URL, 'DEF')
-    parse_football_player_list(YAHOO_KICKER_SEASON_FOOTBALL_URL,'KICK')    
+    parse_football_player_list(YAHOO_KICKER_SEASON_FOOTBALL_URL,'KICK')
+    parse_football_player_list(YAHOO_DEF_PLAYER_SEASON_FOOTBALL_URL,'IDP')
+       
   end
 end

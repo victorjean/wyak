@@ -1,0 +1,352 @@
+<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
+
+
+
+<% priority_count = 0%>
+
+<%= form_tag '/football_teams/set_lineup', options = {:id => 'set_lineup'} do%>
+
+
+<!--START -->
+
+<div id="RSSidebar" style="float:left; margin:0;">
+	<table align=right cellpadding="0" cellspacing="0" border="0" >
+	<thead>
+		<tr>
+		<td colspan="2" class="SideTitle">
+		Football Settings
+		<div class="SideTitleBrown">Set Priority Preferences</div>
+		</td>
+		</tr>
+		<tr>
+		<td>
+		<br>
+		</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+		<td class="SideHeader">
+		<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+		Yahoo Teams
+		</td>
+		<td class="MainSubTitleLinks">
+		
+		<br>
+		</td>
+		</tr>
+		<%- @yahoo_teams.each do |team| -%>
+		<tr>
+		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
+		<a class="LeftNavLink" href="/football_teams/showpriority?id=<%=team._id%>">
+		<%=team.team_name%><br>
+		<div class="SideBrown"><%=team.league_name%></div>
+		</a>
+		</td>
+		</tr>
+		<%-end-%>
+		
+		<tr>
+		<td colspan="2" class="SideClose"></td>
+		</tr>
+		<tr>
+		<td>
+		<br>
+		</td>
+		</tr>
+		<tr>
+		<td class="SideHeader">
+		<img src="/images/RSArrowDownBlue10.png" size=80% alt="Blue Down Arrow"> ESPN Teams<br>
+		</td>
+		<td class="MainSubTitleLinks">
+		
+		<br>
+		</td>
+		</tr>
+		<%- @espn_teams.each do |team| -%>
+		<tr>
+		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
+		<a class="LeftNavLink" href="/football_teams/showpriority?id=<%=team._id%>">
+		<%=team.team_name%><br>
+		<div class="SideBrown"><%=team.league_name%></div>
+		</a>
+		</td>
+		</tr>
+		<%-end-%>
+	</tbody>
+	<tfoot>
+	</tfoot>
+	</table>
+</div>
+<div id="RSMiddleDivider" style="float:left; margin:0;">
+<ul></ul>
+</div>
+<div id="RSMain" style="float:left; margin:0;">
+<table cellpadding="0" cellspacing="0" border="0" id="playertable">
+<thead>
+<tr class="MainTitle nodrag nodrop">
+<td colspan="3" class="MainTitle">
+<%=@team.team_name%>
+<div class="MainTitleBrown"><%=@team.league_name%></div>
+</td>
+<td colspan="2" class="MainSubTitle">
+<div class="MainSubTitleLinks">
+	<%if (@team.active)%>
+	<img src="/images/RS_Green_Button10.png" alt="Green Button">
+	<b><font color=green>Inactive Monitor On</font></b> 
+	<%else%>
+	<img src="/images/RS_Red_Button10.png" alt="Red Button">
+	<b><font color=red>Inactive Monitor Off</font></b> 
+	<%end%>
+
+</div>
+
+
+
+<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+<a class="LeftNavLink" href="javascript:refreshLineup()">Refresh</a>
+</td>
+</tr>
+<tr  class="nodrag nodrop">
+<td colspan="3" class="MainHeader">
+<br>
+Lineup Priority
+</td>
+<td colspan="2" align="right">
+	<span id="refresh_span" style="display:none; padding-right: 3px">Refreshing Team <img src="/images/refresh-animated.gif"></span>
+</td>
+</tr>
+
+</thead>
+<tbody>
+<tr class="nodrag nodrop">
+<td class="MainTinyHeader">Move Priority</td>
+<td class="MainTinyHeader">Pos</td>
+<td class="MainTinyHeader">Player</td>
+
+<td class="MainTinyHeader">Opponent</td>
+<td class="MainTinyHeader">Proj Points</td>
+
+</tr>
+
+    <%-     
+    count = 0
+    @player_list.each do |player| 
+    count +=1
+    -%>
+    
+    <tr id="<%=player._id%>">
+    	<td class="MainRow"><img src="/images/RS_Blue_Button10.png" alt="Blue Button"> <%=count%></td>
+        <td class="MainRow"><%=player.position_text%></td>
+        <td class="MainRow">
+        	
+        	<%=player.full_name%>
+        	<%=(player.team_name=='')?'':"(#{player.team_name})"%> 
+        	
+       	</td>
+       	
+
+        <td class="MainRow"  align="left">
+       		<%=player.game_status%> 
+        </td>
+       
+   
+        <td class="MainRowEnd" align="right">
+        	<%=player.proj_points%>
+        </td>        
+        
+    </tr>
+    <%-end-%>
+
+ 
+
+
+</tbody>
+
+</table>    
+<BR>
+    <INPUT type="hidden" name="id" value="<%=@team._id%>">
+   
+    <button type="button" onclick="set_priority()">Save Changes</button>
+    
+           
+  
+    <span id="status_span"></span>
+</div>
+
+<!--END -->
+
+
+<%end%>
+
+<%= form_tag '/football_teams/refresh_lineup', options = {:id => 'refresh_lineup'} do%>
+<INPUT type="hidden" name="id" value="<%=@team._id%>">
+<%end%>
+<SCRIPT>
+
+function refreshLineup() {
+	$('refresh_span').style.display = '';
+	
+	$('refresh_lineup').request({
+	    onSuccess: successLine,
+  		onFailure:  failureLine
+	});
+}
+
+function successLine(response){
+	
+	if (response.responseText == 'true') window.location.reload();
+	else {
+	    var container = $('status_span');    
+    	container.update('Could not refresh lineup. Please try again later.');
+		}
+    
+}
+
+function failureLine(response){
+
+    var container = $('status_span');
+    
+    container.update('System error could not refresh lineup. Please try again later.');
+    
+}
+
+function submitLineup() {
+	//document.forms[0].action = 'set_lineup';
+	//document.forms[0].submit();
+	$('set_lineup').request({
+	    onSuccess: successFunc,
+  		onFailure:  failureFunc
+	});
+	
+	$('status_span').innerHTML = "Saving Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+}
+
+function startLineup() {
+	$('refresh_lineup').action = '/teams/start_lineup'
+	$('refresh_lineup').request({
+	    onSuccess: successFuncStart,
+  		onFailure:  failureFunc
+	});
+	
+	$('status_span').innerHTML = "Starting & Applying Lineup Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
+
+}
+
+function successFuncStart(response){
+	
+	if (response.responseText == 'true') {
+	    var container = $('status_span');    
+    	container.update("Lineup Started for Tomorrow - Check your Team");
+	}
+	else {
+	    var container = $('status_span');    
+    	container.update("Could not start tomorrow's lineup. Please try again later.");
+		}
+    
+}
+
+function successFunc(response){
+	
+	if (response.responseText == 'true') window.location.reload();
+	else {
+	    var container = $('status_span');    
+    	container.update('Could not set lineup. Please try again later.');
+		}
+    
+}
+
+function failureFunc(response){
+
+    var container = $('status_span');
+    
+    container.update('System error could not set lineup. Please try again later.');
+    
+}
+
+function showPreview() {
+	
+$('status_span').innerHTML = "Loading Preview Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";	
+
+var win = new Window({className: "bluelighting", title: "Preview Lineup For Tomorrow", 
+                      width:370, height:420,  
+                      showEffectOptions: {duration:1.5}})
+                      
+win.setCloseCallback(clearStatus);
+win.setAjaxContent("/teams/preview_lineup?id=<%=@team._id%>", {method: 'get'}, true, false);
+
+
+ 
+}
+
+function clearStatus(){
+	$('status_span').innerHTML = '';	
+	return true;
+}
+
+function test() {
+	//alert('test');
+	//alert($j('#playertable').tableDnDSerialize());
+	set_priority();
+}
+
+function set_priority() {
+	$('status_span').innerHTML = "Saving Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
+		
+	$j.ajax({
+        type: 'GET',
+        dataType: "html",
+        data: $j('#playertable').tableDnDSerialize(),
+        cache: false,
+        async: true, 
+        url: '/football_teams/set_priority',
+        success: function(html) {
+            window.location.reload();
+        },
+        error: function () {
+			alert('Error Saving Priorirty.  Please try again.');
+        },
+        complete: function () {
+			
+        }
+    });
+
+
+}
+
+
+
+function showStat(id, name, espnid){
+	
+	var winStat = new Window({className: "bluelighting", title: name, 
+                      width:300, height:140,  
+                      showEffectOptions: {duration:1.5}})
+	
+	winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, false, false);
+	winStat.setLocation(posY, posX);
+}
+
+
+
+var posX;
+var posY
+$j(document).ready(function(){
+	
+	//alert("test");
+	$j("#playertable").tableDnD();
+    
+
+	
+   $j(document).click(function(e){
+      //alert(e.pageX +', '+ e.pageY);
+      posX = e.pageX;
+      posY = e.pageY;
+   }); 
+})
+
+
+
+</SCRIPT>

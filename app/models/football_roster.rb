@@ -31,10 +31,7 @@ class FootballRoster
     if (self.football_player.action == "")
         self.football_player.action = DEFAULT_START_OPTION
     end
-    #If Player is not on Bench set priority to Zero
-    if (self.football_player.assign_pos != BENCH_POSITION)
-      self.football_player.priority = 0
-    end
+
     
     #If Player Bench Make Sure Action is set Correctly
     if (self.football_player.assign_pos == BENCH_POSITION && (self.football_player.action == ALWAYS_START_OPTION ))
@@ -45,10 +42,7 @@ class FootballRoster
       self.football_player.action = DEFAULT_START_OPTION
     end
 
-    #If Never Start Set Priority to 99
-    if (self.football_player.action == NEVER_START_OPTION)
-      self.football_player.priority = 99
-    end
+
     
     
     

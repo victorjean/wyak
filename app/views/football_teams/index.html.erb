@@ -57,7 +57,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a><br>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showpriority?id=<%=@demo_team._id%>">Demo Team</a><br>
 				<div class="DashActiveBrown">RotoStarter Demo League</div>
 			</td>
 	
@@ -65,12 +65,12 @@
 				<div id="b_<%=@demo_team._id%>">
 				<%if (@demo_team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showbatters?id=<%=@demo_team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=green>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;					
 				<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showbatters?id=<%=@demo_team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=red>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 					
 					<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
@@ -122,7 +122,7 @@
 		</tr>
 		<%- @yahoo_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showpriority?id=<%=team._id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
@@ -130,12 +130,12 @@
 				<div id="b_<%=team._id%>">
 				<%if (team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;					
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;	
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
 				<%end%>
@@ -184,7 +184,7 @@
 		</tr>
 		<%- @espn_teams.each do |team| -%>
 		<tr>
-			<td colspan="3" class="DashActive"><a href="/football_teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
+			<td colspan="3" class="DashActive"><a href="/football_teams/showpriority?id=<%=team._id%>"><%=team.team_name%></a><br>
 				<div class="DashActiveBrown"><%=team.league_name%></div>
 			</td>
 	
@@ -192,12 +192,12 @@
 				<div id="b_<%=team._id%>">
 				<%if (team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showbatters?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Player Priority</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
 				<%end%>

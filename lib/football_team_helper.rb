@@ -15,12 +15,14 @@ ACCEPT_CHARSET = "utf-8;q=0.7,*;q=0.3"
 
 ESPN_FOOTBALL_PAGE_URL = "http://games.espn.go.com/ffl/tools/editmyteams"
 ESPN_FOOTBALL_LEAGUE_URL = "http://games.espn.go.com/ffl/clubhouse?pnc=on&seasonId=#{Date.today.year}&leagueId="
+ESPN_FOOTBALL_LINEUP_SET_URL = "http://games.espn.go.com/ffl/pnc/saveRoster?"
 
 YAHOO_FOOTBALL_PAGE_URL = "http://football.fantasysports.yahoo.com/f1/"
 
 YAHOO_OFFENSE_SEASON_FOOTBALL_URL = "http://football.fantasysports.yahoo.com/f1/560932/players?status=ALL&pos=O&cut_type=9&stat1=S_S_***&myteam=0&sort=AR&sdir=1&count=###"
 YAHOO_KICKER_SEASON_FOOTBALL_URL = "http://football.fantasysports.yahoo.com/f1/560932/players?status=ALL&pos=K&cut_type=9&stat1=S_S_***&myteam=0&sort=AR&sdir=1&count=###"
 YAHOO_DEFENSE_SEASON_FOOTBALL_URL = "http://football.fantasysports.yahoo.com/f1/560932/players?status=ALL&pos=DEF&cut_type=9&stat1=S_S_***&myteam=0&sort=AR&sdir=1&count=###"
+YAHOO_DEF_PLAYER_SEASON_FOOTBALL_URL = "http://football.fantasysports.yahoo.com/f1/200/players?status=A&pos=DP&cut_type=9&stat1=S_S_***&myteam=0&sort=AR&sdir=1&count=###"
 
 
 NA_TAG = 'NA'
@@ -30,6 +32,7 @@ ESPN_BENCH_SLOT_FOOTBALL = '20'
 ESPN_IR_SLOT = '21'
 IR_POSITION = 'IR'
 ESPN_FLEX_SLOT = '23'
+ESPN_RBWR_SLOT = '3'
 ESPN_FLEX_POS = 'FLEX'
 
 PLAYER_TYPE_FOOTBALL = 'F'
@@ -231,12 +234,16 @@ def parse_espn_football_team(team, first_time)
   
   
   page = agent.get(ESPN_FOOTBALL_LEAGUE_URL+team.league_id)
+  #page = agent.get("http://games.espn.go.com/ffl/clubhouse?leagueId=856806&teamId=4&seasonId=2012&scoringPeriodId=5")
 
   
   document = Hpricot(page.parser.to_s)
   
   #get scoring period id to post espn lineup
-  #TODO:
+  scoringPeriodTag = document.search("input[@name=scoringPeriodId]")
+  if(!scoringPeriodTag.first.nil?)
+    currentScoringPeriodId = scoringPeriodTag.first.get_attribute("value").strip
+  end
   
   
   #Get Team Hash
@@ -244,25 +251,30 @@ def parse_espn_football_team(team, first_time)
   playerNameHash = {}
   playerInLineupHash = {}
   playerDLHash = {}
+  posTextHash = {}
+  priorityHash = {}
   count = 0
   puts 'Get Team Hash Table for Players'
   document.search("td[@class=playertablePlayerName]").each do |item|
     count += 1
     player_name = item.search("a").first.inner_html.strip
     playerNameHash[count] = player_name
+    priorityHash[player_name] = count
     
     #Get Team Name for Player
     if (item.inner_html.split(',')[1].nil?)
       teamHash[player_name] = ''
+      posTextHash[player_name] = ''
     else
-      teamHash[player_name] = item.inner_html.split(',')[1].strip[0..2].upcase  
+      teamHash[player_name] = item.inner_html.split(',')[1].strip[0..2].upcase.gsub(/\u00A0/,"")
+      posTextHash[player_name] = item.inner_html.split(',')[1].split(/\u00A0/)[1].strip[0..1]
     end    
     
   end
   
   
   proj_hash = {}
-  
+  gameTimeHash = {}
   puts 'Get Game Status for Players'
   count = 0
   (document/"tr.pncPlayerRow").each do |item|
@@ -270,6 +282,7 @@ def parse_espn_football_team(team, first_time)
     name_cell = item.search("a").first
     opp_cell = item.search("td")[4].search("a").first
     proj_cell = item.search("td[@class=playertableStat appliedPoints]").last
+    status_cell = item.search("td")[5].search("a").first
     
     if (!name_cell.nil?)
       if (opp_cell.nil?)
@@ -277,11 +290,17 @@ def parse_espn_football_team(team, first_time)
       else
         @statusHash[name_cell.innerHTML.strip] = opp_cell.innerHTML.strip
       end
-      puts name_cell.innerHTML.strip + '-' + @statusHash[name_cell.innerHTML.strip]
+      #puts name_cell.innerHTML.strip + '-' + @statusHash[name_cell.innerHTML.strip]
       if (proj_cell.nil?)
         proj_hash[name_cell.innerHTML.strip] = 0
       else
         proj_hash[name_cell.innerHTML.strip] = proj_cell.innerHTML.strip
+      end
+      
+      if (!status_cell.nil?)        
+        gameTimeHash[name_cell.innerHTML.strip] = (status_cell[:href].index('preview').nil?)
+      else 
+        gameTimeHash[name_cell.innerHTML.strip] = true
       end
     end
     
@@ -466,11 +485,26 @@ def parse_espn_football_team(team, first_time)
       @player.current_slot = curr_slot 
       @player.eligible_slot = slotPosArray
       @player.eligible_pos = textPosArray
-      @player.position_text = pos_text
+
       @player.team_name = teamHash[full_name]      
       @player.game_status = @statusHash[full_name]
       @player.game_today = (@statusHash[full_name] != '' )
       @player.proj_points = proj_hash[full_name]      
+      @player.player_set = gameTimeHash[full_name]
+      
+      #If First time prioritize based on starting lineup
+      if (first_time)
+        @player.priority = priorityHash[full_name]   
+      end
+      
+      if posTextHash[full_name] == ''
+        @player.position_text = pos_text
+      else
+        @player.position_text =  posTextHash[full_name]
+      end
+      
+           
+      
       
       #TODO:  IR
       #@player.on_dl = playerDLHash[full_name]
@@ -542,7 +576,7 @@ def parse_espn_football_team(team, first_time)
   end
   team.save
   #return value
-  #currentScoringPeriodId
+  currentScoringPeriodId
 end
 
 def parse_yahoo_football_team(team, first_time)
@@ -568,9 +602,9 @@ def parse_yahoo_football_team(team, first_time)
   agent = authenticate_yahoo(team.auth_info)
   
   
-  puts YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id+"/team?stat1=P&ssort=W"
+  #puts YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id+"/team?stat1=P&ssort=W"
   page = agent.get(YAHOO_FOOTBALL_PAGE_URL+team.league_id+"/"+team.team_id+"/team?stat1=P&ssort=W")
-  #page = agent.get('http://localhost:3000/yahooteam.html')
+  #page = agent.get('http://football.fantasysports.yahoo.com/f1/388110/10?week=5')
  
   
   document = Hpricot(page.parser.to_s)
@@ -578,6 +612,7 @@ def parse_yahoo_football_team(team, first_time)
   #Get Crumb and Ret Type Information Used for Setting Lineup
   crumbHash = {}
   crumb_value = document.search("input[@name=crumb]").first.get_attribute("value").strip
+  week_value = document.search("input[@name=week]").first.get_attribute("value").strip
     
   ret_mode = 'classic'
  
@@ -601,6 +636,7 @@ def parse_yahoo_football_team(team, first_time)
   
   crumbHash['crumb_value']=crumb_value
   crumbHash['ret_mode']=ret_mode
+  crumbHash['week']=week_value
  
   
   puts 'Get Current Roster Assigned Hash'
@@ -771,12 +807,15 @@ def parse_yahoo_football_team(team, first_time)
       if(!positionHash[count].nil? && positionHash[count].length != 0)
       @player.eligible_pos = positionHash[count]
       @player.eligible_slot = positionHash[count]
+      @player.player_set = false
+      else
+        @player.player_set = true
       end
       @player.position_text = position_elig
       @player.team_name = team_name
       @player.current_slot = @currentRosterAssignHash[count]
       @player.game_status = statusHash[count]
-      @player.game_today = (statusHash[count] != '' )
+      @player.game_today = (statusHash[count] != 'Bye' )
       @player.proj_points = projHash[count]
       
       plyr_stats = FootballPlayerStats.find_by_yahoo_id(yahoo_id)
@@ -786,6 +825,11 @@ def parse_yahoo_football_team(team, first_time)
       
       if (@player.current_slot == IR_POSITION)
         @player.football_roster_id = nil  
+      end
+      
+      #If First time prioritize based on starting lineup
+      if (first_time)
+        @player.priority = count  
       end
       
       #Check if DL Status is Marked next to Player
@@ -873,6 +917,100 @@ def load_espn_football_first_time(user_info)
     parse_espn_football_team(team, true)
   end
 end
+
+def set_yahoo_football_lineup(team,player_list,crumbHash)
+  agent = authenticate_yahoo(team.auth_info)
+  
+  curr_date = Date.today
+  
+  
+  postHash = {}
+
+  #puts crumbHash['ret_mode']
+  puts crumbHash['crumb_value']
+  puts crumbHash['week']
+     
+  postHash['ret'] = crumbHash['ret_mode']
+  postHash['crumb'] = crumbHash['crumb_value']
+  postHash['week'] = crumbHash['week']
+  postHash['stat1'] = 'S'
+  postHash['stat2'] = 'W'
+  postHash['jsubmit'] = ''
+  
+ 
+  
+    player_list.each do |item|
+      #ignore any player in DL position
+      if (item.current_slot == IR_POSITION)
+        postHash[item.yahoo_id] = IR_POSITION      
+      else
+        postHash[item.yahoo_id] = item.assign_pos
+        puts "#{item.yahoo_id} - #{item.assign_pos}"
+        #postHash[item.yahoo_id] = 'BN'
+      end 
+    end
+    
+  
+  page = agent.post(YAHOO_FOOTBALL_PAGE_URL+"#{team.league_id}/#{team.team_id}/editroster",postHash)
+  puts 'done posting'
+end
+
+def set_espn_football_lineup(team,player_list,scoring_period_id)
+  
+  agent = authenticate_espn(team.auth_info)
+  
+  
+  set_lineup_str = ''
+  postHash = {}
+  
+  player_list.each do |item|
+    
+    if (item.current_slot != ESPN_IR_SLOT && item.assign_slot != item.current_slot)
+            
+        set_lineup_str = set_lineup_str + "1_#{item.espn_id}_#{item.current_slot}_#{item.assign_slot}|"      
+      
+    end
+  end
+  #puts set_lineup_str.chop
+  puts ESPN_FOOTBALL_LINEUP_SET_URL+"leagueId=#{team.league_id}&teamId=#{team.team_id}&scoringPeriodId=#{scoring_period_id}&returnSm=true&trans="+set_lineup_str.chop
+  
+  agent.post(ESPN_FOOTBALL_LINEUP_SET_URL+"leagueId=#{team.league_id}&teamId=#{team.team_id}&scoringPeriodId=#{scoring_period_id}&returnSm=true&trans="+set_lineup_str.chop, postHash)
+  #http://games.espn.go.com/ffl/pnc/saveRoster?leagueId=193126&teamId=7&scoringPeriodId=1&returnSm=true&trans=1_13271_20_4|1_13934_4_20
+
+  
+  puts 'done posting'
+
+end
+
+def set_yahoo_inactive(team)
+  #update team in database
+  scoring_period_id = parse_yahoo_football_team(team,false)
+  #Get roster list where position is not bench and dl and empty 
+  
+  player_list = FootballPlayer.where(:team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
+  
+ 
+  player_list = football_player_assignment_inactive(player_list,team.start_type)
+  
+  set_yahoo_football_lineup(team, player_list, scoring_period_id)
+    
+end
+
+def set_espn_inactive(team)
+  #update team in database
+  scoring_period_id = parse_espn_football_team(team,false)
+  #Get roster list where position is not bench and dl and empty 
+  
+  player_list = FootballPlayer.where(:team_type=>team.team_type, :team_id=>team.team_id, :league_id=>team.league_id).all
+ 
+ 
+  player_list = football_player_assignment_inactive(player_list,team.start_type)
+  
+  set_espn_football_lineup(team, player_list, scoring_period_id)
+    
+end
+
+
 
 def assign_football_players(team)
   
@@ -1039,7 +1177,183 @@ def parse_football_player_list(url, player_type)
   end              
 end
 
+def football_player_assignment_inactive(player_list, start_type)
+    
+    avail_players = []
+    scratch_players = {}
+    eligible_players = {}
+    
+    
+    #Sort Players By Priority
+    if (start_type=='projected')
+      player_list = player_list.sort_by{|x| [x.proj_points]}.reverse!
+    else
+      player_list = player_list.sort_by{|x| [x.priority]}
+    end
+    
+    
+    # Get List of Position Scratched To Be Filled
+    # If Double Header, Don't Mark as Scratched
+    player_list.each do |item|
+      
+      if (!item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != IR_POSITION)
+        eligible_players[item.current_slot] = []
+        if (scratch_players[item.current_slot].nil?)
+          scratch_players[item.current_slot] = []
+          scratch_players[item.current_slot].push(item)
+        else
+          scratch_players[item.current_slot].push(item)  
+        end
+        
+        puts "#{item.full_name} #{item.assign_pos} #{item.priority} "
+        
+        # Bench Inactive Players
+        item.assign_pos = BENCH_POSITION
+        item.assign_slot = ESPN_BENCH_SLOT_FOOTBALL 
+        item.player_set = true
+      end
+    end
+    
+     if (start_type=='bench')
+       return player_list
+     end
+    
+    #Get List of Available Players on Bench 
+    #That are not locked, on bench, not DL, has game today, not scratched
+    player_list.each do |item|
+      if (!item.player_set && item.assign_pos == BENCH_POSITION && !item.on_dl && item.game_today && !item.scratched)
+        avail_players.push(item)
+      end
+    end
+    
+    #attempt to shuffle roster to start top bench guys first
+    not_all_zero = true
+    begin
+      not_all_zero = find_football_player_in_lineup_for_scratch(eligible_players,scratch_players,avail_players,player_list)
+    end while not_all_zero
+    
+    puts 'Left Over Slots Not Filled'
+    eligible_players.keys.each do |key|
+      puts key
+    end
+    
+     #loop through open roster spots until all spot are filled
+      not_all_zero = true
+      begin
+        #clear roster slots of playera
+        eligible_players.keys.each do |key|
+          eligible_players[key] = []
+        end
+        
+        #Assign Eligible players to Eligible Hash for Each Position
+        scratch_players.keys.each do |key|
+          avail_players.each do |p|
+            if (!p.eligible_slot.index(key).nil?)
+              eligible_players[key].push(p)
+            end
+          end
+        end
+        
+        not_all_zero = assign_football_player_scratch(eligible_players,scratch_players,avail_players)
+      end while not_all_zero
+    
+    
+    
+    
+    
+    player_list    
+end
 
+def find_football_player_in_lineup_for_scratch(elig_hash,scratch_players,avail_players,player_list)
+    avail_players.each do |avail|
+      avail.eligible_slot.each do |slot|
+        if (slot!=BENCH_POSITION && slot!=ESPN_BENCH_SLOT_FOOTBALL)
+          player_list.each do |p|
+            if (p.assign_slot==slot && !p.scratched && !p.player_set && p.assign_pos!=BENCH_POSITION && p.assign_pos!=ESPN_BENCH_SLOT_FOOTBALL)
+              #Check to See if Player Can fill Any Position in Elig Hash
+              elig_hash.keys.each do |key|
+                if (key!=ESPN_RBWR_SLOT && key!=ESPN_FLEX_SLOT && key!='W/R/T' && key!='W/R' && !p.eligible_slot.index(key).nil?)
+                  puts "#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}"
+                  puts "#{p.full_name} goes to scratch position - #{key}"
+                  log_info('sys', nil, 'scratchalgorithm',"#{avail.full_name} replace #{p.full_name} at #{p.assign_pos}")
+                  log_info('sys', nil, 'scratchalgorithm',"#{p.full_name} goes to scratch position - #{key}")
+                  
+                  
+                  avail.assign_pos = p.assign_slot
+                  avail.assign_slot = p.assign_slot
+                  p.assign_pos = key
+                  p.assign_slot = key
+                  plyr = scratch_players[key].pop
+                  plyr.assign_pos = BENCH_POSITION
+                  plyr.assign_slot = ESPN_BENCH_SLOT_FOOTBALL
+                  plyr.player_set = true
+                  
+                  avail_players.delete(avail)
+                  if (scratch_players[key].length == 0)
+                  scratch_players.delete(key)
+                  elig_hash.delete(key)
+                  end
+                  
+                  
+                  return true  
+                end
+              end 
+            end
+          end
+        end
+      end
+    end 
+    false
+end
+
+def assign_football_player_scratch(elig_hash,scratch_players,avail_players)
+    elig_hash.keys.each do |key|
+      if(elig_hash[key].length==1)
+        puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        log_info('sys', nil, 'scratchalgorithm',"assign player #{elig_hash[key].first.full_name} to #{key}")
+        
+        plyr = scratch_players[key].pop
+        plyr.assign_pos = BENCH_POSITION
+        plyr.assign_slot = ESPN_BENCH_SLOT_FOOTBALL
+        plyr.player_set = true
+        elig_hash[key].first.assign_pos = key
+        elig_hash[key].first.assign_slot = key
+        
+        avail_players.delete(elig_hash[key].first)
+        if (scratch_players[key].length == 0)
+          scratch_players.delete(key)
+          elig_hash.delete(key)
+        end
+        
+        return true
+      end
+    end
+    
+    elig_hash.keys.each do |key|
+      if(elig_hash[key].length>1)
+        puts "assign player #{elig_hash[key].first.full_name} to #{key}"
+        log_info('sys', nil, 'scratchalgorithm',"assign player #{elig_hash[key].first.full_name} to #{key}")
+        
+        plyr = scratch_players[key].pop
+        plyr.assign_pos = BENCH_POSITION
+        plyr.assign_slot = ESPN_BENCH_SLOT_FOOTBALL
+        plyr.player_set = true
+        elig_hash[key].first.assign_pos = key
+        elig_hash[key].first.assign_slot = key
+        
+        avail_players.delete(elig_hash[key].first)
+        if (scratch_players[key].length == 0)
+          scratch_players.delete(key)
+          elig_hash.delete(key)
+        end
+        
+        return true
+
+      end
+    end
+  
+    false  
+end
 
 def print_player_list(player_list)
   player_list.each do |item|
