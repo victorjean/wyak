@@ -947,8 +947,8 @@ def set_yahoo_football_lineup(team,player_list,crumbHash)
         postHash[item.yahoo_id] = IR_POSITION      
       else
         postHash[item.yahoo_id] = item.assign_pos
-        puts "#{item.yahoo_id} - #{item.assign_pos}"
-        #postHash[item.yahoo_id] = 'BN'
+        #puts "#{item.yahoo_id} - #{item.assign_pos}"
+        
       end 
     end
     
@@ -1248,7 +1248,7 @@ def football_player_assignment_inactive(player_list, start_type)
     # If Double Header, Don't Mark as Scratched
     player_list.each do |item|
       
-      if (!item.player_set && item.scratched && item.assign_pos != BENCH_POSITION && item.assign_pos != IR_POSITION)
+      if (!item.player_set && (item.scratched || !item.game_today) && item.assign_pos != BENCH_POSITION && item.assign_pos != IR_POSITION)
         eligible_players[item.current_slot] = []
         if (scratch_players[item.current_slot].nil?)
           scratch_players[item.current_slot] = []

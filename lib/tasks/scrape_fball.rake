@@ -70,10 +70,27 @@ end
 namespace :football do
   desc "Fetch players."
   task :parse_inactive_page => :environment do
+    week = get_week()
+    current_time = Time.now
+    puts "Current Day #{current_time.wday}"
+    puts current_time
+    puts "Current hour #{current_time.hour}"
     
+    #For Thursday Scrape Inactive List Between 19 and 21
+    
+    #For Sunday Scrape Inactive List Between 12 and 14,  15 and 17, 19 and 21
+    
+    #For Monday Scrape Inactive List Between 19 and 21
+    
+    #For Thursday Week 12 Scrape Inactive List Between  11 and 13,  15 and 17, 19 and 21
+    
+    #For Saturday Week 16 Scrape Inactive List  Between 19 and 21
+    
+    
+                      
     team_list = {}
     parse_inactive_page()
-    week = get_week()
+    
     #Get Scratched Player List
     inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
     inactive_list.each do |plyr|
@@ -114,6 +131,13 @@ namespace :football do
           #worker = TeamRealtimeWorker.new
           #worker.team_list = t
           #resp = worker.queue
+          team = FootballTeam.find_by_id(t)
+          if (team.team_type == YAHOO_AUTH_TYPE)
+            set_yahoo_inactive(team)
+          end
+          if (team.team_type == ESPN_AUTH_TYPE)
+            set_espn_inactive(team)
+          end
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
           log_error('sys', nil, 'ironworker',msg)
