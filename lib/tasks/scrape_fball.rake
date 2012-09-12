@@ -2,6 +2,7 @@ require "football_team_helper"
 require "fantasy_team_helper"
 require "iron_worker"
 require 'football_daily_worker'
+require 'football_realtime_worker'
 
 
 
@@ -78,6 +79,23 @@ namespace :football do
     puts start
     
     worker = FootballDailyWorker.new
+    worker.team_list = []
+    worker.upload
+      
+    finish = Time.now
+    puts finish
+    puts finish-start 
+  end
+end
+
+namespace :football do
+  desc "Iron Uploader for Daily Process"
+  task :realtimeworker => :environment do
+    
+    start = Time.now
+    puts start
+    
+    worker = FootballRealtimeWorker.new
     worker.team_list = []
     worker.upload
       
