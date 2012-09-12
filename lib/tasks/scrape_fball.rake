@@ -1,4 +1,7 @@
 require "football_team_helper"
+require "fantasy_team_helper"
+require "iron_worker"
+require 'football_daily_worker'
 
 
 

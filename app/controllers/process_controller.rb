@@ -372,11 +372,11 @@ class ProcessController < ApplicationController
          if (current_auth_id != team.auth_info_id)
             if (send_team_list.length!=0)
               puts "Create and Send Worker for List"
-              #IronWorker.config.no_upload = true
-              #worker = TeamDailyWorker.new
-              #worker.team_list = send_team_list
-              #resp = worker.queue
-              puts send_team_list.inspect
+              IronWorker.config.no_upload = true
+              worker = FootballDailyWorker.new
+              worker.team_list = send_team_list
+              resp = worker.queue
+              #puts send_team_list.inspect
               counter += 1
             end
             send_team_list = []
@@ -398,11 +398,11 @@ class ProcessController < ApplicationController
     if (send_team_list.length!=0)
       begin
         puts "Create and Send Worker for List"
-        #IronWorker.config.no_upload = true
-        #worker = TeamDailyWorker.new
-        #worker.team_list = send_team_list
-        #resp = worker.queue
-        puts send_team_list.inspect
+        IronWorker.config.no_upload = true
+        worker = FootballDailyWorker.new
+        worker.team_list = send_team_list
+        resp = worker.queue
+        #puts send_team_list.inspect
         counter += 1
       rescue => msg
         puts "ERROR OCCURED (#{msg})"
