@@ -4,6 +4,7 @@ require "iron_worker"
 require 'team_daily_worker'
 require 'football_team_helper'
 require 'football_daily_worker'
+require 'football_realtime_worker'
 
 
 class ProcessController < ApplicationController
@@ -416,6 +417,119 @@ class ProcessController < ApplicationController
     log_info('sys', nil, 'footballworker',"Finished Daily Football Total Teams Processed - #{counter}")
     
     render(:partial => 'loading')
+  end
+  
+  def football_monitor
+        #Heroku Server is Pacific Time  -7 from UTC
+    week = get_week()
+    current_time = Time.now
+    week_day = current_time.wday
+    current_hour = current_time.hour
+    
+    puts current_time
+    puts "Current Week #{week}"
+    puts "Current Day #{week_day}"    
+    puts "Current Hour #{current_hour}"
+    
+    
+    parse_bool = true
+    
+    #For Thursday 4 Scrape Inactive List Between 16 and 18
+    if (week_day == 4 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Sunday 0 Scrape Inactive List Between 9 and 11,  12 and 14, 16 and 18
+    if (week_day == 0 && (current_hour >= 9 && current_hour< 11))
+      parse_bool = false
+    end
+    if (week_day == 0 && (current_hour >= 12 && current_hour< 14))
+      parse_bool = false
+    end
+    if (week_day == 0 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Monday 1 Scrape Inactive List Between 16 and 18
+    if (week_day == 1 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Thursday 4 Week 12 Scrape Inactive List Between  8 and 10,  12 and 14, 16 and 18
+    if (week_day == 4 && week == 12 && (current_hour >= 8 && current_hour< 10))
+      parse_bool = false
+    end
+    if (week_day == 4 && week == 12 && (current_hour >= 12 && current_hour< 14))
+      parse_bool = false
+    end
+    if (week_day == 4 && week == 12 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Saturday 6 Week 16 Scrape Inactive List  Between 16 and 18
+    if (week_day == 6 && week == 16 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    
+    if (parse_bool)
+      puts 'Not within time range - Will Not Parse Inactive Page'
+    end
+    
+                      
+    team_list = {}
+    parse_inactive_page()
+    
+    #Get Scratched Player List
+    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+    inactive_list.each do |plyr|
+           
+        stat = FootballPlayerStats.find_by_full_name_and_team(plyr.full_name,plyr.team)
+        if (!stat.nil?)
+          puts stat.full_name + '- Found'
+          plyr.processed = true
+          plyr.save
+          stat.football_players.each do |p|
+            puts "#{p.full_name} - |#{p.assign_pos}|"
+            p.scratched = true
+            p.save
+            if(!p.football_team.nil? && !p.on_dl && p.assign_pos!=IR_POSITION && p.assign_pos!=ESPN_IR_SLOT)
+              #Only Add to List of Team is Active
+              if (p.football_team.active)
+                if (team_list[p.football_team.auth_info_id].nil?)
+                  team_list[p.football_team.auth_info_id] = []
+                end 
+                if (team_list[p.football_team.auth_info_id].index(p.football_team._id).nil?)
+                  team_list[p.football_team.auth_info_id].push(p.football_team._id)
+                end
+                log_info('sys', p.football_team, 'inactive',p.full_name)
+              end
+            end
+          end
+        else
+          #puts plyr.full_name + '- Not Found'
+        end  
+        
+    end  #End Player Loop
+    
+    #Process Teams with Real Time Activated
+      team_list.values.each do |t|
+        begin
+          #puts t.inspect
+          IronWorker.config.no_upload = true
+          worker = FootballRealtimeWorker.new
+          worker.team_list = t
+          resp = worker.queue
+          #team = FootballTeam.find_by_id(t)
+          #if (team.team_type == YAHOO_AUTH_TYPE)
+          #  set_yahoo_inactive(team)
+          #end
+          #if (team.team_type == ESPN_AUTH_TYPE)
+          #  set_espn_inactive(team)
+          #end
+        rescue => msg
+          puts "ERROR OCCURED (#{msg})"
+          log_error('sys', nil, 'footballironworker',msg)
+          @success = false
+        end 
+      end
+    #Body End
+    
   end
 
 

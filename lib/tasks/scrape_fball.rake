@@ -108,22 +108,56 @@ end
 namespace :football do
   desc "Fetch players."
   task :parse_inactive_page => :environment do
+    #Heroku Server is Pacific Time  -7 from UTC
     week = get_week()
     current_time = Time.now
-    puts "Current Day #{current_time.wday}"
+    week_day = current_time.wday
+    current_hour = current_time.hour
+    
     puts current_time
-    puts "Current hour #{current_time.hour}"
+    puts "Current Week #{week}"
+    puts "Current Day #{week_day}"    
+    puts "Current Hour #{current_hour}"
     
-    #For Thursday Scrape Inactive List Between 19 and 21
     
-    #For Sunday Scrape Inactive List Between 12 and 14,  15 and 17, 19 and 21
+    parse_bool = true
     
-    #For Monday Scrape Inactive List Between 19 and 21
+    #For Thursday 4 Scrape Inactive List Between 16 and 18
+    if (week_day == 4 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Sunday 0 Scrape Inactive List Between 9 and 11,  12 and 14, 16 and 18
+    if (week_day == 0 && (current_hour >= 9 && current_hour< 11))
+      parse_bool = false
+    end
+    if (week_day == 0 && (current_hour >= 12 && current_hour< 14))
+      parse_bool = false
+    end
+    if (week_day == 0 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Monday 1 Scrape Inactive List Between 16 and 18
+    if (week_day == 1 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Thursday 4 Week 12 Scrape Inactive List Between  8 and 10,  12 and 14, 16 and 18
+    if (week_day == 4 && week == 12 && (current_hour >= 8 && current_hour< 10))
+      parse_bool = false
+    end
+    if (week_day == 4 && week == 12 && (current_hour >= 12 && current_hour< 14))
+      parse_bool = false
+    end
+    if (week_day == 4 && week == 12 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
+    #For Saturday 6 Week 16 Scrape Inactive List  Between 16 and 18
+    if (week_day == 6 && week == 16 && (current_hour >= 16 && current_hour< 18))
+      parse_bool = false
+    end
     
-    #For Thursday Week 12 Scrape Inactive List Between  11 and 13,  15 and 17, 19 and 21
-    
-    #For Saturday Week 16 Scrape Inactive List  Between 19 and 21
-    
+    if (parse_bool)
+      puts 'Not within time range - Will Not Parse Inactive Page'
+    end
     
                       
     team_list = {}
@@ -151,7 +185,7 @@ namespace :football do
                 if (team_list[p.football_team.auth_info_id].index(p.football_team._id).nil?)
                   team_list[p.football_team.auth_info_id].push(p.football_team._id)
                 end
-                #log_info('sys', p.football_team, 'scratch',p.full_name)
+                log_info('sys', p.football_team, 'inactive',p.full_name)
               end
             end
           end
@@ -164,25 +198,25 @@ namespace :football do
     #Process Teams with Real Time Activated
       team_list.values.each do |t|
         begin
-          puts t.inspect
-          #IronWorker.config.no_upload = true
-          #worker = TeamRealtimeWorker.new
-          #worker.team_list = t
-          #resp = worker.queue
-          team = FootballTeam.find_by_id(t)
-          if (team.team_type == YAHOO_AUTH_TYPE)
-            set_yahoo_inactive(team)
-          end
-          if (team.team_type == ESPN_AUTH_TYPE)
-            set_espn_inactive(team)
-          end
+          #puts t.inspect
+          IronWorker.config.no_upload = true
+          worker = FootballRealtimeWorker.new
+          worker.team_list = t
+          resp = worker.queue
+          #team = FootballTeam.find_by_id(t)
+          #if (team.team_type == YAHOO_AUTH_TYPE)
+          #  set_yahoo_inactive(team)
+          #end
+          #if (team.team_type == ESPN_AUTH_TYPE)
+          #  set_espn_inactive(team)
+          #end
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
-          log_error('sys', nil, 'ironworker',msg)
+          log_error('sys', nil, 'footballironworker',msg)
           @success = false
         end 
       end
-    
+    #Body End
   end
 end
 

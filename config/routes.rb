@@ -16,6 +16,7 @@ Wyak::Application.routes.draw do
       get 'clearfootballscratch'
       get 'players_football'
       get 'footballworker'
+      get 'football_monitor'
       
     end
   end
