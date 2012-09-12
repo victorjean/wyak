@@ -475,8 +475,8 @@ class ProcessController < ApplicationController
     
 
     
-    #if (parse_bool)
-    if(false)
+    if (parse_bool)
+    
       puts 'Not within time range - Will Not Parse Inactive Page'
       log_info('sys', nil, 'inactive_process',"No Parse: Week #{week} - Day #{week_day} - Hour #{current_hour}")
       render(:partial => 'loading')
@@ -491,8 +491,8 @@ class ProcessController < ApplicationController
     parse_inactive_page()
     
     #Get Scratched Player List
-    #inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
-    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,true,1)
+    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+    
     inactive_list.each do |plyr|
            
         stat = FootballPlayerStats.find_by_full_name_and_team(plyr.full_name,plyr.team)
