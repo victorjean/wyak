@@ -444,28 +444,28 @@ class ProcessController < ApplicationController
     if (week_day == 4 && (current_hour >= 16 && current_hour< 18))
       parse_bool = false
     end
-    #For Sunday 0 Scrape Inactive List Between 9 and 11,  12 and 14, 16 and 18
-    if (week_day == 0 && (current_hour >= 9 && current_hour< 11))
+    #For Sunday 0 Scrape Inactive List Between 8 and 11,  11 and 14, 15 and 18
+    if (week_day == 0 && (current_hour >= 8 && current_hour< 11))
       parse_bool = false
     end
-    if (week_day == 0 && (current_hour >= 12 && current_hour< 14))
+    if (week_day == 0 && (current_hour >= 11 && current_hour< 14))
       parse_bool = false
     end
-    if (week_day == 0 && (current_hour >= 16 && current_hour< 18))
+    if (week_day == 0 && (current_hour >= 15 && current_hour< 18))
       parse_bool = false
     end
     #For Monday 1 Scrape Inactive List Between 16 and 18
     if (week_day == 1 && (current_hour >= 16 && current_hour< 18))
       parse_bool = false
     end
-    #For Thursday 4 Week 12 Scrape Inactive List Between  8 and 10,  12 and 14, 16 and 18
+    #For Thursday 4 Week 12 Scrape Inactive List Between  8 and 10,  11 and 14, 15 and 18
     if (week_day == 4 && week == 12 && (current_hour >= 8 && current_hour< 10))
       parse_bool = false
     end
-    if (week_day == 4 && week == 12 && (current_hour >= 12 && current_hour< 14))
+    if (week_day == 4 && week == 12 && (current_hour >= 11 && current_hour< 14))
       parse_bool = false
     end
-    if (week_day == 4 && week == 12 && (current_hour >= 16 && current_hour< 18))
+    if (week_day == 4 && week == 12 && (current_hour >= 15 && current_hour< 18))
       parse_bool = false
     end
     #For Saturday 6 Week 16 Scrape Inactive List  Between 16 and 18
