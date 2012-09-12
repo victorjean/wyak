@@ -343,8 +343,13 @@ class ProcessController < ApplicationController
   end
   
   def logs
-    @log_list = Log.all
+    @log_list = Log.where(:method.ne=>'inactive_process').all
     render(:partial => 'logs')
+  end
+  
+  def log_inactive
+    @log_list = Log.where(:method=>'inactive_process').all
+     render(:partial => 'logs')
   end
   
   def users
@@ -420,7 +425,8 @@ class ProcessController < ApplicationController
   end
   
   def football_monitor
-        #Heroku Server is Pacific Time  -7 from UTC
+    @success = true
+    #Heroku Server is Pacific Time  -7 from UTC
     week = get_week()
     current_time = Time.now
     week_day = current_time.wday
@@ -467,16 +473,26 @@ class ProcessController < ApplicationController
       parse_bool = false
     end
     
-    if (parse_bool)
+
+    
+    #if (parse_bool)
+    if(false)
       puts 'Not within time range - Will Not Parse Inactive Page'
+      log_info('sys', nil, 'inactive_process',"No Parse: Week #{week} - Day #{week_day} - Hour #{current_hour}")
+      render(:partial => 'loading')
+      return
     end
+    
+    puts 'Starting Parsing Inactive Process...'
+    log_info('sys', nil, 'inactive_process',"START Parse: Week #{week} - Day #{week_day} - Hour #{current_hour}")
     
                       
     team_list = {}
     parse_inactive_page()
     
     #Get Scratched Player List
-    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+    #inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+    inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,true,1)
     inactive_list.each do |plyr|
            
         stat = FootballPlayerStats.find_by_full_name_and_team(plyr.full_name,plyr.team)
@@ -529,6 +545,8 @@ class ProcessController < ApplicationController
         end 
       end
     #Body End
+    
+    render(:partial => 'loading')
     
   end
 

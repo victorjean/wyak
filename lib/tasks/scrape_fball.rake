@@ -157,8 +157,10 @@ namespace :football do
     
     if (parse_bool)
       puts 'Not within time range - Will Not Parse Inactive Page'
+      return
     end
     
+    puts 'Starting Parsing Inactive Process...'
                       
     team_list = {}
     parse_inactive_page()

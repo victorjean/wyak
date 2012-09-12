@@ -17,6 +17,7 @@ Wyak::Application.routes.draw do
       get 'players_football'
       get 'footballworker'
       get 'football_monitor'
+      get 'log_inactive'
       
     end
   end
