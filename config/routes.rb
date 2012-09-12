@@ -13,6 +13,10 @@ Wyak::Application.routes.draw do
       get 'users'
       get 'espnrealtime'
       get 'yahoorealtime'
+      get 'clearfootballscratch'
+      get 'players_football'
+      get 'footballworker'
+      
     end
   end
   

@@ -10,8 +10,9 @@
 <h1 class="HomeTagline">
 <br>
 RotoStarter<br>
-Automatically Sets<br>
-Your Fantasy Lineups<br>
+Automatically Swaps Out<br>
+Gametime Inactives<br>
+Based On Your Preferences<br>
 </h1>
 <%= form_tag '/user/signup' do %>
 <div style="margin:0;padding:0;display:inline">
@@ -19,7 +20,7 @@ Your Fantasy Lineups<br>
 <input name="authenticity_token" type="hidden" value="j7+BQAJL4+O/vxqArSm4BmwFpvMhjGmR4vBRLrcxkc4="/>
 </div>
 <h3 class="HomeSignUp">
-<b>Sign Up Now, It's Free</b><br><br>
+<b>Sign Up Now</b><br><br>
 <label for="email">Email:</label>
 <%= text_field_tag('email', @user.email) %>
 <br>
@@ -47,34 +48,34 @@ Your Fantasy Lineups<br>
 </tr>
 <tr>
 <td colspan="1" class="HomeSections">
-Set It and Forget It!<br>
+Your Personal Roster Assistant<br>
 <div class="HomeSectionsBrown">
-RotoStarter automates the manual task of logging in early every day just to start and bench your fantasy players.
+RotoStarter will check football inactives for you every Sunday and will make roster substitutions on your behalf.
 </div>
 </td>
 <td colspan="1" class="HomeSections">
-Are You Too Busy?<br>
+Get Your Sundays Back!<br>
 <div class="HomeSectionsBrown">
-Don't you hate it when a guy on your bench (that you would have started) hits a home run, but you were too busy?
+Does your girlfriend get mad at you because you're always checking football inactives at lunch time?  Brunch with confidence.
 </div>
 </td>
 <td colspan="1" class="HomeSections">
 No Internet Access?<br>
 <div class="HomeSectionsBrown">
-Are you always scrambling because you have no internet access at work?
+Going on vacation?  Or have limited internet access?  Don't pay for internet access just to set the lineups for your fantasy teams when you're on vacation.
 </div>
 </td>
-<td colspan="1" class="HomeSections">
+<!--td colspan="1" class="HomeSections">
 Vacation in Peace<br>
 <div class="HomeSectionsBrown">
 Don't pay for internet access just to set the lineups for your fantasy teams when you're on vacation.
 </div>
-</td>
+</td-->
 </tr>
 </tbody>
 <tfoot>
 <tr>
-<td colspan="4" class="HomeSectionHeader">
+<td colspan="3" class="HomeSectionHeader">
 <br>
 </td>
 </tr>

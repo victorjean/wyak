@@ -21,7 +21,7 @@
 	  <meta property="og:type" content="website">
 	  <meta property="fb:admins" content="731131388" />
 	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Fantasy Baseball,Fantasy Football,Fantasy Basketball,Automate Lineup,Auto Start,Automatically Set Lineup,Start Lineup,Set Lineup,Set Fantasy Lineup" />
-	  <meta name="description" content="Automatically starts your lineup every morning for your fantasy sports teams: Free for fantasy baseball" />  
+	  <meta name="description" content="Automatically starts your lineup every morning for your fantasy sports teams: Free for fantasy baseball, football" />  
     <%= csrf_meta_tag %>
     <%= yield(:head) %>
     
@@ -74,7 +74,7 @@
 				
 			</div>	
 			</div>
-			<div class="HeaderTitleBrown">Free service that automatically starts your fantasy baseball players for you every morning</div>
+			<div class="HeaderTitleBrown">RotoStarter automatically sets your fantasy sports lineups</div>
 			<br>
 			</td>
 			
@@ -86,18 +86,23 @@
 				&nbsp;&nbsp;
 			<%-if (session[:user].nil?)-%>
 			<%= link_to "Home", "/" %> |
-
-	      	<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
-	      	<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
+			<%= link_to "Football", :controller => "football_teams", :action => "index" %> |
+	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %>
+	      	
 	      	<span style="float:right;text-align: right;padding-right: 10px">
 	      	<%= link_to 'Log In', :controller => "user",:action => 'login' %>
 	      	</span>
 	      	<%-else-%>
 	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %> |
-	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %> |
-			<%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
-			<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
+	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %>
+	      	
+	      	<%if(request.fullpath.index("football_teams").nil?)%>
+				| <%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
+				<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
+			<%end%>
+			
 			<span style="float:right;text-align: right;padding-right: 10px">
+			
 
 			<%= link_to session[:user], :controller => "user", :action => "change_password"  %> | 
 			<%= link_to "Log Out", :controller => "user", :action => "logout"  %>

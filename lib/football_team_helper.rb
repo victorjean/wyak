@@ -89,10 +89,10 @@ def load_yahoo_football_teams(user_info, reload)
           team.team_type = YAHOO_AUTH_TYPE
           team.auth_info = auth_user
           team.user_info = user_info
-          team.team_name = team_href_tag.inner_html.strip
+          team.team_name = team_href_tag.inner_html.strip.gsub("&amp;","&")
           team.league_id =  league_team_ids.split('/').first.strip
           team.team_id = league_team_ids.split('/').last.strip
-          team.league_name = league_href_tag.inner_html.strip
+          team.league_name = league_href_tag.inner_html.strip.gsub("&amp;","&")
           team.save
           
           puts 'Team Saved - '+team.inspect

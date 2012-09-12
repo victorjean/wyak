@@ -68,6 +68,23 @@ namespace :football do
 end
 
 namespace :football do
+  desc "Iron Uploader for Daily Process"
+  task :dailyworker => :environment do
+    
+    start = Time.now
+    puts start
+    
+    worker = FootballDailyWorker.new
+    worker.team_list = []
+    worker.upload
+      
+    finish = Time.now
+    puts finish
+    puts finish-start 
+  end
+end
+
+namespace :football do
   desc "Fetch players."
   task :parse_inactive_page => :environment do
     week = get_week()

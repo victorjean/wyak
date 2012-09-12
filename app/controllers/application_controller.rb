@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
       session[:return_to]=nil
       redirect_to(return_to)
     else
-      redirect_to :controller => "teams", :action => "index"
+      redirect_to :controller => "football_teams", :action => "index"
     end
   end
 end

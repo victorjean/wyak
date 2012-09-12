@@ -25,13 +25,13 @@
 			<td colspan="1" class="DashHeaderLeft">
 			Step 1: Add Your Fantasy Football Sports Accounts<br>
 			Step 2: Set Football Player Priorities<br>			
-			Step 3: Set Inactive Behavior to Bench, Priority, or Projected<br>
+			Step 3: Set Swap Inactives to My Priority Rankings, Highest Projected, or None<br>
 			Step 4: Sit Back and Relax<br>			
 			</td>
 			<td colspan="4" class="DashHeaderRight">
 			1. Log into your Yahoo or ESPN account from RotoStarter<br>
 			2. For basic setup, prioritize your players top to bottom on your team pages<br>			
-			2. Bench will automatically bench any inactives, Priority will sub inactives based on settings, Projected will sub based on highest projected points<br>
+			3. My Priority will sub inactives based on settings, Highest Projected will sub based on highest points, None will just bench player<br>
 			4. RotoStarter will automatically monitor for any inactives and sub them out if needed<br>			
 			</td>
 		</tr>
@@ -65,12 +65,12 @@
 				<div id="b_<%=@demo_team._id%>">
 				<%if (@demo_team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=green>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;					
 				<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=@demo_team._id%>"><font color=red>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 					
 					<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
@@ -81,10 +81,11 @@
 			<td class="DashInactive">
 				<div id="p_<%=@demo_team._id%>">
 				<span id="pr_<%=@demo_team._id%>">
-				<select class="MainSelect" id="freqselect_<%=@demo_team._id%>" onchange="set_start_option('<%=@demo_team._id%>',this,'p')">
-		    		<option class="MainOption" value="bench" <%=(@demo_team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
-		    		<option class="MainOption" value="priority" <%=(@demo_team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
-    				<option class="MainOption" value="projected" <%=(@demo_team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+				<span style="color: #00AEEF; font: 11px Verdana, Geneva, sans-serif;">Swap Inactives Based On</span> <BR>
+				<select class="MainSelect" id="freqselect_<%=@demo_team._id%>" onchange="set_start_option('<%=@demo_team._id%>',this,'p')">		    		
+		    		<option class="MainOption" value="priority" <%=(@demo_team.start_type=='priority')?'selected':''%>>My Priority Rankings</option>
+    				<option class="MainOption" value="projected" <%=(@demo_team.start_type=='projected')?'selected':''%>>Highest Projected Points</option>
+    				<option class="MainOption" value="bench" <%=(@demo_team.start_type=='bench')?'selected':''%>>None: Bench Only</option>
     			</select>
     			</span>
 				</div>
@@ -130,12 +131,12 @@
 				<div id="b_<%=team._id%>">
 				<%if (team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;					
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;	
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
 				<%end%>
@@ -144,11 +145,12 @@
 			<td class="DashInactive">
 				<div id="p_<%=team._id%>">
 				<span id="pr_<%=team._id%>">
-				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">
-		    		<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
-		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
-    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
-    			</select>
+				<span style="color: #00AEEF; font: 11px Verdana, Geneva, sans-serif;">Swap Inactives Based On</span> <BR>
+				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">		    		
+		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>My Priority Rankings</option>
+    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Points</option>
+    				<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>None: Bench Only</option>
+    			</select>    			
     			</span>
 				</div>
 			</td>
@@ -192,12 +194,12 @@
 				<div id="b_<%=team._id%>">
 				<%if (team.active)%>
 				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=green>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
 				<%else%>
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Player Priority</font></a>
+				<a href="/football_teams/showpriority?id=<%=team._id%>"><font color=red>Set My Priority Rankings</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
 				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
 				<%end%>
@@ -206,10 +208,11 @@
 			<td class="DashInactive">
 				<div id="p_<%=team._id%>">
 				<span id="pr_<%=team._id%>">
-				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">
-		    		<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>Bench Inactive</option>
-		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>Highest Priority Sub</option>
-    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Sub</option>
+				<span style="color: #00AEEF; font: 11px Verdana, Geneva, sans-serif;">Swap Inactives Based On</span> <BR>
+				<select class="MainSelect" id="freqselect_<%=team._id%>" onchange="set_start_option('<%=team._id%>',this,'p')">		    		
+		    		<option class="MainOption" value="priority" <%=(team.start_type=='priority')?'selected':''%>>My Priority Rankings</option>
+    				<option class="MainOption" value="projected" <%=(team.start_type=='projected')?'selected':''%>>Highest Projected Points</option>
+    				<option class="MainOption" value="bench" <%=(team.start_type=='bench')?'selected':''%>>None: Bench Only</option>
     			</select>
     			</span>
 				</div>
