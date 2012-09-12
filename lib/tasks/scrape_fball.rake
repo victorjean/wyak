@@ -157,8 +157,8 @@ namespace :football do
     
     if (parse_bool)
       puts 'Not within time range - Will Not Parse Inactive Page'
-      return
-    end
+
+    else
     
     puts 'Starting Parsing Inactive Process...'
                       
@@ -218,6 +218,8 @@ namespace :football do
           @success = false
         end 
       end
+      
+      end#ELse End
     #Body End
   end
 end

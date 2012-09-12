@@ -30,7 +30,7 @@ class FootballRealtimeWorker < IronWorker::Base
     
     team_list.each do |t|
         begin
-          team = Team.find_by_id(t)
+          team = FootballTeam.find_by_id(t)
           if (team.team_type == YAHOO_AUTH_TYPE)
             set_yahoo_inactive(team)
           end
