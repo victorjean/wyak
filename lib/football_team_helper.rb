@@ -501,7 +501,7 @@ def parse_espn_football_team(team, first_time)
       if posTextHash[full_name] == ''
         @player.position_text = pos_text
       else
-        @player.position_text =  posTextHash[full_name]
+        @player.position_text =  posTextHash[full_name].gsub("<","")
       end
       
            
@@ -516,7 +516,7 @@ def parse_espn_football_team(team, first_time)
       if (!plyr_stats.nil?)
         @player.football_player_stats = plyr_stats
       else
-        plyr_stats = FootballPlayerStats.find_by_full_name(full_name)
+        plyr_stats = FootballPlayerStats.find_by_full_name_and_team_name(full_name,@player.team_name)
         if (!plyr_stats.nil?)
           @player.football_player_stats = plyr_stats
           plyr_stats.espn_id = espn_id
