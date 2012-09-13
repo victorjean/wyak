@@ -526,7 +526,8 @@ def parse_espn_football_team(team, first_time)
       end
       
       if (@player.current_slot == ESPN_IR_SLOT)
-        @player.football_roster_id = nil  
+        @player.football_roster_id = nil
+        @player.on_dl = true  
       end
       
       @player.save
