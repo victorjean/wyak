@@ -268,11 +268,13 @@ function set_start_option(teamid, setbool, type) {
 	old_inner_html = $(type+'r_'+teamid).innerHTML;
 	$('pr_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
 
+	var sel_index = setbool.selectedIndex;
+	var set_value = setbool.options[sel_index].value
 		
 	$j.ajax({
         type: 'GET',
         dataType: "html",
-        data: 'teamid='+escape(teamid)+'&setvalue='+escape(setbool.value)+'&playertype='+escape(type),
+        data: 'teamid='+escape(teamid)+'&setvalue='+escape(set_value)+'&playertype='+escape(type),
         cache: false,
         async: true, 
         url: '/football_teams/setup',
