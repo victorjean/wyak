@@ -269,7 +269,7 @@ function set_start_option(teamid, setbool, type) {
 	$('pr_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
 
 	var sel_index = setbool.selectedIndex;
-	var set_value = setbool.options[sel_index].value
+	var set_value = setbool.options[sel_index].value;
 		
 	$j.ajax({
         type: 'GET',
