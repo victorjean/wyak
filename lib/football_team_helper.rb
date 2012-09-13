@@ -513,10 +513,11 @@ def parse_espn_football_team(team, first_time)
       
       
       plyr_stats = FootballPlayerStats.find_by_espn_id(espn_id)
-      if (!plyr_stats.nil?)
+      if (!plyr_stats.nil?)        
         @player.football_player_stats = plyr_stats
-      else
-        plyr_stats = FootballPlayerStats.find_by_full_name_and_team_name(full_name,@player.team_name)
+      else        
+        plyr_stats = FootballPlayerStats.find_by_full_name_and_team(full_name,@player.team_name)
+        
         if (!plyr_stats.nil?)
           @player.football_player_stats = plyr_stats
           plyr_stats.espn_id = espn_id
