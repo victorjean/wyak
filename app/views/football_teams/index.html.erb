@@ -265,11 +265,12 @@ function setup(teamid, setbool, type) {
 
 
 function set_start_option(teamid, setbool, type) {
+	var sel_index = setbool.selectedIndex;
+	var set_value = setbool.options[sel_index].value;	
+	
 	old_inner_html = $(type+'r_'+teamid).innerHTML;
 	$('pr_'+teamid).innerHTML = "<IMAGE SRC=\"/images/refresh-animated.gif\">";
 
-	var sel_index = setbool.selectedIndex;
-	var set_value = setbool.options[sel_index].value;
 		
 	$j.ajax({
         type: 'GET',
