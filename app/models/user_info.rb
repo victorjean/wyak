@@ -10,6 +10,7 @@ class UserInfo
   key :login_count, Integer, :default=>0
   key :subscribed, Boolean, :default=>false
   many :teams
+  many :football_teams
   
   timestamps!
   

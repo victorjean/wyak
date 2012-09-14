@@ -1,6 +1,6 @@
 <table border=1>
-	<tr><td>Email</td><td>Login Count</td><td>Updated</td><td>Created</td><td>Teams</td>
-		<td>Active Batter</td><td>Active Pitcher</td><td>yid</td><td>eid</td><tr>
+	<tr><td>Email</td><td>Login Count</td><td>Updated</td><td>Created</td><td>Baseball Teams</td>
+		<td>Active Batter</td><td>Active Pitcher</td><td>yid</td><td>eid</td><td>Total Football</td><td>Active Football</td><tr>
 	<% @user_list.each do |user| %>
 	<tr><td><%=user.email%></td>
 		<td><%=user.login_count%></td>
@@ -9,6 +9,7 @@
 		<td><%=user.teams.length%></td>
 	<%active_bat_count = 0
 	  active_pitch_count = 0
+	  active_football = 0
 	  eid = ''
 	  yid = ''
 	  user.teams.each do |t|
@@ -24,11 +25,24 @@
 			active_pitch_count += 1
 		end  
 	  end
+	  user.football_teams.each do |t|
+	  	if (t.team_type == 'E')
+	  		eid = t.auth_info.login
+	  	else
+	  		yid = t.auth_info.login
+	  	end
+		if (t.active)
+			active_football += 1
+		end		  
+	  end
+	  
 	%>
 	<td><%=active_bat_count%></td>	
 	<td><%=active_pitch_count%></td>
 	<td><%=yid%></td>
 	<td><%=eid%></td>
+	<td><%=user.football_teams.length%></td>	
+	<td><%=active_football%></td>
 	<tr>
 	<%end%>
 </table>
