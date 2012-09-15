@@ -19,7 +19,7 @@ class FootballTeamsController < ApplicationController
     last_update = nil
     now = Time.now
     
-    @demo = false
+    @demo = true
     if (@espn_teams.length != 0)
       last_update = @espn_teams.first.updated_at
       @demo = false
