@@ -492,19 +492,21 @@ class ProcessController < ApplicationController
     
     #Get Scratched Player List
     inactive_list = FootballInactive.find_all_by_inactive_and_processed_and_week(true,false,week)
+
     
     inactive_list.each do |plyr|
-           
+        #TODO Translate Steve Johnson to Stevie Johnson   
         stat = FootballPlayerStats.find_by_full_name_and_team(plyr.full_name,plyr.team)
         if (!stat.nil?)
           puts stat.full_name + '- Found'
           plyr.processed = true
           plyr.save
           stat.football_players.each do |p|
-            puts "#{p.full_name} - |#{p.assign_pos}|"
+            #puts "#{p.full_name} - |#{p.assign_pos}|"
+            log_info('sys', nil, 'inactive_process',p.full_name+' Inactive and Owned')
             p.scratched = true
             p.save
-            if(!p.football_team.nil? && !p.on_dl && p.assign_pos!=IR_POSITION && p.assign_pos!=ESPN_IR_SLOT)
+            if(!p.football_team.nil? && p.assign_pos!=IR_POSITION && p.assign_pos!=ESPN_IR_SLOT)
               #Only Add to List of Team is Active
               if (p.football_team.active)
                 if (team_list[p.football_team.auth_info_id].nil?)
@@ -513,7 +515,7 @@ class ProcessController < ApplicationController
                 if (team_list[p.football_team.auth_info_id].index(p.football_team._id).nil?)
                   team_list[p.football_team.auth_info_id].push(p.football_team._id)
                 end
-                log_info('sys', p.football_team, 'inactive',p.full_name)
+                log_info('sys', p.football_team, 'inactive_player_found',p.full_name)
               end
             end
           end
@@ -526,18 +528,12 @@ class ProcessController < ApplicationController
     #Process Teams with Real Time Activated
       team_list.values.each do |t|
         begin
-          #puts t.inspect
+          puts t.inspect
           IronWorker.config.no_upload = true
           worker = FootballRealtimeWorker.new
           worker.team_list = t
           resp = worker.queue
-          #team = FootballTeam.find_by_id(t)
-          #if (team.team_type == YAHOO_AUTH_TYPE)
-          #  set_yahoo_inactive(team)
-          #end
-          #if (team.team_type == ESPN_AUTH_TYPE)
-          #  set_espn_inactive(team)
-          #end
+                    
         rescue => msg
           puts "ERROR OCCURED (#{msg})"
           log_error('sys', nil, 'footballironworker',msg)
