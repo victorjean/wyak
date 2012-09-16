@@ -309,7 +309,18 @@ Dialog.alert({url: "/football_teams/manage?teamType="+type, options: {method: 'g
 
 function reload_team(){
 	
-	if (!confirm('Are you sure you want to reload all teams?  You will lose all player roster settings if you continue.')) return;
+	var number_espn_teams = <%=@espn_teams.length%>;
+	var number_yahoo_teams = <%=@yahoo_teams.length%>;
+		
+	if ($('teamType').value=='ESPN' && number_espn_teams != 0) {
+		if (!confirm('Are you sure you want to reload all teams?  You will lose all player roster settings if you continue.')) return;	
+	}
+	if ($('teamType').value=='YAHOO' && number_yahoo_teams != 0) {
+		if (!confirm('Are you sure you want to reload all teams?  You will lose all player roster settings if you continue.')) return;	
+	}
+	
+	
+	
 	
 	$('manageAction').value = "R";
 	$('manage_team').request({
@@ -322,8 +333,7 @@ function reload_team(){
 }
 
 function submit_team(){
-	
-	
+		
 	if (($('current_user').value != '')&&($('current_user').value != $('userid').value)){
 		if (!confirm('Are you sure you want to change user id?  You will lose all player roster settings and reload new teams if you continue.')) return;
 	}

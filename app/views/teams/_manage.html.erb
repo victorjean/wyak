@@ -21,7 +21,7 @@
 			<td align="right" ><%-if (!@authInfo.nil?)-%>
 				
 				<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-				<a class="LeftNavLink" href="javascript:reload_team()">Reload Teams</a>
+				<a class="LeftNavLink" href="javascript:reload_team()">Load Teams</a>
 				<%-end-%>
 			</td>
 		</tr>
@@ -40,11 +40,19 @@
 				
 			</td>
 			<td align="right" >
-				<BUTTON  type="button" id='team_manage_submit' onclick="submit_team()" disabled="disabled">Submit</BUTTON>
+				<BUTTON  type="button" id='team_manage_submit' onclick="submit_team()" disabled="disabled"><%=(@authInfo.nil?)?'Submit':"Update ID"%></BUTTON>
 				</td>
 		</tr>
 	
 </table>
+<span class="HomeTinyLinks">
+	<% if (@teamType=='YAHOO')%>
+	Enter Yahoo Log In ID (ie username@yahoo.com)
+	<%end%>
+	<% if (@teamType=='ESPN')%>
+	Enter ESPN Member Name or ESPN Email Address
+	<%end%>
+</span> 
 <%= hidden_field_tag('teamType', @teamType) %>
 <%= hidden_field_tag('manageAction') %>
 
