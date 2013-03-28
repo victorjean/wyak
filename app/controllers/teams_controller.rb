@@ -28,7 +28,11 @@ class TeamsController < ApplicationController
     end
     
     if (@demo)
-      @demo_team = Team.find_by_league_id_and_team_id("202052","12")
+      @demo_team = Team.find_by_league_id_and_team_id("132103","12")
+      if(@demo_team.nil?)
+        @demo = false
+      end
+      
     end
     
     if (!last_update.nil?) 

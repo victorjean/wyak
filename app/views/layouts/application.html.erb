@@ -86,15 +86,15 @@
 				&nbsp;&nbsp;
 			<%-if (session[:user].nil?)-%>
 			<%= link_to "Home", "/" %> |
-			<%= link_to "Football", :controller => "football_teams", :action => "index" %> |
-	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %>
+			<%= link_to "Baseball", :controller => "teams", :action => "index" %> |
+	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %>
 	      	
 	      	<span style="float:right;text-align: right;padding-right: 10px">
 	      	<%= link_to 'Log In', :controller => "user",:action => 'login' %>
 	      	</span>
 	      	<%-else-%>
-	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %> |
-	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %>
+	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %> |
+	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %>
 	      	
 	      	<%if(request.fullpath.index("football_teams").nil?)%>
 				| <%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |

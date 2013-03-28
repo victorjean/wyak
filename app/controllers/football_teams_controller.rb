@@ -31,6 +31,9 @@ class FootballTeamsController < ApplicationController
     
     if (@demo)
       @demo_team = FootballTeam.find_by_league_id_and_team_id("388110","10")
+      if(@demo_team.nil?)
+        @demo = false
+      end
     end
     
     if (!last_update.nil?) 

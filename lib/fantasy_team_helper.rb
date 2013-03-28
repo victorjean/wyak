@@ -12,12 +12,12 @@ ACCEPT = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8
 #ACCEPT_LANGUAGE = "en-US,en;q=0.8"
 ACCEPT_CHARSET = "utf-8;q=0.7,*;q=0.3"
 
-SP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=SP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
-RP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=RP&stat1=S_S_2012&sort=AR&sdir=1&count=###"
-ALL_BATTER_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_S_2012&count=###"
-ALL_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=P&stat1=S_S_2012&sort=AR&sdir=1&count=###"
-ALL_BATTER7_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_L7&count=###"
-ALL_PITCHERS7_URL = "http://baseball.fantasysports.yahoo.com/b1/1000/players?status=ALL&pos=P&stat1=S_L7&sort=AR&sdir=1&count=###"
+SP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?status=ALL&pos=SP&stat1=S_S_2013&sort=AR&sdir=1&count=###"
+RP_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?status=ALL&pos=RP&stat1=S_S_2013&sort=AR&sdir=1&count=###"
+ALL_BATTER_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_S_2013&count=###"
+ALL_PITCHERS_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?status=ALL&pos=P&stat1=S_S_2013&sort=AR&sdir=1&count=###"
+ALL_BATTER7_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?&sort=AR&sdir=1&status=ALL&pos=B&stat1=S_L7&count=###"
+ALL_PITCHERS7_URL = "http://baseball.fantasysports.yahoo.com/b1/999/players?status=ALL&pos=P&stat1=S_L7&sort=AR&sdir=1&count=###"
 
 YAHOO_BASEBALL_PAGE_URL = "http://baseball.fantasysports.yahoo.com/b1/"
 ESPN_BASEBALL_PAGE_URL = "http://games.espn.go.com/flb/tools/editmyteams"
@@ -1571,7 +1571,7 @@ def parse_player_list(url, player_type)
       player_url = name_cell[:href].strip
       yahooid = player_url.scan(/http:\/\/sports.yahoo.com\/mlb\/players\/(\d+)/).flatten.compact.first.strip
 
-      detail_cell = (row/"td//div.detail//span").first
+      detail_cell = (row/"td//div.ysf-player-detail//span").first
       detail_cell_scan = detail_cell.innerHTML.scan(/([a-zA-Z]+) - ([a-zA-Z0-9,]+)/).flatten
       team_short_name = detail_cell_scan[0].upcase.strip
       position = detail_cell_scan[1].upcase.strip
@@ -1686,7 +1686,7 @@ def parse_player_list(url, player_type)
       end
       
       #puts player.full_name+"-"+percent_owned.to_s+"-"+player.position+"-"+yahooid+"-"+team_short_name.upcase+"-"+position
-      
+      #puts player.inspect
       player.save
 
       count = count + 1
