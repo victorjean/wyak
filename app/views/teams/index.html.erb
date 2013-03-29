@@ -13,7 +13,7 @@
 			Baseball Dashboard
 			<div class="DashHeaderTopBrown">Manage Baseball Accounts and Teams</div>
 			</td>
-			<td colspan="2" class="DashHeaderTop" align="right">
+			<td colspan="3" class="DashHeaderTop" align="right">
 				<img src="/images/baseball.png" alt="Baseball" height="50" width="50">
 			<div id="updating" class="DashActiveBrown" style="display:<%if (!@update)%>none<%end%>">
 			Refreshing All Teams <%= image_tag '/images/refresh-animated.gif' %>
@@ -27,14 +27,16 @@
 			Step 2: Set Batter and Pitcher Preferences<br>
 			Step 3: Start and Verify Tomorrow's Lineup<br>
 			Step 4: Sit Back and Relax<br>
-			Step 5: Review Lineup and Make Changes
+			Step 5: Review Lineup and Make Changes<BR>
+			Step 6: Real Time Monitor for Scratches
 			</td>
-			<td colspan="4" class="DashHeaderRight">
+			<td colspan="5" class="DashHeaderRight">
 			1. Log into your Yahoo or ESPN account from RotoStarter<br>
 			2. For basic setup, set Batters to "If Game" & Starting Pitchers to "If Probable"<br>
 			3. After saving prefs, test setting tomorrow's lineup by clicking "Preview Tommorow"<br>
 			4. RotoStarter will set your daily lineup ONCE every morning for activated teams<br>
-			5. You can safely modify your Yahoo or ESPN lineups for any last minute changes
+			5. You can safely modify your Yahoo or ESPN lineups for any last minute changes<br>
+			6. Will sit any batter scratched today and sub in a player off your bench for that slot
 			</td>
 		</tr>
 		
@@ -97,6 +99,23 @@
 				<%end%>
 				</div>
 			</td>
+			<td class="DashInactive" nowrap="true">
+				<div id="r_<%=@demo_team._id%>">
+				<%if (@demo_team.real_time_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<font color=green>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="rr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<font color=red>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+					
+					<span id="rr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
+					
+				<%end%>
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<td>
@@ -114,7 +133,7 @@
 			<%end%>
 			Yahoo Teams
 			</td>
-			<td colspan="2" class="MainSubTitleLinks" <% if (@yahoo_teams.length == 0) %>style="text-align:left"<%end%>>
+			<td colspan="3" class="MainSubTitleLinks" <% if (@yahoo_teams.length == 0) %>style="text-align:left"<%end%>>
 			<%- if (@yahoo_teams.length == 0) -%>
 				<img src="/images/RSPlus10.png" alt="Add Icon">
 				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
@@ -172,6 +191,29 @@
 				<%end%>
 				</div>
 			</td>
+			<td class="DashInactive">
+				<%if (team.weekly_team)%>
+				<%else%>
+				
+				<div id="r_<%=team._id%>">
+				<%if (team.real_time_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<font color=green>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<font color=red>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+					<%if (team.weekly_team)%>
+					Weekly Lineup
+					<%else%>
+					<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
+					<%end%>
+				<%end%>
+				</div>
+				<%end%>
+			</td>
 			
 		</tr>
 		<%end%>
@@ -189,7 +231,7 @@
 			<%end%>
 			ESPN Teams
 			</td>
-			<td colspan="2" class="MainSubTitleLinks" <% if (@espn_teams.length == 0) %>style="text-align:left"<%end%>>
+			<td colspan="3" class="MainSubTitleLinks" <% if (@espn_teams.length == 0) %>style="text-align:left"<%end%>>
 			<%- if (@espn_teams.length == 0) -%>
 				<img src="/images/RSPlus10.png" alt="Add Icon">
 				<a href="javascript:teamWindow('ESPN')">Add Account</a>
@@ -219,7 +261,11 @@
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
 				<a href="/teams/showbatters?id=<%=team._id%>"><font color=red>Batters</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
-				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%if (team.weekly_team)%>
+					Weekly Lineup
+				<%else%>
+					<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
 				<%end%>
 				</div>
 			</td>
@@ -234,11 +280,36 @@
 				<img src="/images/RS_Red_Button10.png" alt="Red Button">
 				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=red>Pitchers</font></a>
 				<br>&nbsp;&nbsp;&nbsp;
+				<%if (team.weekly_team)%>
+					Weekly Lineup
+				<%else%>
 				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
+				<%end%>
 				<%end%>
 				</div>
 			</td>
-			
+			<td class="DashInactive">
+				<%if (team.weekly_team)%>
+				<%else%>
+				<div id="r_<%=team._id%>">
+				<%if (team.real_time_batter)%>
+				<img src="/images/RS_Green_Button10.png" alt="Green Button">
+				<font color=green>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+				<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
+				<%else%>
+				<img src="/images/RS_Red_Button10.png" alt="Red Button">
+				<font color=red>Real Time Monitor</font>
+				<br>&nbsp;&nbsp;&nbsp;
+					<%if (team.weekly_team)%>
+					Weekly Lineup
+					<%else%>
+					<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
+					<%end%>
+				<%end%>
+				</div>
+				<%end%>
+			</td>
 		</tr>
 		<%end%>
 		<%if (@demo)%>

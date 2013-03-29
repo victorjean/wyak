@@ -369,6 +369,10 @@ class TeamsController < ApplicationController
       @team.daily_auto_pitcher = (params[:setvalue] == 'true')
       @team.save
     end
+    if (@player_type == 'r' )
+      @team.real_time_batter = (params[:setvalue] == 'true')
+      @team.save
+    end
     
     render(:partial => 'set')
   end

@@ -314,6 +314,9 @@ def parse_yahoo_team(team, first_time, tomm)
       @rosterHash[counter].save
       end
       if (@rosterHash[counter].pos_text == YAHOO_UTIL_SLOT)
+        #Set Players Originally in UTIL spot to priority 1
+        @rosterPlayerHash[counter].priority = 1
+        @rosterPlayerHash[counter].save
         @rosterHash[counter].save
       end
     end
@@ -675,7 +678,7 @@ def parse_espn_team(team, first_time, tomm)
   @statusHash = {}
   
   #If Team empty reload entire team set first_time true
-  if (team.empty_team.nil? || team.empty_team) 
+  if (team.empty_team.nil? || team.empty_team || team.weekly_team) 
     first_time = true
   end
     
@@ -709,6 +712,17 @@ def parse_espn_team(team, first_time, tomm)
     document = Hpricot(page.parser.to_s)
   end
   
+  #See if League is Weekly
+  
+  league_period_type_tag = document.search("td[@title='Games over this period']").first
+  
+  if (!league_period_type_tag.nil? && league_period_type_tag.inner_html.strip == 'GAMES: OPPONENTS')
+   puts 'Weekly League Found'
+    team.weekly_team = true
+    team.daily_auto_batter = false
+    team.daily_auto_pitcher = false
+  end
+    
   #Get Team Hash
   
   playerNameHash = {}
@@ -986,7 +1000,7 @@ def parse_espn_team(team, first_time, tomm)
       @rosterHash[counter].player = get_player_by_roster_slot(@rosterHash[counter].slot_number)
       @rosterHash[counter].save
       end
-      if (@rosterHash[counter].slot_number == ESPN_UTIL_SLOT)
+      if (@rosterHash[counter].slot_number == ESPN_UTIL_SLOT)        
         @rosterHash[counter].save
       end
     end
