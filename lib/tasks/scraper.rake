@@ -107,7 +107,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team for real time table"
   task :yahoorealtime => :environment do
-    team_parse = Team.find_by_league_id_and_team_id("21947","7")
+    team_parse = Team.find_by_league_id_and_team_id("76593","1")
     parse_yahoo_team_realtime(team_parse,false)
   end
 end
@@ -123,7 +123,7 @@ end
 namespace :scraper do
   desc "Fetch espn team"
   task :espn => :environment do
-    team_parse = Team.find_by_league_id("130711")
+    team_parse = Team.find_by_league_id_and_team_id("54344","12")
     parse_espn_team(team_parse, false, false)
     
   end
@@ -283,19 +283,19 @@ namespace :scraper do
       player_list = PlayerStats.find_all_by_processed(true)
       player_list.each do |player_stat|
         #add to team array if scratched
-        if (player_stat.scratched)
+        if (player_stat.scratched)          
           player_stat.player_realtimes.each do |p|
             puts "#{p.full_name} - |#{p.assign_pos}|"
             p.scratched = true
             p.save
-            if(!p.team.nil? && p.position_text.index('P').nil? && !p.on_na && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT)
+            if(!p.team.nil? && p.position_text.index('P').nil? && !p.on_na && !p.on_dl && p.assign_pos!=DL_POSITION && p.assign_pos!=ESPN_DL_SLOT && p.team.real_time_batter)
               if (team_list[p.team.auth_info_id].nil?)
                 team_list[p.team.auth_info_id] = []
               end 
               if (team_list[p.team.auth_info_id].index(p.team._id).nil?)
                 team_list[p.team.auth_info_id].push(p.team._id)
               end
-              #log_info('sys', p.team, 'scratch',p.full_name)
+              log_info('sys', p.team, 'scratch',p.full_name)
             end
           end
         end
@@ -326,7 +326,7 @@ end
 namespace :scraper do
   desc "Fetch players."
   task :players => :environment do
-    
+    Game.delete_all()
     
     
     begin   
@@ -346,6 +346,16 @@ namespace :scraper do
     end
     
     rank_players_by_position()
+    
+  end
+end
+
+
+namespace :scraper do
+  desc "Fetch players."
+  task :unitest => :environment do
+                
+      parse_player_list(ALL_PITCHERS_URL, "SP")          
     
   end
 end

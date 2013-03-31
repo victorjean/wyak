@@ -46,11 +46,14 @@
 	
 </table>
 <span class="HomeTinyLinks">
-	<% if (@teamType=='YAHOO')%>
-	Enter Yahoo Log In ID (ie username@yahoo.com)
+	<% if (@teamType=='YAHOO' && @authInfo.nil?)%>
+	Enter Yahoo Log In ID (ie username@yahoo.com)		
 	<%end%>
-	<% if (@teamType=='ESPN')%>
-	Enter ESPN Member Name or ESPN Email Address
+	<% if (@teamType=='ESPN' && @authInfo.nil?)%>
+	Enter ESPN Member Name or ESPN Email Address		
+	<%end%>
+	<% if (!@authInfo.nil?)%>
+	ID Added - Click Load Teams to Reload your teams
 	<%end%>
 </span> 
 <%= hidden_field_tag('teamType', @teamType) %>
