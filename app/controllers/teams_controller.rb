@@ -1,4 +1,5 @@
 require "fantasy_team_helper"
+require "real_time_helper"
 
 class TeamsController < ApplicationController
     
@@ -372,6 +373,18 @@ class TeamsController < ApplicationController
     if (@player_type == 'r' )
       @team.real_time_batter = (params[:setvalue] == 'true')
       @team.save
+      
+      if (@team.real_time_batter)
+        if (@team.team_type==YAHOO_AUTH_TYPE)
+          parse_yahoo_team_realtime(@team,false)
+        end
+        if (@team.team_type==ESPN_AUTH_TYPE)
+          parse_espn_team_realtime(@team,false)
+        end
+      else
+        PlayerRealtime.delete_all(:team_id=>@team._id)
+      end
+
     end
     
     render(:partial => 'set')

@@ -244,7 +244,7 @@ def parse_yahoo_team(team, first_time, tomm)
     nametag = player.search("a").first
     idtag = player.search("a").last
     postag = player.search("span").first
-    statustag = player.search("span[@class=status]").first
+    statustag = player.search("abbr[@class=status]").first
     
     if (!nametag.nil? && !idtag.nil? && !postag.nil?)
       full_name = nametag.inner_html.strip            
