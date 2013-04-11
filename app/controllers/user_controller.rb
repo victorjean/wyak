@@ -26,7 +26,7 @@ class UserController < ApplicationController
       elsif @user.save
         flash[:message] = "Signup successful"
         session[:user] = @user.email
-        redirect_to :controller => "football_teams", :action => "index"          
+        redirect_to :controller => "teams", :action => "index"          
       else
         #flash[:message] = "Signup unsuccessful"
       end
