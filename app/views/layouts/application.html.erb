@@ -3,8 +3,8 @@
   <head>
     <title>RotoStarter: Automate Your Fantasy Sports Lineups</title>
 
-    <%= stylesheet_link_tag "application", :media => "all" %>
 
+    <%= stylesheet_link_tag '/stylesheets/style' %>
     <script src="/javascripts/prototype.js" type="text/javascript"></script>
     <script src="/javascripts/window.js" type="text/javascript"></script>
     <script src="/javascripts/jquery.js" type="text/javascript"></script>
@@ -22,8 +22,7 @@
 	  <meta property="fb:admins" content="731131388" />
 	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Fantasy Baseball,Fantasy Football,Fantasy Basketball,Automate Lineup,Auto Start,Automatically Set Lineup,Start Lineup,Set Lineup,Set Fantasy Lineup" />
 	  <meta name="description" content="Automatically starts your lineup every morning for your fantasy sports teams: Free for fantasy baseball, football" />  
-      <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tag %>
+    <%= csrf_meta_tag %>
     <%= yield(:head) %>
     
 	<script type="text/javascript">
@@ -51,13 +50,6 @@
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
   	
-
-<ul class="breadcrumb">
-  <li><a href="#">Home</a> <span class="divider">/</span></li>
-  <li><a href="#">Library</a> <span class="divider">/</span></li>
-  <li class="active">Data</li>
-</ul>
-
 	<div id="RSWrapper">
 		<div id="RSHeader" style="float:left; margin:0;">
 			<table cellpadding="0" cellspacing="0" border="0" width="98%">
