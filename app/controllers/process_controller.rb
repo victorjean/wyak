@@ -1,6 +1,6 @@
 require "fantasy_team_helper"
 require "real_time_helper"
-require "iron_worker"
+#require "iron_worker"
 require 'team_daily_worker'
 require 'football_team_helper'
 require 'football_daily_worker'
