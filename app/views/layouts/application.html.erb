@@ -1,64 +1,54 @@
 <!DOCTYPE html>
 <html xmlns:fb="http://ogp.me/ns/fb#">
   <head>
-    <title>RotoStarter: Automate Your Fantasy Sports Lineups</title>
+    <title>RotoStarter | Dominate Your Fantasy Sports Leagues</title>
 
-    <%= stylesheet_link_tag "application", :media => "all" %>
-
-    <script src="/javascripts/prototype.js" type="text/javascript"></script>
-    <script src="/javascripts/window.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery_ujs.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery.tablednd.0.7.min.js" type="text/javascript"></script>
-     <script>
-     var $j = jQuery.noConflict();
-     </script>
-      <meta property="og:header" content="Roto Starter" />
-	  <meta property="og:title" content="RotoStarter" /> 
+ 	  <meta property="og:title" content="RotoStarter" />
 	  <meta property="og:image" content="http://www.rotostarter.com/images/RotoStarterLogoBlue200.png" /> 
-	  <meta property="og:description" content="Free service that automatically starts your fantasy players" /> 
+	  <meta property="og:description" content="RotoStarter helps you play Fantasy Sports at a high level with tools to help you dominate your league." /> 
 	  <meta property="og:url" content="http://www.rotostarter.com">
 	  <meta property="og:type" content="website">
+    <meta property="twitter:cards" content="summary">
+    <meta property="twitter:url" content="http://www.rotostarter.com">
+    <meta property="twitter:title" content="RotoStarter">
 	  <meta property="fb:admins" content="731131388" />
-	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Fantasy Baseball,Fantasy Football,Fantasy Basketball,Automate Lineup,Auto Start,Automatically Set Lineup,Start Lineup,Set Lineup,Set Fantasy Lineup" />
-	  <meta name="description" content="Automatically starts your lineup every morning for your fantasy sports teams: Free for fantasy baseball, football" />  
-      <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tag %>
+	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Automate,Lineup,Auto,Start,Automatically,Set,Bench" />
+	  <meta name="description" content="RotoStarter helps you play Fantasy Sports at a high level with tools to help you dominate your league." />
+
+    <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= csrf_meta_tag %>
     <%= yield(:head) %>
-    
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-30965893-1']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
-    
+      
+  	<script type="text/javascript">
+  	  var _gaq = _gaq || [];
+  	  _gaq.push(['_setAccount', 'UA-30965893-1']);
+  	  _gaq.push(['_trackPageview']);
+  	
+  	  (function() {
+  	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  	  })();
+  	</script>
   </head>
+
   <body <%= content_for?(:body_attributes) ? yield(:body_attributes) : "" %>>
   	<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
   	
+    <header class="navbar navbar-fixed-top" style="height:60px">
+      <%= render 'layouts/navigation' %>
+    </header>
 
-<ul class="breadcrumb">
-  <li><a href="#">Home</a> <span class="divider">/</span></li>
-  <li><a href="#">Library</a> <span class="divider">/</span></li>
-  <li class="active">Data</li>
-</ul>
+    <%= yield %>
 
-	<div id="RSWrapper">
+    <div id="RSWrapper">
 		<div id="RSHeader" style="float:left; margin:0;">
 			<table cellpadding="0" cellspacing="0" border="0" width="98%">
 			<tr>
@@ -125,7 +115,7 @@
 	    <div id="RSMain" style="float:left; margin:0;width:100%">
 
 	      <BR>
-	      <%= yield %>	
+	      	
 	    </div>
 	    <div id="RSEdge" style="float:left; margin:0;">
 		<br><br>
@@ -145,5 +135,16 @@
 		<br>
 		</div>
     </div>
+
+
+    <script src="/javascripts/prototype.js" type="text/javascript"></script>
+    <script src="/javascripts/window.js" type="text/javascript"></script>
+    <script src="/javascripts/jquery.js" type="text/javascript"></script>
+    <script src="/javascripts/jquery_ujs.js" type="text/javascript"></script>
+    <script src="/javascripts/jquery.tablednd.0.7.min.js" type="text/javascript"></script>
+    <script>
+    var $j = jQuery.noConflict();
+    </script>
+    <%= javascript_include_tag "application" %>
   </body>
 </html>

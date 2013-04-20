@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+ruby "1.9.3"
 gem 'rails', '3.1.3'
 
 # Bundle edge Rails instead:
@@ -13,7 +14,7 @@ gem 'hpricot'
 gem 'mechanize', '2.4'
 gem 'actionmailer'
 gem 'iron_worker'
-
+gem 'simple_form'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -1,3 +1,19 @@
 @import "bootstrap";
 body { padding-top: 60px; }
 @import "bootstrap-responsive";
+
+/*  Navbar Header Overrides  */
+.navbar .brand {
+  height: 30px;
+  width: 100px;
+  padding: 0;
+  margin: 5px 30px;
+}
+
+.brand img {
+	width: 100%;
+}
+
+.navbar .nav.pull-right {
+  margin-right: 30px;
+}
