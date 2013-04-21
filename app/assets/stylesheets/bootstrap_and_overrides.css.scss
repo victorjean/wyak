@@ -1,19 +1,148 @@
+
+// GLOBAL VARIABLES
+
+// Colors
+$txt-lightbrown: #5A4A42;
+$txt-green: green;
+$txt-red: red;
+$txt-lightblue: #00AEEF;
+$txt-blue: #00AEEF;
+$txt-brown: #5A4A42;
+
+$bg-darkbrown: #906e59;
+$bg-lightgray: #f7f7f8;
+$bg-lightblue: #e0f2fe;
+
+
+// Mixins
+@mixin transition($property, $length: 0.3s) {
+	-webkit-transition: $property $length ease-in-out;
+		 -moz-transition: $property $length ease-in-out;
+		 	 -o-transition: $property $length ease-in-out;
+			 		transition: $property $length ease-in-out;
+}
+
 @import "bootstrap";
-body { padding-top: 60px; }
+body { 
+	padding: 60px 0; 
+	line-height: 1.5;
+	font-size: 12px;
+	background: $bg-lightblue;
+}
 @import "bootstrap-responsive";
 
+
+.wrapper {
+	max-width: 80em;
+	margin: auto;
+	position: relative;
+	padding: 0 1em;
+	overflow: hidden;
+}
+
+/*  =======================  */
 /*  Navbar Header Overrides  */
+/*  =======================  */
+
 .navbar .brand {
   height: 30px;
   width: 100px;
   padding: 0;
-  margin: 5px 30px;
+  margin: 5px 30px 0 0;
 }
 
 .brand img {
 	width: 100%;
 }
 
-.navbar .nav.pull-right {
-  margin-right: 30px;
+
+/*  =======================  */
+/*  Navbar Footer Overrides  */
+/*  =======================  */
+
+.navbar-fixed-bottom > .navbar {
+	margin-bottom: 0;
 }
+
+/*  =======================  */
+/*  Base Styles  */
+/*  =======================  */
+
+.alignto-h1 {	margin-top: 0.8em; }
+.alignto-h3 { margin-top: 1em; }
+
+h1 { font-size: 28px;}
+h2 { font-size: 22px;}
+h3 { font-size: 18px;}
+h4 { font-size: 14px;}
+p { font-size: 12px;}
+
+h1, h2, h3, h4 {
+	margin: 0;
+}
+
+h2,h3,h4 {
+	text-transform:uppercase;
+}
+
+a {
+	&:hover { opacity: 0.5;}
+}
+
+.active {
+	color: $txt-green;
+}
+
+a.active,
+a.inactive {
+	text-decoration: underline;
+}
+
+.inactive {
+	color: $txt-red;
+}
+
+.info {
+	color: $txt-blue;
+}
+
+ul, ul > li {
+	list-style: none;
+	margin: 0;
+}
+
+ol > li {
+	margin: 0.5em 0;
+}
+
+.borderme {
+	border: 1px #333333 solid;
+}
+.left {
+	float: left;
+	margin-right: 1em;
+}
+.bottompad2 {
+	margin-bottom: 2em;
+}
+.bottompad1 {
+	margin-bottom: 1em;	
+}
+.leftpad {
+	margin-left: 2.762%;
+}
+.clearfix {
+	clear: both;
+}
+
+
+.dashboard-team {
+	border: 1px #333333 solid;
+	background-color: #F8F8F8;
+	float: left;
+	padding: 1em;
+	height: 12em;
+	margin-left: 0;
+	@extend .bottompad1;
+}
+

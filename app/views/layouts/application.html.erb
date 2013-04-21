@@ -14,8 +14,10 @@
 	  <meta property="fb:admins" content="731131388" />
 	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Automate,Lineup,Auto,Start,Automatically,Set,Bench" />
 	  <meta name="description" content="RotoStarter helps you play Fantasy Sports at a high level with tools to help you dominate your league." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
     <%= csrf_meta_tag %>
     <%= yield(:head) %>
       
@@ -46,105 +48,26 @@
       <%= render 'layouts/navigation' %>
     </header>
 
-    <%= yield %>
-
-    <div id="RSWrapper">
-		<div id="RSHeader" style="float:left; margin:0;">
-			<table cellpadding="0" cellspacing="0" border="0" width="98%">
-			<tr>
-			<td>	
-			&nbsp;
-			<a href="/" >
-			<img src="/images/RotoStarterLogoBlue200.png" alt="Roto Starter Logo" style="border:none;">
-			</a>
-			</td>
-			<td>
-			
-			<div class="HeaderTitle">RotoStarter
-			<font color="#5A4A42"> [roh-toh stahr-ter]</font>
-			noun
-			<div style="float:right; margin:0;">
-				<fb:like href="http://www.facebook.com/rotostarter" send="false" layout="button_count" width="50" show_faces="true"></fb:like>
-				<BR>
-				<a href="https://twitter.com/rotostarter" class="twitter-follow-button" data-show-count="false">Follow @rotostarter</a>
-      			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-      		
-				
-			</div>	
-			</div>
-			<div class="HeaderTitleBrown">RotoStarter automatically sets your fantasy sports lineups</div>
-			<br>
-			</td>
-			
-			</tr>
-			</table>
-		</div>
-		<div id="RSNav" style="float:left; margin:0;">
-			<div class="NavHeadLeft">
-				&nbsp;&nbsp;
-			<%-if (session[:user].nil?)-%>
-			<%= link_to "Home", "/" %> |
-			<%= link_to "Baseball", :controller => "teams", :action => "index" %> |
-	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %>
-	      	
-	      	<span style="float:right;text-align: right;padding-right: 10px">
-	      	<%= link_to 'Log In', :controller => "user",:action => 'login' %>
-	      	</span>
-	      	<%-else-%>
-	      	<%= link_to "Baseball", :controller => "teams", :action => "index" %> |
-	      	<%= link_to "Football", :controller => "football_teams", :action => "index" %>
-	      	
-	      	<%if(request.fullpath.index("football_teams").nil?)%>
-				| <%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %> |
-				<%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %>
-			<%end%>
-			
-			<span style="float:right;text-align: right;padding-right: 10px">
-			
-
-			<%= link_to session[:user], :controller => "user", :action => "change_password"  %> | 
-			<%= link_to "Log Out", :controller => "user", :action => "logout"  %>
-			</span> 
-
-	      	<%-end-%>
-
-			</div>
-
-		</div>
-  	
-	    <div id="RSMain" style="float:left; margin:0;width:100%">
-
-	      <BR>
-	      	
-	    </div>
-	    <div id="RSEdge" style="float:left; margin:0;">
-		<br><br>
-		</div>
-		<div id="RSFooter" style="float:left; margin:0;">
-		<div class="NavHeadLeft" style="vertical-align: center;">
-		&nbsp;&nbsp;
-		
-      	<%= link_to "Privacy", :controller => "static", :action => "privacy" %> |
-		<%= link_to "Terms", :controller => "static", :action => "terms" %> |
-		<%= link_to "Contact Us", :controller => "static", :action => "contact" %>
-		
-		
-		</div>
-		</div>
-		<div id="RSEdge" style="float:left; margin:0;">
-		<br>
-		</div>
+    <div class="wrapper">
+      <%= yield %>
     </div>
+    
+    <footer class="navbar-inverse navbar-fixed-bottom">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="container">
+            <ul class="nav">
+              <li><p class="navbar-text">RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p></li>
+            </ul>
+            <ul class="nav pull-right">
+              <li><%= link_to "Terms", :controller => "static", :action => "terms" %></li>
+              <li><%= link_to "Privacy", :controller => "static", :action => "privacy" %></li>
+              <li><%= link_to "Contact Us", :controller => "static", :action => "contact" %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
 
-
-    <script src="/javascripts/prototype.js" type="text/javascript"></script>
-    <script src="/javascripts/window.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery_ujs.js" type="text/javascript"></script>
-    <script src="/javascripts/jquery.tablednd.0.7.min.js" type="text/javascript"></script>
-    <script>
-    var $j = jQuery.noConflict();
-    </script>
-    <%= javascript_include_tag "application" %>
   </body>
 </html>

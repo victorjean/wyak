@@ -1,332 +1,387 @@
 <%= content_for :body_attributes, "onload='update_function();'" %>
 
-<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
-<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
-<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
 
-
-
-<table cellpadding="0" cellspacing="0" border="0" width="100%">
-	<thead>
-		<tr>
-			<td colspan="3" class="DashHeaderTop" width="40%">
-			Baseball Dashboard
-			<div class="DashHeaderTopBrown">Manage Baseball Accounts and Teams</div>
-			</td>
-			<td colspan="3" class="DashHeaderTop" align="right">
-				<img src="/images/baseball.png" alt="Baseball" height="50" width="50">
-			<div id="updating" class="DashActiveBrown" style="display:<%if (!@update)%>none<%end%>">
-			Refreshing All Teams <%= image_tag '/images/refresh-animated.gif' %>
+<div class="container-fluid">
+  <div class="row-fluid">
+<!--     <div class="span3">
+    	<br><br><br><br><br>
+      <ul class="nav nav-tabs nav-stacked">
+        <li><%= link_to "Baseball", :controller => "teams", :action => "index" %></li>
+				<li><%= link_to "Football", :controller => "football_teams", :action => "index"%></li>
+    	</ul>
+    </div> -->
+    <div class="container">
+    	<div class="span12 clearfix bottompad2">
+				<img class="left alignto-h1" src="/images/baseball.png" alt="Baseball" height="50" width="50">
+	      <div class="left">
+	      	<h1 class="left">Baseball Dashboard</h1>
+					<div id="updating" style="display:<%if (!@update)%>none<%end%>">
+						Refreshing All Teams 
+						<%= image_tag '/images/refresh-animated.gif' %>
+					</div>
+				</div>
 			</div>
-			</td>
-		</tr>
-		
-		<tr>
-			<td colspan="1" class="DashHeaderLeft">
-			Step 1: Add Your Fantasy Sports Accounts<br>
-			Step 2: Set Batter and Pitcher Preferences<br>
-			Step 3: Start and Verify Tomorrow's Lineup<br>
-			Step 4: Sit Back and Relax<br>
-			Step 5: Review Lineup and Make Changes<BR>
-			Step 6: Real Time Monitor for Scratches
-			</td>
-			<td colspan="5" class="DashHeaderRight">
-			1. Log into your Yahoo or ESPN account from RotoStarter<br>
-			2. For basic setup, set Batters to "If Game" & Starting Pitchers to "If Probable"<br>
-			3. After saving prefs, test setting tomorrow's lineup by clicking "Preview Tommorow"<br>
-			4. RotoStarter will set your daily lineup ONCE every morning for activated teams<br>
-			5. You can safely modify your Yahoo or ESPN lineups for any last minute changes<br>
-			6. Will sit any batter scratched today and sub in a player off your bench for that slot
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-			<br>
-			</td>
-		</tr>
-	</thead>
-	<tbody>
-		<%if (@demo)%>
-		<tr>
-			<td colspan="3" class="SideHeader">
-			
-			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
-			
-			RotoStarter Demo
-			</td>
-			<td colspan="2" class="MainSubTitleLinks" >
-			
-			<br>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a><br>
-				<div class="DashActiveBrown">RotoStarter Demo League</div>
-			</td>
-	
-			<td class="DashInactive">
-				<div id="b_<%=@demo_team._id%>">
-				<%if (@demo_team.daily_auto_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showbatters?id=<%=@demo_team._id%>"><font color=green>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;					
-				<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showbatters?id=<%=@demo_team._id%>"><font color=red>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-					
-					<span id="br_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
-					
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive">
-				<div id="p_<%=@demo_team._id%>">
-				<%if (@demo_team.daily_auto_pitcher)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showpitchers?id=<%=@demo_team._id%>"><font color=green>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="pr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showpitchers?id=<%=@demo_team._id%>"><font color=red>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-					
-					<span id="pr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
-					
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive" nowrap="true">
-				<div id="r_<%=@demo_team._id%>">
-				<%if (@demo_team.real_time_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<font color=green>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="rr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<font color=red>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-					
-					<span id="rr_<%=@demo_team._id%>"><a href="javascript:setup('<%=@demo_team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
-					
-				<%end%>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-			<br>
-			</td>
-		</tr>
-		<%end%>
-		
-		<tr>
-			<td colspan="3" class="SideHeader">
-			<%- if (@yahoo_teams.length == 0) -%>
-			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
-			<%else%>
-			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
-			<%end%>
-			Yahoo Teams
-			</td>
-			<td colspan="3" class="MainSubTitleLinks" <% if (@yahoo_teams.length == 0) %>style="text-align:left"<%end%>>
-			<%- if (@yahoo_teams.length == 0) -%>
-				<img src="/images/RSPlus10.png" alt="Add Icon">
-				<a href="javascript:teamWindow('YAHOO')">Add Account</a>
- 
-			<%else%>
-			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-			<a href="javascript:updateTeams('yahoo')">Refresh</a>
-			<img src="/images/editIcon.gif" alt="Edit Icon">
-			<a href="javascript:teamWindow('YAHOO')">Edit</a>
-			<%end%>
-			<br>
-			</td>
-		</tr>
-		<%- @yahoo_teams.each do |team| -%>
-		<tr>
-			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
-				<div class="DashActiveBrown"><%=team.league_name%></div>
-			</td>
-	
-			<td class="DashInactive">
-				<div id="b_<%=team._id%>">
-				<%if (team.daily_auto_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showbatters?id=<%=team._id%>"><font color=green>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;					
-				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showbatters?id=<%=team._id%>"><font color=red>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-					<%if (team.weekly_team)%>
-					Weekly Lineup
-					<%else%>
-					<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
-					<%end%>
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive">
-				<div id="p_<%=team._id%>">
-				<%if (team.daily_auto_pitcher)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=green>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=red>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-					<%if (team.weekly_team)%>
-					Weekly Lineup
-					<%else%>
-					<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
-					<%end%>
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive">
-				<%if (team.weekly_team)%>
-				<%else%>
-				
-				<div id="r_<%=team._id%>">
-				<%if (team.real_time_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<font color=green>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<font color=red>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-					<%if (team.weekly_team)%>
-					Weekly Lineup
-					<%else%>
-					<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
-					<%end%>
-				<%end%>
-				</div>
-				<%end%>
-			</td>
-			
-		</tr>
-		<%end%>
-		<tr>
-			<td>
-			<br>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" class="SideHeader">
-			<%- if (@espn_teams.length == 0) -%>
-			<img src="/images/RSArrowRightBlue10.png" alt="Blue Right Arrow">
-			<%else%>
-			<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
-			<%end%>
-			ESPN Teams
-			</td>
-			<td colspan="3" class="MainSubTitleLinks" <% if (@espn_teams.length == 0) %>style="text-align:left"<%end%>>
-			<%- if (@espn_teams.length == 0) -%>
-				<img src="/images/RSPlus10.png" alt="Add Icon">
-				<a href="javascript:teamWindow('ESPN')">Add Account</a>
-			<%else%>
-			<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-			<a href="javascript:updateTeams('espn')">Refresh</a>
-			<img src="/images/editIcon.gif" alt="Edit Icon">
-			<a href="javascript:teamWindow('ESPN')">Edit</a>
-			<%end%>
-			<br>
-			</td>
-		</tr>
-		<%- @espn_teams.each do |team| -%>
-		<tr>
-			<td colspan="3" class="DashActive"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a><br>
-				<div class="DashActiveBrown"><%=team.league_name%></div>
-			</td>
-	
-			<td class="DashInactive">
-				<div id="b_<%=team._id%>">
-				<%if (team.daily_auto_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showbatters?id=<%=team._id%>"><font color=green>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'b')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showbatters?id=<%=team._id%>"><font color=red>Batters</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<%if (team.weekly_team)%>
-					Weekly Lineup
-				<%else%>
-					<span id="br_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'b')"><font color=#00AEEF>[Activate]</font></a></span>
-				<%end%>
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive">
-				<div id="p_<%=team._id%>">
-				<%if (team.daily_auto_pitcher)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=green>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'p')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<a href="/teams/showpitchers?id=<%=team._id%>"><font color=red>Pitchers</font></a>
-				<br>&nbsp;&nbsp;&nbsp;
-				<%if (team.weekly_team)%>
-					Weekly Lineup
-				<%else%>
-				<span id="pr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'p')"><font color=#00AEEF>[Activate]</font></a></span>
-				<%end%>
-				<%end%>
-				</div>
-			</td>
-			<td class="DashInactive">
-				<%if (team.weekly_team)%>
-				<%else%>
-				<div id="r_<%=team._id%>">
-				<%if (team.real_time_batter)%>
-				<img src="/images/RS_Green_Button10.png" alt="Green Button">
-				<font color=green>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-				<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',false,'r')"><font color=#00AEEF>[Deactivate]</font></a></span>
-				<%else%>
-				<img src="/images/RS_Red_Button10.png" alt="Red Button">
-				<font color=red>Real Time Monitor</font>
-				<br>&nbsp;&nbsp;&nbsp;
-					<%if (team.weekly_team)%>
-					Weekly Lineup
-					<%else%>
-					<span id="rr_<%=team._id%>"><a href="javascript:setup('<%=team._id%>',true,'r')"><font color=#00AEEF>[Activate]</font></a></span>
-					<%end%>
-				<%end%>
-				</div>
-				<%end%>
-			</td>
-		</tr>
-		<%end%>
-		<%if (@demo)%>
-		<TR><TD><BR></TD></TR>
-		<TR>
-			<TD class="DashActiveBrown" colspan="5">
-			<div class="HomeTinyLinks">
-			If you are having issues adding and authenticating your Yahoo or ESPN ID, 
-			please open your browser, logout of all Yahoo/ESPN sessions, and log back in.  Afterwards, try adding your account again.  
-			If you are still encountering issues, please contact us for support at <a href="mailto:support@rotostarter.com">support@rotostarter.com</a>
-			</div>
-			</TD>
-		</TR>
-		<%end%>		
-	</tbody>
-</table>
+			<% if (@demo) %>
+				<div class="clearfix bottompad1">
+					<div class="span12 bottompad1">
+			  		<h3>Get Started Managing Your Teams</h3>
+			  	</div>
+		  		<ul id="b_<%=@demo_team._id%>" class="span3 dashboard-team">
+						<h4><a href="/teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a></h4>
+						<p>RotoStarter Demo League</p>
+						<%if (@demo_team.daily_auto_batter)%>
+							<li>
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<a class="active" href="/teams/showbatters?id=<%=@demo_team._id%>">Set Batters</a>
+									<span id="br_<%=@demo_team._id%>">
+										<a href="javascript:setup('<%=@demo_team._id%>',false,'b')">[Deactivate]</a>
+									</span>
+							</li>
+						<%else%>
+							<li>
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<a class="inactive" href="/teams/showbatters?id=<%=@demo_team._id%>">Set Batters</a>
+									<span id="br_<%=@demo_team._id%>">
+										<a href="javascript:setup('<%=@demo_team._id%>',true,'b')">[Activate]</a>
+									</span>
+							</li>	
+						<%end%>
 
+						<%if (@demo_team.daily_auto_pitcher)%>
+							<li>
+								<img src="/images/RS_Green_Button10.png" alt="Green Button">
+								<a class="active" href="/teams/showpitchers?id=<%=@demo_team._id%>">Set Pitchers</a>
+								<span id="pr_<%=@demo_team._id%>">
+									<a href="javascript:setup('<%=@demo_team._id%>',false,'p')">[Deactivate]</a>
+								</span>
+							</li>
+						<%else%>
+							<li>
+								<img src="/images/RS_Red_Button10.png" alt="Red Button">
+								<a class="inactive" href="/teams/showpitchers?id=<%=@demo_team._id%>">Set Pitchers</a>
+								<span id="pr_<%=@demo_team._id%>">
+									<a href="javascript:setup('<%=@demo_team._id%>',true,'p')">[Activate]</a>
+								</span>
+							</li>
+						<%end%>
+
+						<%if (@demo_team.real_time_batter)%>
+							<li>
+								<img src="/images/RS_Green_Button10.png" alt="Green Button">
+								<span class="active">Real Time On </span>
+								<span id="rr_<%=@demo_team._id%>">
+									<a href="javascript:setup('<%=@demo_team._id%>',false,'r')">[Deactivate]</a>
+								</span>
+							</li>
+						<%else%>
+							<li>
+								<img src="/images/RS_Red_Button10.png" alt="Red Button">
+								<span class="inactive">Real Time Off</span>
+								<span id="rr_<%=@demo_team._id%>">
+									<a href="javascript:setup('<%=@demo_team._id%>',true,'r')">[Activate]</a>
+								</span>
+							</li>
+						<%end%>
+					</ul>
+					<a href="#">
+			  		<ul class="span3 dashboard-team">
+							<p style="overflow:visible;font-size:50px; text-align:center;  font-weight:bold;">+</p>
+							<h4 style="text-align:center">Add Yahoo Teams<h4>
+		  			</ul>
+	  			</a>
+					<a href="#">
+			  		<ul class="span3 dashboard-team">
+							<p style="overflow:visible;font-size:50px; text-align:center;  font-weight:bold;">+</p>
+							<h4 style="text-align:center">Add ESPN Teams<h4>
+		  			</ul>
+	  			</a>
+				</div>	
+	  	<% end %>
+
+			<% if (@yahoo_teams.length > 0) %>
+				<div class="clearfix bottompad1">
+					<div class="span12 bottompad1">
+							<h3 class="left">Yahoo Teams</h3>
+							<% if (@yahoo_teams.length == 0) %>
+								<span class="left alignto-h3">
+									<img src="/images/RSPlus10.png" alt="Add Icon">
+									<a href="javascript:teamWindow('YAHOO')">Add Account</a>
+								</span>
+							<%else%>
+								<span class="left alignto-h3">
+									<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+									<a href="javascript:updateTeams('yahoo')">Refresh</a>
+								</span>
+								<span class="left alignto-h3">
+									<img src="/images/editIcon.gif" alt="Edit Icon">
+									<a href="javascript:teamWindow('YAHOO')">Edit</a>
+								</span>
+							<%end%>
+					</div>
+					<% @yahoo_teams.each do |team| %>
+			  		<ul id="b_<%= team._id %>" class="span4 dashboard-team">
+							<h4><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h4>
+							<p><%=team.league_name%></p>
+							<%if (team.daily_auto_batter)%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Green_Button10.png" alt="Green Button">
+										<a class="active" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<span id="br_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',false,'b')">[Deactivate]</a>
+										</span>
+								</li>
+							<%else%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Red_Button10.png" alt="Red Button">
+										<a class="inactive" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<% if (team.weekly_team) %>
+											<span class="inactive">Weekly Lineup</span>
+										<% else %>
+											<span id="br_<%= team._id %>">
+												<a href="javascript:setup('<%= team._id %>',true,'b')">[Activate]</a>
+											</span>
+										<% end %>
+								</li>	
+							<%end%>
+
+							<%if (team.daily_auto_pitcher)%>
+								<li id="p_<%= team._id %>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<a class="active" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<span id="pr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'p')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="p_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<a class="inactive" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<% if (team.weekly_team) %>
+										<span class="inactive">Weekly Lineup</span>
+									<% else %>
+										<span id="pr_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',true,'p')">[Activate]</a>
+										</span>
+									<% end %>
+								</li>
+							<%end%>
+
+							<%if (team.real_time_batter) && !(team.weekly_team) %>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<span class="active">Real Time On </span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'r')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<span class="inactive">Real Time Off</span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',true,'r')">[Activate]</a>
+									</span>
+								</li>
+							<%end%>
+						</ul>
+					<% end %>
+				</div>
+			<% end %>
+
+			<% if (@yahoo_teams.length > 0) %>
+				<div class="clearfix bottompad1">
+					<div class="span12 bottompad1">
+							<h3 class="left">Yahoo Teams</h3>
+							<% if (@yahoo_teams.length == 0) %>
+								<span class="left alignto-h3">
+									<img src="/images/RSPlus10.png" alt="Add Icon">
+									<a href="javascript:teamWindow('YAHOO')">Add Account</a>
+								</span>
+							<%else%>
+								<span class="left alignto-h3">
+									<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+									<a href="javascript:updateTeams('yahoo')">Refresh</a>
+								</span>
+								<span class="left alignto-h3">
+									<img src="/images/editIcon.gif" alt="Edit Icon">
+									<a href="javascript:teamWindow('YAHOO')">Edit</a>
+								</span>
+							<%end%>
+					</div>
+					<% @yahoo_teams.each do |team| %>
+			  		<ul id="b_<%= team._id %>" class="span4 dashboard-team">
+							<h4><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h4>
+							<p><%=team.league_name%></p>
+							<%if (team.daily_auto_batter)%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Green_Button10.png" alt="Green Button">
+										<a class="active" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<span id="br_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',false,'b')">[Deactivate]</a>
+										</span>
+								</li>
+							<%else%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Red_Button10.png" alt="Red Button">
+										<a class="inactive" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<% if (team.weekly_team) %>
+											<span class="inactive">Weekly Lineup</span>
+										<% else %>
+											<span id="br_<%= team._id %>">
+												<a href="javascript:setup('<%= team._id %>',true,'b')">[Activate]</a>
+											</span>
+										<% end %>
+								</li>	
+							<%end%>
+
+							<%if (team.daily_auto_pitcher)%>
+								<li id="p_<%= team._id %>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<a class="active" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<span id="pr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'p')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="p_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<a class="inactive" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<% if (team.weekly_team) %>
+										<span class="inactive">Weekly Lineup</span>
+									<% else %>
+										<span id="pr_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',true,'p')">[Activate]</a>
+										</span>
+									<% end %>
+								</li>
+							<%end%>
+
+							<%if (team.real_time_batter) && !(team.weekly_team) %>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<span class="active">Real Time On </span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'r')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<span class="inactive">Real Time Off</span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',true,'r')">[Activate]</a>
+									</span>
+								</li>
+							<%end%>
+						</ul>
+					<% end %>
+				</div>
+			<% end %>
+
+			<% if (@espn_teams.length > 0) %>
+				<div class="clearfix bottompad1">
+					<div class="span12 bottompad1">
+						<h3 class="left">ESPN Teams</h3>
+						<% if (@espn_teams.length == 0) %>
+							<span class="left alignto-h3">
+								<img src="/images/RSPlus10.png" alt="Add Icon">
+								<a href="javascript:teamWindow('ESPN')">Add Account</a>
+							</span>
+						<%else%>
+							<span class="left alignto-h3">
+								<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+								<a href="javascript:updateTeams('espn')">Refresh</a>
+							</span>
+							<span class="left alignto-h3">
+								<img src="/images/editIcon.gif" alt="Edit Icon">
+								<a href="javascript:teamWindow('ESPN')">Edit</a>
+							</span>
+						<%end%>
+					</div>
+					<% @espn_teams.each do |team| %>
+			  		<ul id="b_<%= team._id %>" class="dashboard-team">
+							<h4><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h4>
+							<p><%=team.league_name%></p>
+							<%if (team.daily_auto_batter)%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Green_Button10.png" alt="Green Button">
+										<a class="active" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<span id="br_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',false,'b')">[Deactivate]</a>
+										</span>
+								</li>
+							<%else%>
+								<li id="b_<%= team._id %>">
+										<img src="/images/RS_Red_Button10.png" alt="Red Button">
+										<a class="inactive" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
+										<% if (team.weekly_team) %>
+											<span class="inactive">Weekly Lineup</span>
+										<% else %>
+											<span id="br_<%= team._id %>">
+												<a href="javascript:setup('<%= team._id %>',true,'b')">[Activate]</a>
+											</span>
+										<% end %>
+								</li>	
+							<%end%>
+
+							<%if (team.daily_auto_pitcher)%>
+								<li id="p_<%= team._id %>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<a class="active" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<span id="pr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'p')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="p_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<a class="inactive" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
+									<% if (team.weekly_team) %>
+										<span class="inactive">Weekly Lineup</span>
+									<% else %>
+										<span id="pr_<%= team._id %>">
+											<a href="javascript:setup('<%= team._id %>',true,'p')">[Activate]</a>
+										</span>
+									<% end %>
+								</li>
+							<%end%>
+
+							<%if (team.real_time_batter) && !(team.weekly_team) %>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Green_Button10.png" alt="Green Button">
+									<span class="active">Real Time On </span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',false,'r')">[Deactivate]</a>
+									</span>
+								</li>
+							<%else%>
+								<li id="r_<%=team._id%>">
+									<img src="/images/RS_Red_Button10.png" alt="Red Button">
+									<span class="inactive">Real Time Off</span>
+									<span id="rr_<%= team._id %>">
+										<a href="javascript:setup('<%= team._id %>',true,'r')">[Activate]</a>
+									</span>
+								</li>
+							<%end%>
+						</ul>
+					<% end %>
+			<% end %>
+
+			<div class="span8 clearfix bottompad">
+		    <div class="alert clearfix">
+				  <button type="button" class="close" data-dismiss="alert">&times;</button>
+					<p><strong>Problems?</strong></p>
+					<p>If you are having issues adding and authenticating your Yahoo or ESPN ID, please open your browser, logout of all Yahoo or ESPN sessions, and log back in. </p>
+					<p>Afterwards, try adding your account again.</p>
+					<p>If you are still having trouble, please contact us at <a href="mailto:support@rotostarter.com">support@rotostarter.com</a>.</p>
+				</div>
+			</div>
+		</div>
+
+
+
+  </div>
+</div>
 
 
 <SCRIPT>
