@@ -11,6 +11,6 @@ ActionMailer::Base.smtp_settings = {
 :domain  => 'www.rotostarter.com',
 :port      => 80,
 :user_name => 'support@rotostarter.com',
-:password => 'setty99*',
+:password => 'Settyvic99*',
 :authentication => :plain
 }

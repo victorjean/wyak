@@ -315,9 +315,11 @@ def parse_yahoo_team(team, first_time, tomm)
       end
       if (@rosterHash[counter].pos_text == YAHOO_UTIL_SLOT)
         #Set Players Originally in UTIL spot to priority 1
-        @rosterPlayerHash[counter].priority = 1
-        @rosterPlayerHash[counter].save
-        @rosterHash[counter].save
+        if (!@rosterPlayerHash[counter].nil?)
+          @rosterPlayerHash[counter].priority = 1
+          @rosterPlayerHash[counter].save
+          @rosterHash[counter].save
+        end
       end
     end
     puts 'DL Players Assign to Bench'
@@ -486,18 +488,18 @@ def load_yahoo_teams(user_info, reload)
   
   page = agent.get(YAHOO_BASEBALL_PAGE_URL)
   doc = Hpricot(page.parser.to_s)
-  team_list_tag = doc.search("ul[@class=ysf-teamlist]").first
+  team_list_tag = doc.search("dd[@class=yfa-team-identifier]").first
   #If Properly Logged In, User Should have a Team Tag Check for Nil
   if (!team_list_tag.nil?)
-    doc.search("ul[@class=ysf-teamlist]") do |fantasy_team_tag|
+    doc.search("dd[@class=yfa-team-identifier]") do |fantasy_team_tag|
     
-      fantasy_team_tag.search("li") do |teamlink|
+      
             
         #Get Tag Containing Team URL
-        team_href_tag = teamlink.search("a[@class=yuimenuitemlabel name]").first
+        team_href_tag = fantasy_team_tag.search("a[@class=yfa-team]").first
         if (!team_href_tag.get_attribute("href").index(YAHOO_BASEBALL_PAGE_URL).nil?)
           #Get Tag Containing League ID
-          league_href_tag = teamlink.search("a[@class=yuimenuitemlabel]").first
+          league_href_tag = fantasy_team_tag.search("a[@class=yfa-league]").first
           #Get League and Team ID String
           league_team_ids = team_href_tag.get_attribute("href").strip.gsub(YAHOO_BASEBALL_PAGE_URL,'')
            
@@ -514,7 +516,7 @@ def load_yahoo_teams(user_info, reload)
           
           puts 'Team Saved - '+team.inspect
         end# end baseball check
-      end #end loop through teams
+      
       
     end #Outer Team List Loop
   else
