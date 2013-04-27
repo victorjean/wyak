@@ -17,8 +17,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <%= stylesheet_link_tag "application", :media => "all" %>
-    <%= javascript_include_tag "application" %>
     <%= javascript_include_tag "vendor/custom.modernizr" %>
+    <%= javascript_include_tag "application" %>
     <%= csrf_meta_tag %>
     <%= yield(:head) %>
       
@@ -56,18 +56,21 @@
     <footer class="row">
       <div class="large-12 columns"><hr>
         <div class="row">
-          <div class="large-6 columns">
-            <p>RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p>
-          </div>
+
 
           <div class="large-6 columns">
-            <ul class="inline-list right">
+            <ul class="inline-list left">
               <li><%= link_to "Terms", :controller => "static", :action => "terms" %></li>
               <li><%= link_to "Privacy", :controller => "static", :action => "privacy" %></li>
               <li><%= link_to "Contact Us", :controller => "static", :action => "contact" %></li>
+              <li class="show-for-small">            
+                <p>RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p>
+              </li>
             </ul>
           </div>
-
+          <div class="large-6 columns">
+            <p class="right hide-for-small">RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p>
+          </div>
         </div>
       </div>
     </footer>

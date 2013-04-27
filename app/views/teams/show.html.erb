@@ -1,545 +1,499 @@
-<link href="/stylesheets/default.css" rel="stylesheet" type="text/css"/>
-<link href="/stylesheets/alert.css" rel="stylesheet" type="text/css"/>
-<link href="/stylesheets/lighting.css" rel="stylesheet" type="text/css"/>
 
+  <% priority_count = 0 %>
 
-<% priority_count = 0%>
+  <div class="row">
 
-<%= form_tag '/teams/set_lineup', options = {:id => 'set_lineup'} do%>
+    <!-- Side Bar -->
 
+        <div class="large-4 small-12 columns">
+          <div class="large-12 columns">
+            <h2 class="no-margin"><%= (@pitch) ? 'Pitcher':'Batter' %> Settings</h2>
+            <h5 class="subheader">Set Up Your Lineup Preferences</h5>
+                  <p class="left"><img src="/images/RSSwitchIcon.png" width="12" height="12" alt="Switch Icon">
+                  <a class="LeftNavLink" href="/teams/<%= (@pitch) ? 'showbatters' : 'showpitchers' %>?id=<%= @team._id %>">
+                    Switch to <%= (@pitch) ? 'Batter' : 'Pitcher' %>  Settings
+                  </a></p>
 
-<!--START -->
+          </div>
 
-<div id="RSSidebar" style="float:left; margin:0;">
-	<table align=right cellpadding="0" cellspacing="0" border="0" >
-	<thead>
-		<tr>
-		<td colspan="2" class="SideTitle">
-		<%=(@pitch)?'Pitcher':'Batter'%> Settings
-		<div class="SideTitleBrown">Set Future Lineup Preferences</div>
-		</td>
-		</tr>
-		<tr>
-		<td>
-		<br>
-		</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-		<td class="SideHeader">
-		<img src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
-		Yahoo Teams
-		</td>
-		<td class="MainSubTitleLinks">
-		
-		<br>
-		</td>
-		</tr>
-		<%- @yahoo_teams.each do |team| -%>
-		<tr>
-		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
-		<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showpitchers':'showbatters'%>?id=<%=team._id%>">
-		<%=team.team_name%><br>
-		<div class="SideBrown"><%=team.league_name%></div>
-		</a>
-		</td>
-		</tr>
-		<%-end-%>
-		
-		<tr>
-		<td colspan="2" class="SideClose"></td>
-		</tr>
-		<tr>
-		<td>
-		<br>
-		</td>
-		</tr>
-		<tr>
-		<td class="SideHeader">
-		<img src="/images/RSArrowDownBlue10.png" size=80% alt="Blue Down Arrow"> ESPN Teams<br>
-		</td>
-		<td class="MainSubTitleLinks">
-		
-		<br>
-		</td>
-		</tr>
-		<%- @espn_teams.each do |team| -%>
-		<tr>
-		<td colspan="2" class="<%=(team._id==@team.id)?'SideActive':'SideInactive '%>">
-		<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showpitchers':'showbatters'%>?id=<%=team._id%>">
-		<%=team.team_name%><br>
-		<div class="SideBrown"><%=team.league_name%></div>
-		</a>
-		</td>
-		</tr>
-		<%-end-%>
-	</tbody>
-	<tfoot>
-	</tfoot>
-	</table>
-</div>
-<div id="RSMiddleDivider" style="float:left; margin:0;">
-<ul></ul>
-</div>
-<div id="RSMain" style="float:left; margin:0;">
-<table cellpadding="0" cellspacing="0" border="0">
-<thead>
-<tr class="MainTitle">
-<td colspan="5" class="MainTitle">
-<%=@team.team_name%>
-<div class="MainTitleBrown"><%=@team.league_name%></div>
-</td>
-<td colspan="3" class="MainSubTitle">
-<div class="MainSubTitleLinks">
-<img src="/images/RSSwitchIcon.png" width="12" height="12" alt="Switch Icon">
-<a class="LeftNavLink" href="/teams/<%=(@pitch)?'showbatters':'showpitchers'%>?id=<%=@team._id%>">
-Switch to <%=(@pitch)?'Batters':'Pitchers'%>	
-</a>
-</div>
-<%if (@pitch)%>
-	<%if (@team.daily_auto_pitcher)%>
-	<img src="/images/RS_Green_Button10.png" alt="Green Button">
-	<b><font color=green>Pitchers</font></b> |
-	<%else%>
-	<img src="/images/RS_Red_Button10.png" alt="Red Button">
-	<b><font color=red>Pitchers</font></b> |
-	<%end%>
-<%else%>
-	<%if (@team.daily_auto_batter)%>
-	<img src="/images/RS_Green_Button10.png" alt="Green Button">
-	<b><font color=green>Batters</font></b> |
-	<%else%>
-	<img src="/images/RS_Red_Button10.png" alt="Red Button">
-	<b><font color=red>Batters</font></b> |
-	<%end%>
-<%end%>
-<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-<a class="LeftNavLink" href="javascript:refreshLineup()">Refresh</a>
-</td>
-</tr>
-<tr>
-<td colspan="5" class="MainHeader">
-<br>
-<%=(@pitch)?'Pitcher':'Batter'%> Starting Lineup
-</td>
-<td colspan="3" align="right">
-	<span id="refresh_span" style="display:none; padding-right: 3px">Refreshing Team <img src="/images/refresh-animated.gif"></span>
-</td>
-</tr>
+          <div class="left small-6 large-12 columns">
+            <div class="large-12 columns margin-top-2 margin-bottom-1">
+              <img class="left margin-top-05 margin-right-1" src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+              <h4 class="left no-margin">Yahoo</h4>
+            </div>
+            <% @yahoo_teams.each do |team| %>
+              <div class="panel large-12 <%=(team._id==@team.id) ? 'bg-lightblue':'bg-lightgray'%>">
+                <a class="txt-blue" href="/teams/<%= (@pitch) ? 'showpitchers':'showbatters' %>?id=<%= team._id %>">
+                  <%= team.team_name %><br>
+                  <div class="txt-brown"><%= team.league_name %></div>
+                </a>
+              </div>
+            <% end %>
+          </div>
+          <div class="left small-6 large-12 columns">
+            <div class="large-12 columns margin-top-2 margin-bottom-1">
+              <img class="left margin-top-05 margin-right-1" src="/images/RSArrowDownBlue10.png" alt="Blue Down Arrow">
+              <h4 class="left no-margin">ESPN</h4>
+            </div>
+            <% @espn_teams.each do |team| %>
+              <div class="panel large-12 <%=(team._id==@team.id) ? 'bg-lightblue':'bg-lightgray'%>">
+                <a class="txt-blue" href="/teams/<%= (@pitch) ? 'showpitchers':'showbatters' %>?id=<%= team._id %>">
+                  <%= team.team_name %><br>
+                  <div class="txt-brown"><%= team.league_name %></div>
+                </a>
+              </div>
+            <% end %>
+          </div>
 
-</thead>
-<tbody>
-<tr>
-<td class="MainTinyHeader">Slot</td>
-<td class="MainTinyHeader">Player</td>
-<td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
-<td class="MainTinyHeader" align="center" >7 Day<BR>Rank Chg</td>
+        </div>
 
-<td class="MainTinyHeader">Start <br>Position</td>
-<td class="MainTinyHeader">Start <br>Frequency</td>
-<td class="MainTinyHeader">Start <br>Behavior</td>
-</tr>
+    <!-- End Side Bar -->
 
-    <%- 
-    @roster_list = @roster_list.sort_by{|x| [x.order]} 
-    @roster_list.each do |roster| -%>
-    <%- if (roster.pos_text != BENCH_POSITION )-%>
-    <tr>
-        <td class="MainRowBeg"><%=roster.pos_text%></td>
-        <td class="MainRow">
-        	<%- if (roster.player.nil?)-%>
-        	<img src="/images/RS_Red_Button10.png" alt="Red Button">
-        	<%=(roster.leave_empty)?'[LEAVE SLOT EMPTY]':'[ FILL FROM BENCH ]'%>
-        	
-        	<%-else-%>
-        	<%if(roster.player.action == 'A')%><img src="/images/RS_Green_Button10.png" alt="Green Button"><%end%>
-        	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
-        	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> 
-        	(<%=roster.player.team_name%> - <%=roster.player.position_text%>)
-        	<span class="dl_tag"><%=(roster.player.on_dl)?'DL':''%></span>
-        	<%-end-%>
-       	</td>
-       	<td class="MainRow" align="right" style="padding-right: 0">
-       	<% color = ''
-       	if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
-       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
-       			color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
-       	%>
-     		<FONT class="RankFont" color="<%=color%>">
-       		<%=roster.player.player_stats.pos_rank.values.first%>
-       		</FONT>  		 
-       		<%else
-       			color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
-       		%>
-       		<FONT class="RankFont" color="<%=color%>">
-        	<%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
-        	 </FONT> 		
-      		<%end%>
-      		<img src="/images/RSStar<%=color%>10.png">
-        <%end%>	
-        </td>
-        <td class="MainRow" style="padding-left: 2px;">
-        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
-       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
-       	%>
-       		<FONT class="RankFont" color="<%=color%>">
-  			<%=roster.player.player_stats.pos_rank.keys.first%>
-  			</FONT>
-  			<%else%>
-       		<FONT class="RankFont" color="<%=color%>">
-        	<%=roster.player.assign_pos%>
-        	 </FONT>     	
-       		    	
-       		<%end%>
-        <%end%>	
-        </td>
-        <td class="MainRow" style="padding-left: 0px;" align="center">
-        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
-        	<%if(roster.player.player_stats.rank_change >=0)%>
-       		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
-       		<%else%>
-       		<FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
-       		<%end%>
-        <%end%>	
-        </td>
-        <%- if (!roster.player.nil?)-%>
-    		<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px" <%=(@team.weekly_team)?'disabled':''%>>
-    			<%- roster.player.eligible_pos.each do |p|-%>
-    			<% if (p!=DL_POSITION) %>
-    			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
-    			<% end %>
-    			<%-end-%>
-    		</select>
-        	</td>
-    		<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
-    		<option class="MainOption" value="A" <%=(roster.player.action=='A')?'selected':''%>>Always</option>
-    		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
-    		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
-    		</select>
-    		</td>
-    	<%-else-%>
-    	    <td class="MainRow" colspan="2" valign="center">
-    	    	<%= check_box('empty', roster._id, options = { 
-:checked => roster.leave_empty}, checked_value = "1", unchecked_value = "0") %>
-        	Leave Slot Empty
-        	</td>	
-    	<%-end-%>        
-        <td class="MainRowEnd">
-        	<span>
-        	<%if(!roster.player.nil? && roster.player.action == 'A')%><font color=green>Always Start</font><%end%>
-        	<%if(!roster.player.nil? && roster.player.action == 'D')%><font color=#00AEEF>Start If Game</font><%end%>
-        	<%if(roster.player.nil?)&& roster.leave_empty%><font color=red>Leave Slot Empty</font><%end%>
-        	<%if(!roster.player.nil? && roster.player.action == 'P')%><font color="#F7941E">If Starter Today</font><%end%>
-        	</span>
-        </td>        
-        
-    </tr>
-    <%-end-%>
-    <%-end-%>
+    <!-- Main -->
+      <%= form_tag '/teams/set_lineup', options = {:id => 'set_lineup'} do%>
 
+        <div class="small-12 large-8 columns margin-top-2 margin-bottom-2">
 
-<tr>
-<td colspan="8" class="MainClose"></td>
-</tr>
-<tr>
-<td colspan="8" class="MainHeader"><br><%=(@pitch)?'Pitcher':'Batter'%> Bench Priority</td>
-</tr>
-<tr>
-<td class="MainTinyHeader">Slot</td>
-<td class="MainTinyHeader">Player</td>
-<td class="MainTinyHeader" align="left" colspan="2">Pos Rank</td>
-<td class="MainTinyHeader" align="center">7 Day<BR>Rank Chg</td>
-<td class="MainTinyHeader">Start <br>Position</td>
-<td class="MainTinyHeader">Start <br>Frequency</td>
-<td class="MainTinyHeader">Bench <br>Priority</td>
-</tr>
-
-    <%
-     
-    @bench_player_array.each do |roster| 
-    %>
-    <% if (!roster.player.nil?  && roster.pos_text == BENCH_POSITION)
-    	if(roster.player.action != 'N') 
-    		priority_count += 1 
-    	end
-    %>
-    <tr>
-        <td class="MainRowBeg"><%=roster.pos_text%></td>
-        
-        <td class="MainRow">
-        	<%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
-        	<%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
-        	<%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
-        	<a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )">
-        		<%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
-        		<span class="dl_tag"><%=(roster.player.on_dl)?'DL':''%></span>
-       	</td>
-       	<td class="MainRow" align="right" style="padding-right: 0">
-       	<% color = ''
-       	if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
-       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
-       			color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
-       	%>
-     		<FONT class="RankFont" color="<%=color%>">
-       		<%=roster.player.player_stats.pos_rank.values.first%>
-       		</FONT>  		 
-       		<%else
-       			color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
-       		%>
-       		<FONT class="RankFont" color="<%=color%>">
-        	<%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
-        	 </FONT> 		
-      		<%end%>
-      		<img src="/images/RSStar<%=color%>10.png">
-        <%end%>	
-        </td>
-        <td class="MainRow" style="padding-left: 2px;">
-        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
-       		if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
-       	%>
-       		<FONT class="RankFont" color="<%=color%>">
-  			<%=roster.player.player_stats.pos_rank.keys.first%>
-  			</FONT>
-  			<%else%>
-       		<FONT class="RankFont" color="<%=color%>">
-        	<%=roster.player.assign_pos%>
-        	 </FONT>     	
-       		<%end%>
-        <%end%>	
-        </td>
-        <td class="MainRow" style="padding-left: 0px;" align="center">
-        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
-        	<%if(roster.player.player_stats.rank_change >=0)%>
-       		<FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
-       		<%else%>
-       		<FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
-       		<%end%>
-        <%end%>	
-        </td>
-    	<td class="MainRow">
-    		<select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px" <%=(@team.weekly_team)?'disabled':''%>>
-    			<%- roster.player.eligible_pos.each do |p|-%>
-    			<%- if (p!=DL_POSITION)-%>
-    			<OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
-    			<%-end-%>
-    			<%-end-%>
-    		</select>
-       	</td>
-    	<td class="MainRow"><select class="MainSelect" name="freqselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
-    		
-    		<option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
-    		<%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
-    		<option class="MainOption" value="N" <%=(roster.player.action=='N')?'selected':''%>>Never</option>
-    		</select>
-    	</td>
-    		        
-        <td class="MainRowEnd">
-        	<%if (roster.player.action == NEVER_START_OPTION)%>
-				<font color=red>Never Start</font>
-			<%else%>
-	        	<select class="MainSelect" name="priorityselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
-				<%- @bench_array.each do |p|-%>
-    			<OPTION class="MainOption" value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
-    			<%-end-%>
-			</select>
-			<%end%>
-		</td>  
-    </tr>
-    <%-end-%>
-    <%-end-%>
-    <%@dl_list.each do |player| %>     
-    <%if(@pitch && !player.position_text.index('P').nil?)%> 
-    <tr>
-        <td class="MainRowBeg">DL</td>
-        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
-        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
-        (<%=player.team_name%> - <%=player.position_text%>)
-        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
-        </td>
-        <td class="MainRow"></td>
-    	<td class="MainRow"></td>
-    	<td class="MainRow"></td>
-    	<td class="MainRow"></td>
-        <td class="MainRowEnd"></td>
-    </tr>
-	<%end%>
-	<%if(!@pitch && player.position_text.index('P').nil?)%> 
-    <tr>
-        <td class="MainRowBeg">DL</td>
-        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
-        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
-        (<%=player.team_name%> - <%=player.position_text%>)
-        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
-        </td>
-        <td class="MainRow"></td>
-    	<td class="MainRow"></td>
-    	<td class="MainRow"></td>
-    	<td class="MainRow"></td>
-        <td class="MainRowEnd"></td>
-    </tr>
-	<%end%>
-	   
-	<%end%>    
-
-
-</tbody>
-<tfoot>
-<tr>
-<td colspan="5" class="MainClose"></td>
-</tr>
-<tr>
-<td>
-<br>
-</td>
-</tr>
-</tfoot>
-</table>    
-    <INPUT type="hidden" name="id" value="<%=@team._id%>">
-   	<%if (@team.weekly_team)%>
-	Team Lineup Set Weekly - Cannot Auto Start Players
-	<%else%>
-    <button type="button" onclick="submitLineup()">Save Changes</button>
-    <button type="button" onclick="showPreview()">Preview Tomorrow</button>
-    <%end%>
-    
+          <div class="large-12 columns">
+            <div class="panel bg-lightblue columns">
+              <div class="small-6 large-6 columns">
+                <h4 class="no-margin txt-blue"><%=@team.team_name%></h4>
+                <h6 class="subheader no-margin txt-brown"><%=@team.league_name%></h6>
+              </div>
+              <div class="small-6 large-6 columns margin-top-05">
+                <%if (@pitch)%>
+                  <%if (@team.daily_auto_pitcher)%>
+                  <p class="txt-green left">
+                    <img src="/images/RS_Green_Button10.png" alt="Green Button">
+                    Pitchers</p>
+                  <%else%>
+                  <p class="txt-red left">
+                    <img src="/images/RS_Red_Button10.png" alt="Red Button">
+                    Pitchers</p>
+                  <%end%>
+                <%else%>
+                  <%if (@team.daily_auto_batter)%>
+                  <p class="txt-green left">
+                    <img src="/images/RS_Green_Button10.png" alt="Green Button">
+                    Batters
+                  </p>
+                  <%else%>
+                  <p class="txt-red left">
+                    <img src="/images/RS_Red_Button10.png" alt="Red Button">
+                    Batters
+                  </p>
+                  <%end%>
+                <%end%>
+                <div class="right">
+                  <p>
+                    <img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+                    <a class="LeftNavLink" href="javascript:refreshLineup()">Refresh</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Starting Lineup -->
   
-    <span id="status_span"></span>
-</div>
+          <div class="large-12 columns">
+            <h5 class="margin-left-1 margin-top-1"><%= (@pitch) ? 'Pitcher' : 'Batter'%> Starting Lineup</h5>
+            <table>
+              <thead>
+                <tr>
+                  <th>Slot</th>
+                  <th class="small-6 large-6">Player</th>
+                  <th class="hide-for-small">Position Rank</th>
+                  <th class="hide-for-small">7 Day Change</th>
+                  <th>Start Position</th>
+                  <th>Start Frequency</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @roster_list = @roster_list.sort_by {|x| [x.order]} %>
+                <% @roster_list.each do |roster| %>
+                  <% if (roster.pos_text != BENCH_POSITION ) %>
+                    <tr>
+                        <td><%=roster.pos_text%></td>
+                        <td>
+                          <% if (roster.player.nil?) %>
+                            <img src="/images/RS_Red_Button10.png" alt="Red Button">
+                            <%=(roster.leave_empty) ? '[LEAVE SLOT EMPTY]' : '[ FILL FROM BENCH ]'%>
+                          <% else %>
+                            <% if(roster.player.action == 'A') %>
+                              <img src="/images/RS_Green_Button10.png" alt="Green Button">
+                            <% end %>
+                            <% if(roster.player.action == 'D') %>
+                              <img src="/images/RS_Blue_Button10.png" alt="Blue Button">
+                            <% end %>
+                            <% if(roster.player.action == 'P') %>
+                              <img src="/images/RS_Orange_Button10.png" alt="Blue Button">
+                            <% end %>
+                            <a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )"><%=roster.player.full_name%></a> 
+                            (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+                            <span class="dl_tag"><%=(roster.player.on_dl) ? 'DL' : '' %></span>
+                          <% end %>
+                        </td>
+                        <td class="hide-for-small" style="padding-right: 0">
+                          <% color = ''
+                          if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+                            if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+                              color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
+                          %>
+                          <FONT class="RankFont" color="<%= color %>">
+                            <%=roster.player.player_stats.pos_rank.values.first%>
+                          </FONT>      
+                          <% else
+                            color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
+                          %>
+                          <FONT class="RankFont" color="<%=color%>">
+                          <%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
+                           </FONT>    
+                          <%end%>
+                          <img src="/images/RSStar<%=color%>10.png">
+                        <%end%> 
+                        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+                          if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+                        %>
+                          <FONT class="RankFont" color="<%=color%>">
+                        <%=roster.player.player_stats.pos_rank.keys.first%>
+                        </FONT>
+                        <%else%>
+                          <FONT class="RankFont" color="<%=color%>">
+                          <%=roster.player.assign_pos%>
+                           </FONT>      
+                                
+                          <%end%>
+                        <%end%> 
+                        </td>
+                        <td class="hide-for-small" style="padding-left: 0px;" align="center">
+                        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
+                          <%if(roster.player.player_stats.rank_change >=0)%>
+                          <FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
+                          <%else%>
+                          <FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
+                          <%end%>
+                        <%end%> 
+                        </td>
+                        <%  if (!roster.player.nil?) %>
+                        <td>
+                          <select name="poselect[<%=roster.player._id%>]" style="width:50px" <%= (@team.weekly_team) ? 'disabled' : ''%>>
+                            <%- roster.player.eligible_pos.each do |p|-%>
+                            <% if (p!=DL_POSITION) %>
+                            <OPTION class="MainOption" value="<%= p %>" <%=(roster.player.assign_pos==p) ? 'selected' : ''%> ><%= p %></OPTION>
+                            <% end %>
+                            <%-end-%>
+                          </select>
+                        </td>
+                        <td>
+                          <select name="freqselect[<%= roster.player._id %>]" <%= (@team.weekly_team) ? 'disabled' : '' %>>
+                            <option value="A" <%= (roster.player.action=='A') ? 'selected' : ''%>>Always</option>
+                            <option value="D" <%= (roster.player.action=='D') ? 'selected' : ''%>>If Game</option>
+                            <% if(@pitch) %>
+                              <option value="P" <%=(roster.player.action=='P') ? 'selected' : '' %> >If Probable Pitcher</option>
+                            <%end%>
+                          </select>
+                        </td>
+                      <% else %>
+                          <td class="MainRow" colspan="2" valign="center">
+                            <%= check_box('empty', roster._id, options = { 
+                              :checked => roster.leave_empty}, checked_value = "1", unchecked_value = "0") %>
+                          Leave Slot Empty
+                          </td> 
+                      <% end %>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
 
-<!--END -->
+          <!-- End Starting Lineup -->
+
+          <!-- Bench Priority -->
+
+          <div class="large-12 columns">
+            <h5 class="margin-left-1 margin-top-1"><%= (@pitch) ? 'Pitcher' : 'Batter'%> Bench Priority</h5>
+            <table>
+              <thead>
+                <tr>
+                  <th class="show-for-small">Slot</th>
+                  <th class="small-6 large-6">Player</th>
+                  <th class="hide-for-small">Position Rank</th>
+                  <th class="hide-for-small">7 Day Change</th>
+                  <th>Start Position</th>
+                  <th class="small-3">Start Frequency</th>
+                  <th>Bench Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @bench_player_array.each do |roster| %>
+                    <% if (!roster.player.nil?  && roster.pos_text == BENCH_POSITION) %>
+                    <% if(roster.player.action != 'N') %>
+                      <% priority_count += 1 %>
+                    <% end %>
+                    <tr>                        
+                        <td class="show-for-small"><%=roster.pos_text%></td>
+                        <td class="">
+                          <%if(roster.player.action == 'N')%><img src="/images/RS_Red_Button10.png" alt="Red Button"><%end%>
+                          <%if(roster.player.action == 'D')%><img src="/images/RS_Blue_Button10.png" alt="Blue Button"><%end%>
+                          <%if(roster.player.action == 'P')%><img src="/images/RS_Orange_Button10.png" alt="Blue Button"><%end%>
+                          <a style="color:#5A4A42" href="javascript:showStat('<%=roster.player.yahoo_id%>','<%=roster.player.full_name%>','<%=roster.player.espn_id%>' )">
+                            <%=roster.player.full_name%></a> (<%=roster.player.team_name%> - <%=roster.player.position_text%>)
+                            <span class="dl_tag"><%=(roster.player.on_dl)?'DL':''%></span>
+                        </td>
+                        <td class="hide-for-small" style="padding-right: 0">
+                        <% color = ''
+                        if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+                          if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+                            color = return_color(roster.player.player_stats.pos_rank.values.first, roster.player.player_stats.pos_rank.keys.first) 
+                        %>
+                        <FONT class="RankFont" color="<%=color%>">
+                          <%=roster.player.player_stats.pos_rank.values.first%>
+                          </FONT>      
+                          <%else
+                            color =  return_color(roster.player.player_stats.pos_rank[roster.player.assign_pos], roster.player.assign_pos)
+                          %>
+                          <FONT class="RankFont" color="<%=color%>">
+                          <%=roster.player.player_stats.pos_rank[roster.player.assign_pos]%>
+                           </FONT>    
+                          <%end%>
+                          <img src="/images/RSStar<%=color%>10.png">
+                        <%end%> 
+                        <% if (!roster.player.nil? && !roster.player.player_stats.nil? && roster.player.player_stats.pos_rank.length!=0)
+                          if (roster.player.player_stats.pos_rank[roster.player.assign_pos].nil?)
+                        %>
+                          <FONT class="RankFont" color="<%=color%>">
+                        <%=roster.player.player_stats.pos_rank.keys.first%>
+                        </FONT>
+                        <%else%>
+                          <FONT class="RankFont" color="<%=color%>">
+                          <%=roster.player.assign_pos%>
+                           </FONT>      
+                          <%end%>
+                        <%end%> 
+                        </td>
+                        <td class="hide-for-small" style="padding-left: 0px;" align="center">
+                        <% if (!roster.player.nil? && !roster.player.player_stats.nil? )%>
+                          <%if(roster.player.player_stats.rank_change >=0)%>
+                          <FONT class="RankFont" color="green">+<%=roster.player.player_stats.rank_change%></font>
+                          <%else%>
+                          <FONT class="RankFont" color="red"><%=roster.player.player_stats.rank_change%></font>
+                          <%end%>
+                        <%end%> 
+                        </td>
+                      <td class="">
+                        <select name="poselect[<%=roster.player._id%>]" class="MainSelect" style="width:50px" <%=(@team.weekly_team)?'disabled':''%>>
+                          <%- roster.player.eligible_pos.each do |p|-%>
+                          <%- if (p!=DL_POSITION)-%>
+                          <OPTION class="MainOption" value="<%=p%>" <%=(roster.player.assign_pos==p)?'selected':''%> ><%=p%></OPTION>
+                          <%-end-%>
+                          <%-end-%>
+                        </select>
+                        </td>
+                      <td class=""><select class="MainSelect" name="freqselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
+                        
+                        <option class="MainOption" value="D" <%=(roster.player.action=='D')?'selected':''%>>If Game</option>
+                        <%if(@pitch)%><option class="MainOption" value="P" <%=(roster.player.action=='P')?'selected':''%>>If Probable Pitcher</option><%end%>
+                        <option class="MainOption" value="N" <%=(roster.player.action=='N')?'selected':''%>>Never</option>
+                        </select>
+                      </td>
+                                
+                        <td class="">
+                          <%if (roster.player.action == NEVER_START_OPTION)%>
+                        <font color=red>Never Start</font>
+                      <%else%>
+                            <select class="MainSelect" name="priorityselect[<%=roster.player._id%>]" <%=(@team.weekly_team)?'disabled':''%>>
+                        <%- @bench_array.each do |p|-%>
+                          <OPTION class="MainOption" value="<%=p%>" <%=(priority_count==p)?'selected':''%> ><%=p%></OPTION>
+                          <%-end-%>
+                      </select>
+                      <%end%>
+                    </td>  
+                    </tr>
+                    <%-end-%>
+                    <%-end-%>
+                    <%@dl_list.each do |player| %>     
+                    <%if(@pitch && !player.position_text.index('P').nil?)%> 
+                    <tr>
+                        <td class="show-for-small">DL</td>
+                        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
+                        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
+                        (<%=player.team_name%> - <%=player.position_text%>)
+                        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
+                        </td>
+                        <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                        <td class="MainRowEnd"></td>
+                    </tr>
+                  <%end%>
+                  <%if(!@pitch && player.position_text.index('P').nil?)%> 
+                    <tr>
+                        <td class="show-for-small">DL</td>
+                        <td class="MainRow"><img src="/images/RS_Red_Button10.png" alt="Red Button"> 
+                        <a style="color:#5A4A42" href="javascript:showStat('<%=player.yahoo_id%>','<%=player.full_name%>','<%=player.espn_id%>' )"><%=player.full_name%></a> 
+                        (<%=player.team_name%> - <%=player.position_text%>)
+                        <span class="dl_tag"><%=(player.on_dl)?'DL':''%></span>
+                        </td>
+                        <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                      <td class="MainRow"></td>
+                        <td class="MainRowEnd"></td>
+                    </tr>
+                  <%end%>
+                     
+                  <%end%>    
+
+              </tbody>
+            </table>
+          </div>
+
+          <!-- End Bench Priority -->
+
+          <div class="large-12 columns">
+            <INPUT type="hidden" name="id" value="<%=@team._id%>">
+            <%if (@team.weekly_team)%>
+               Team Lineup Set Weekly - Cannot Auto Start Players
+            <%else%>
+              <button class="small" type="button" onclick="submitLineup()">Save Changes</button>
+              <button class="small secondary" type="button" onclick="showPreview()">Preview Tomorrow</button>
+            <%end%>
+            <span id="status_span"></span>
+          </div>
+       </div>
+      <% end %>
+    <!-- End Main -->
+
+          </div>
+        </div>
+      </div>
 
 
-<%end%>
-
-<%= form_tag '/teams/refresh_lineup', options = {:id => 'refresh_lineup'} do%>
-<INPUT type="hidden" name="id" value="<%=@team._id%>">
-<%end%>
 <SCRIPT>
 
-function refreshLineup() {
-	$('refresh_span').style.display = '';
-	
-	$('refresh_lineup').request({
-	    onSuccess: successLine,
-  		onFailure:  failureLine
-	});
-}
-
-function successLine(response){
-	
-	if (response.responseText == 'true') window.location.reload();
-	else {
-	    var container = $('status_span');    
-    	container.update('Could not refresh lineup. Please try again later.');
-		}
+  function refreshLineup() {
+    $('refresh_span').style.display = '';
     
-}
+    $('refresh_lineup').request({
+        onSuccess: successLine,
+        onFailure:  failureLine
+    });
+  }
 
-function failureLine(response){
-
-    var container = $('status_span');
+  function successLine(response){
     
-    container.update('System error could not refresh lineup. Please try again later.');
+    if (response.responseText == 'true') window.location.reload();
+    else {
+        var container = $('status_span');    
+        container.update('Could not refresh lineup. Please try again later.');
+      }
+      
+  }
+
+  function failureLine(response){
+
+      var container = $('status_span');
+      
+      container.update('System error could not refresh lineup. Please try again later.');
+      
+  }
+
+  function submitLineup() {
+    //document.forms[0].action = 'set_lineup';
+    //document.forms[0].submit();
+    $('set_lineup').request({
+        onSuccess: successFunc,
+        onFailure:  failureFunc
+    });
     
-}
+    $('status_span').innerHTML = "Saving Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
 
-function submitLineup() {
-	//document.forms[0].action = 'set_lineup';
-	//document.forms[0].submit();
-	$('set_lineup').request({
-	    onSuccess: successFunc,
-  		onFailure:  failureFunc
-	});
-	
-	$('status_span').innerHTML = "Saving Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
+  }
 
-}
-
-function startLineup() {
-	$('refresh_lineup').action = '/teams/start_lineup'
-	$('refresh_lineup').request({
-	    onSuccess: successFuncStart,
-  		onFailure:  failureFunc
-	});
-	
-	$('status_span').innerHTML = "Starting & Applying Lineup Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
-
-}
-
-function successFuncStart(response){
-	
-	if (response.responseText == 'true') {
-	    var container = $('status_span');    
-    	container.update("Lineup Started for Tomorrow - Check your Team");
-	}
-	else {
-	    var container = $('status_span');    
-    	container.update("Could not start tomorrow's lineup. Please try again later.");
-		}
+  function startLineup() {
+    $('refresh_lineup').action = '/teams/start_lineup'
+    $('refresh_lineup').request({
+        onSuccess: successFuncStart,
+        onFailure:  failureFunc
+    });
     
-}
+    $('status_span').innerHTML = "Starting & Applying Lineup Changes <IMAGE SRC=\"/images/refresh-animated.gif\">";
 
-function successFunc(response){
-	
-	if (response.responseText == 'true') window.location.reload();
-	else {
-	    var container = $('status_span');    
-    	container.update('Could not set lineup. Please try again later.');
-		}
+  }
+
+  function successFuncStart(response){
     
-}
+    if (response.responseText == 'true') {
+        var container = $('status_span');    
+        container.update("Lineup Started for Tomorrow - Check your Team");
+    }
+    else {
+        var container = $('status_span');    
+        container.update("Could not start tomorrow's lineup. Please try again later.");
+      }
+      
+  }
 
-function failureFunc(response){
-
-    var container = $('status_span');
+  function successFunc(response){
     
-    container.update('System error could not set lineup. Please try again later.');
+    if (response.responseText == 'true') window.location.reload();
+    else {
+        var container = $('status_span');    
+        container.update('Could not set lineup. Please try again later.');
+      }
+      
+  }
+
+  function failureFunc(response){
+
+      var container = $('status_span');
+      
+      container.update('System error could not set lineup. Please try again later.');
+      
+  }
+
+  function showPreview() {
     
-}
+  $('status_span').innerHTML = "Loading Preview Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">"; 
 
-function showPreview() {
-	
-$('status_span').innerHTML = "Loading Preview Lineup <IMAGE SRC=\"/images/refresh-animated.gif\">";	
-
-var win = new Window({className: "bluelighting", title: "Preview Lineup For Tomorrow", 
-                      width:370, height:420,  
-                      showEffectOptions: {duration:1.5}})
-                      
-win.setCloseCallback(clearStatus);
-win.setAjaxContent("/teams/preview_lineup?id=<%=@team._id%>", {method: 'get'}, true, false);
+  var win = new Window({className: "bluelighting", title: "Preview Lineup For Tomorrow", 
+                        width:370, height:420,  
+                        showEffectOptions: {duration:1.5}})
+                        
+  win.setCloseCallback(clearStatus);
+  win.setAjaxContent("/teams/preview_lineup?id=<%=@team._id%>", {method: 'get'}, true, false);
 
 
- 
-}
+   
+  }
 
-function clearStatus(){
-	$('status_span').innerHTML = '';	
-	return true;
-}
+  function clearStatus(){
+    $('status_span').innerHTML = '';  
+    return true;
+  }
 
 
 
-function showStat(id, name, espnid){
-	
-	var winStat = new Window({className: "bluelighting", title: name, 
-                      width:300, height:140,  
-                      showEffectOptions: {duration:1.5}})
-	
-	winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, false, false);
-	winStat.setLocation(posY, posX);
-}
+  function showStat(id, name, espnid){
+    
+    var winStat = new Window({className: "bluelighting", title: name, 
+                        width:300, height:140,  
+                        showEffectOptions: {duration:1.5}})
+    
+    winStat.setAjaxContent("/teams/show_stat?yahooid="+id+"&espnid="+espnid+"&pitch=<%=@pitch%>", {method: 'get'}, false, false);
+    winStat.setLocation(posY, posX);
+  }
 
-var posX;
-var posY
-$j(document).ready(function(){
-   $j(document).click(function(e){
-      //alert(e.pageX +', '+ e.pageY);
-      posX = e.pageX;
-      posY = e.pageY;
-   }); 
-})
+  var posX;
+  var posY
+  $j(document).ready(function(){
+     $j(document).click(function(e){
+        //alert(e.pageX +', '+ e.pageY);
+        posX = e.pageX;
+        posY = e.pageY;
+     }); 
+  })
 
 </SCRIPT>

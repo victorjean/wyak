@@ -3,9 +3,11 @@
 <div class="large-12">
 	<div class="row margin-bottom-2">
 		<div class="large-12 columns">
-			<img class="left margin-top-1 margin-right-1" src="/images/baseball.png" alt="Baseball" height="50" width="50">
+			<img class="left margin-top-1 hide-for-small margin-right-1" src="/images/baseball.png" alt="Baseball" height="40" width="40">
+			<img class="left show-for-small margin-top-05 margin-right-1" src="/images/baseball.png" alt="Baseball" height="30" width="30">
 	    <div class="left">
-	    	<h1 class="left no-margin">Baseball Dashboard</h1>
+	    	<h1 class="left no-margin hide-for-small ">Baseball Dashboard</h1>
+	    	<h1 class="left no-margin show-for-small ">Baseball</h1>
 				<h6 class="subheader" id="updating" style="display:<%if (!@update)%>none<%end%>">
 					Refreshing All Teams 
 					<%= image_tag '/images/refresh-animated.gif' %>
@@ -14,296 +16,26 @@
 		</div>
 	</div>
 
-	<% if (@yahoo_teams.length > 0) %>
-		<div class="row">
-			<div class="large-12 columns margin-bottom-1">
-					<h4 class="left">Yahoo Teams</h4>
-					<% if (@yahoo_teams.length == 0) %>
-						<h6 class="left subheader league-type-header margin-left-2">
-							<img src="/images/RSPlus10.png" alt="Add Icon">
-							<a href="javascript:teamWindow('YAHOO')">Add Account</a>
-						</span>
-					<%else%>
-						<h6 class="left subheader league-type-header margin-left-2">
-							<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-							<a href="javascript:updateTeams('yahoo')">Refresh</a>
-						</h6>
-						<h6 class="left subheader league-type-header margin-left-1">
-							<img src="/images/editIcon.gif" alt="Edit Icon">
-							<a href="javascript:teamWindow('YAHOO')">Edit</a>
-						</h6>
-					<%end%>
-			</div>
-			<div class="large-12 columns margin-bottom-1">
-				<% @yahoo_teams.each do |team| %>
-		  		<ul class="panel large-6 columns">
-						<h5 class="no-margin"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h5>
-						<h6 class="subheader"><%=team.league_name%></h6>
+	<%= render :partial => "dashboard_demo" %>
 
-						<% if (team.weekly_team) %>
-						<% else %>
+	<%= render :partial => "dashboard_website", 
+		:object => @yahoo_teams, :as => "website",
+		:locals => {
+			:var_name => "Yahoo", 
+			:var_updateteams => "yahoo", 
+			:var_teamwindow => "YAHOO", 
+		} 
+	%>
 
-							<% if (team.daily_auto_batter) %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "b", 
-									:var_active_hide => "", 
-									:var_inactive_hide => "hide", 
-									:var_text => "Batters", 
-									:var_slug => "showbatters", 
-									:var_link_text => "[ Edit ]",
-									:var_active_checked => "checked", 
-									:var_inactive_checked => ""
-								} %>
-			        <% else %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "b", 
-									:var_active_hide => "hide", 
-									:var_inactive_hide => "", 
-									:var_text => "Batters", 
-									:var_slug => "showbatters", 
-									:var_link_text => "[ Edit ]",
-									:var_active_checked => "", 
-									:var_inactive_checked => "checked"
-								} %>
-			        <% end %>
+	<%= render :partial => "dashboard_website", 
+		:object => @espn_teams, :as => "website",
+		:locals => {
+			:var_name => "ESPN", 
+			:var_updateteams => "espn", 
+			:var_teamwindow => "ESPN", 
+		} 
+	%>
 
-							<% if (team.daily_auto_pitcher) %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "p", 
-									:var_active_hide => "", 
-									:var_inactive_hide => "hide", 
-									:var_text => "Pitchers", 
-									:var_slug => "showpitchers", 
-									:var_link_text => "[ Edit ]",
-									:var_active_checked => "checked", 
-									:var_inactive_checked => ""
-								} %>
-			        <% else %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "p", 
-									:var_active_hide => "hide", 
-									:var_inactive_hide => "", 
-									:var_text => "Pitchers", 
-									:var_slug => "showpitcher",
-									:var_link_text => "[ Edit ]",
-									:var_active_checked => "", 
-									:var_inactive_checked => "checked"
-								} %>
-			        <% end %>
-
-							<% if (team.real_time_batter) %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "r", 
-									:var_active_hide => "", 
-									:var_inactive_hide => "hide", 
-									:var_text => "Real Time", 
-									:var_slug => "", 
-									:var_link_text => "",
-									:var_active_checked => "checked", 
-									:var_inactive_checked => ""
-								} %>
-
-							<% else %>
-								<%= render :partial => "dashboardpanel", 
-									:object => team, :as => "team",
-									:locals => {:var_type => "r", 
-									:var_active_hide => "hide", 
-									:var_inactive_hide => "", 
-									:var_text => "Real Time", 
-									:var_slug => "",
-									:var_link_text => "",
-									:var_active_checked => "", 
-									:var_inactive_checked => "checked"
-								} %>
-							<% end %>
-						<% end %>
-					</ul>
-				<% end %>
-			</div>
-		</div>
-	<% end %>
-
-	<% if (@espn_teams.length > 0) %>
-		<div class="clearfix bottompad1">
-			<div class="span12 bottompad1">
-				<h3 class="left">ESPN Teams</h3>
-				<% if (@espn_teams.length == 0) %>
-					<span class="left alignto-h3">
-						<img src="/images/RSPlus10.png" alt="Add Icon">
-						<a href="javascript:teamWindow('ESPN')">Add Account</a>
-					</span>
-				<%else%>
-					<span class="left alignto-h3">
-						<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-						<a href="javascript:updateTeams('espn')">Refresh</a>
-					</span>
-					<span class="left alignto-h3">
-						<img src="/images/editIcon.gif" alt="Edit Icon">
-						<a href="javascript:teamWindow('ESPN')">Edit</a>
-					</span>
-				<%end%>
-			</div>
-			<% @espn_teams.each do |team| %>
-	  		<ul id="b_<%= team._id %>" class="dashboard-team">
-					<h4><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h4>
-					<p><%=team.league_name%></p>
-					<%if (team.daily_auto_batter)%>
-						<li id="b_<%= team._id %>">
-								<img src="/images/RS_Green_Button10.png" alt="Green Button">
-								<a class="active" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
-								<span id="br_<%= team._id %>">
-									<a href="javascript:setup('<%= team._id %>',false,'b')">[Deactivate]</a>
-								</span>
-						</li>
-					<%else%>
-						<li id="b_<%= team._id %>">
-								<img src="/images/RS_Red_Button10.png" alt="Red Button">
-								<a class="inactive" href="/teams/showbatters?id=<%= team._id %>">Set Batters</a>
-								<% if (team.weekly_team) %>
-									<span class="inactive">Weekly Lineup</span>
-								<% else %>
-									<span id="br_<%= team._id %>">
-										<a href="javascript:setup('<%= team._id %>',true,'b')">[Activate]</a>
-									</span>
-								<% end %>
-						</li>	
-					<%end%>
-
-					<%if (team.daily_auto_pitcher)%>
-						<li id="p_<%= team._id %>">
-							<img src="/images/RS_Green_Button10.png" alt="Green Button">
-							<a class="active" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
-							<span id="pr_<%= team._id %>">
-								<a href="javascript:setup('<%= team._id %>',false,'p')">[Deactivate]</a>
-							</span>
-						</li>
-					<%else%>
-						<li id="p_<%=team._id%>">
-							<img src="/images/RS_Red_Button10.png" alt="Red Button">
-							<a class="inactive" href="/teams/showpitchers?id=<%= team._id %>">Set Pitchers</a>
-							<% if (team.weekly_team) %>
-								<span class="inactive">Weekly Lineup</span>
-							<% else %>
-								<span id="pr_<%= team._id %>">
-									<a href="javascript:setup('<%= team._id %>',true,'p')">[Activate]</a>
-								</span>
-							<% end %>
-						</li>
-					<%end%>
-
-					<%if (team.real_time_batter) && !(team.weekly_team) %>
-						<li id="r_<%=team._id%>">
-							<img src="/images/RS_Green_Button10.png" alt="Green Button">
-							<span class="active">Real Time On </span>
-							<span id="rr_<%= team._id %>">
-								<a href="javascript:setup('<%= team._id %>',false,'r')">[Deactivate]</a>
-							</span>
-						</li>
-					<%else%>
-						<li id="r_<%=team._id%>">
-							<img src="/images/RS_Red_Button10.png" alt="Red Button">
-							<span class="inactive">Real Time Off</span>
-							<span id="rr_<%= team._id %>">
-								<a href="javascript:setup('<%= team._id %>',true,'r')">[Activate]</a>
-							</span>
-						</li>
-					<%end%>
-				</ul>
-			<% end %>
-	<% end %>
-
-	<% if (@demo) %>
-		<div class="clearfix bottompad1">
-			<div class="span12 bottompad1">
-	  		<h3>Get Started Managing Your Teams</h3>
-	  	</div>
-  		<ul id="b_<%=@demo_team._id%>" class="span3 dashboard-team">
-				<h4><a href="/teams/showbatters?id=<%=@demo_team._id%>">Demo Team</a></h4>
-				<p>RotoStarter Demo League</p>
-				<%if (@demo_team.daily_auto_batter)%>
-					<li>
-							<img src="/images/RS_Green_Button10.png" alt="Green Button">
-							<a class="active" href="/teams/showbatters?id=<%=@demo_team._id%>">Set Batters</a>
-							<span id="br_<%=@demo_team._id%>">
-								<a href="javascript:setup('<%=@demo_team._id%>',false,'b')">[Deactivate]</a>
-							</span>
-					</li>
-				<%else%>
-					<li>
-							<img src="/images/RS_Red_Button10.png" alt="Red Button">
-							<a class="inactive" href="/teams/showbatters?id=<%=@demo_team._id%>">Set Batters</a>
-							<span id="br_<%=@demo_team._id%>">
-								<a href="javascript:setup('<%=@demo_team._id%>',true,'b')">[Activate]</a>
-							</span>
-					</li>	
-				<%end%>
-
-				<%if (@demo_team.daily_auto_pitcher)%>
-					<li>
-						<img src="/images/RS_Green_Button10.png" alt="Green Button">
-						<a class="active" href="/teams/showpitchers?id=<%=@demo_team._id%>">Set Pitchers</a>
-						<span id="pr_<%=@demo_team._id%>">
-							<a href="javascript:setup('<%=@demo_team._id%>',false,'p')">[Deactivate]</a>
-						</span>
-					</li>
-				<%else%>
-					<li>
-						<img src="/images/RS_Red_Button10.png" alt="Red Button">
-						<a class="inactive" href="/teams/showpitchers?id=<%=@demo_team._id%>">Set Pitchers</a>
-						<span id="pr_<%=@demo_team._id%>">
-							<a href="javascript:setup('<%=@demo_team._id%>',true,'p')">[Activate]</a>
-						</span>
-					</li>
-				<%end%>
-
-				<%if (@demo_team.real_time_batter)%>
-					<li>
-						<img src="/images/RS_Green_Button10.png" alt="Green Button">
-						<span class="active">Real Time On </span>
-						<span id="rr_<%=@demo_team._id%>">
-							<a href="javascript:setup('<%=@demo_team._id%>',false,'r')">[Deactivate]</a>
-						</span>
-					</li>
-				<%else%>
-					<li>
-						<img src="/images/RS_Red_Button10.png" alt="Red Button">
-						<span class="inactive">Real Time Off</span>
-						<span id="rr_<%=@demo_team._id%>">
-							<a href="javascript:setup('<%=@demo_team._id%>',true,'r')">[Activate]</a>
-						</span>
-					</li>
-				<%end%>
-			</ul>
-			<a href="#">
-	  		<ul class="span3 dashboard-team">
-					<p style="overflow:visible;font-size:50px; text-align:center;  font-weight:bold;">+</p>
-					<h4 style="text-align:center">Add Yahoo Teams<h4>
-  			</ul>
-			</a>
-			<a href="#">
-	  		<ul class="span3 dashboard-team">
-					<p style="overflow:visible;font-size:50px; text-align:center;  font-weight:bold;">+</p>
-					<h4 style="text-align:center">Add ESPN Teams<h4>
-  			</ul>
-			</a>
-		</div>	
-	<% end %>
-
-
-	<div class="container large-8 clearfix">
-		<div data-alert="" class="alert-box">
-			<p><strong>Having Problems Logging In?</strong></p>
-			<p>If you are having issues adding and authenticating your Yahoo or ESPN ID, please open your browser, logout of all Yahoo or ESPN sessions, and log back in. </p>
-			<p>Afterwards, try adding your account again.</p>
-			<p>If you are still having trouble, please contact us at <a href="mailto:support@rotostarter.com">support@rotostarter.com</a>.</p>
-		  <a href="" class="close">×</a>
-		</div>
-	</div>
 </div>
 
 

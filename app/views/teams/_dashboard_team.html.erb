@@ -1,0 +1,33 @@
+						
+							<li>
+								<div class="small-7 large-7 columns no-padding">
+						      <div id="<%= var_type %>_<%= team._id %>_active" class="left <%= var_active_hide %>">
+						      	<p>
+											<img src="/images/RS_Green_Button10.png" alt="Green Button">
+											<%= var_text %> On
+											<a href="/teams/<%= var_slug %>?id=<%= team._id %>"><%= var_link_text %></a>
+										</p>
+									</div>
+						      <div id="<%= var_type %>_<%= team._id %>_inactive" class="left <%= var_inactive_hide %>">
+										<p>
+											<img src="/images/RS_Red_Button10.png" alt="Red Button">
+											<%= var_text %> Off
+											<a href="/teams/<%= var_slug %>?id=<%= team._id %>"><%= var_link_text %></a>
+										</p>
+									</div>
+								</div>
+								<% if !(team.weekly_team) %>
+									<div class="small-5 large-5 columns no-padding">
+										<div class="left activate-button">
+											<div class="switch tiny round">
+							          <input id="<%= var_type %>_<%= team._id %>" name="switch-<%= var_type %>_<%= team._id %>" type="radio" onclick="setup('<%= team._id %>',true,'<%= var_type %>');" <%= var_active_checked %> >
+							          <label for="<%= var_type %>_<%= team._id %>">Deactivate</label>
+							          <input id="<%= var_type %>_<%= team._id %>1" name="switch-<%= var_type %>_<%= team._id %>" type="radio" onclick="setup('<%= team._id %>',false,'<%= var_type %>');" <%= var_inactive_checked %> >
+							          <label for="<%= var_type %>_<%= team._id %>1">Activate</label>
+							          <span></span>
+							        </div>
+							      </div>
+							    </div>
+							  <% end %>
+							</li>
+
