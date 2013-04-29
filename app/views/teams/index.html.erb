@@ -8,9 +8,11 @@
 	    <div class="left">
 	    	<h1 class="left no-margin hide-for-small ">Baseball Dashboard</h1>
 	    	<h1 class="left no-margin show-for-small ">Baseball</h1>
-				<h6 class="subheader" id="updating" style="display:<%if (!@update)%>none<%end%>">
+				<h6 class="subheader" >
+					<span id="updating" style="display:<%if (!@update)%>none<%end%>">
 					Refreshing All Teams 
 					<%= image_tag '/images/refresh-animated.gif' %>
+					</span>
 				</h6>
 			</div>
 		</div>
@@ -76,7 +78,11 @@ function setup(teamid, setbool, type) {
 
 
 $(document).ready(function() {
+	$('#updating').hide();
+	
+	<%-if (@update)-%>	
 	updateTeams('all');
+	<%-end-%>
 
 })
 
@@ -161,13 +167,15 @@ function activatePassField(){
 }
   
 function updateTeams(mode) {
-	$('updating').style.display = "";
+	
+	$('#updating').show();
 	
 	if (mode!='all') {
-		$('updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
+		$('#updating').html("Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">");
+		//$('#updating').innerHTML = "Refreshing "+mode.toUpperCase()+" Teams <IMAGE SRC=\"/images/refresh-animated.gif\">"
 	}
-
-	$j.ajax({
+	
+	$.ajax({
         type: 'GET',
         dataType: "html",
         data: 'mode='+escape(mode),
@@ -176,12 +184,12 @@ function updateTeams(mode) {
         url: '/teams/update_all',
         success: function(html) {
 			
-            $j("#updating").html(html);
+            $("#updating").html(html);
             //new Popup('popup_gamelog','popup_link_gamelog',{position:'center',trigger:'click'})
 			//$('popup_gamelog').popup.show();
         },
         error: function () {
-			$('updating').innerHTML = "Error Refreshing!";
+			$('#updating').innerHTML = "Error Refreshing!";
         },
         complete: function () {
 			
