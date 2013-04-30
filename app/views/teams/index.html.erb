@@ -40,6 +40,10 @@
 
 </div>
 
+<div id="teamwindow-modal" class="reveal-modal" style="display: none;">
+	<%= render :partial => "manage"	%>
+  <a class="close-reveal-modal">×</a>
+</div>
 
 <SCRIPT>
 
@@ -49,10 +53,12 @@ function test(){
 
 function show_active_inactive(teamid, setbool, type) {
 	if (setbool) {
+		$('#switch_icon_'+type+'_'+teamid).html('&#x2714');
 		$('#'+type+'_'+teamid+'_active').fadeIn();
 		$('#'+type+'_'+teamid+'_inactive').hide();						
 	} else {
 		$('#'+type+'_'+teamid+'_active').hide();
+		$('#switch_icon_'+type+'_'+teamid).html('&#x2718');
 		$('#'+type+'_'+teamid+'_inactive').fadeIn();						
 	}
 }
@@ -116,7 +122,6 @@ function reload_team(){
 }
 
 function submit_team(){
-	
 	
 	if (($('current_user').value != '')&&($('current_user').value != $('userid').value)){
 		if (!confirm('Are you sure you want to change user id?  You will lose all player roster settings and reload new teams if you continue.')) return;
