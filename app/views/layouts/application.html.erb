@@ -5,7 +5,7 @@
 
  	  <meta property="og:title" content="RotoStarter" />
 	  <meta property="og:image" content="http://www.rotostarter.com/images/RotoStarterLogoBlue200.png" /> 
-	  <meta property="og:description" content="RotoStarter helps you play Fantasy Sports at a high level with tools to help you dominate your league." /> 
+	  <meta property="og:description" content="RotoStarter saves you time and helps you dominate your Fantasy Sports leagues." /> 
 	  <meta property="og:url" content="http://www.rotostarter.com">
 	  <meta property="og:type" content="website">
     <meta property="twitter:cards" content="summary">
@@ -13,11 +13,12 @@
     <meta property="twitter:title" content="RotoStarter">
 	  <meta property="fb:admins" content="731131388" />
 	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Automate,Lineup,Auto,Start,Automatically,Set,Bench" />
-	  <meta name="description" content="RotoStarter helps you play Fantasy Sports at a high level with tools to help you dominate your league." />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <meta name="description" content="RotoStarter saves you time and helps you dominate your Fantasy Sports leagues." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <%= stylesheet_link_tag "application", :media => "all" %>
     <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "vendor/custom.modernizr" %>
     <%= csrf_meta_tag %>
     <%= yield(:head) %>
       
@@ -48,26 +49,54 @@
       <%= render 'layouts/navigation' %>
     </header>
 
-    <div class="wrapper">
-      <%= yield %>
+    <div class="row">
+      <div class="large-12 columns"><hr>
+        <%= yield %>
+      </div>
     </div>
-    
-    <footer class="navbar-inverse navbar-fixed-bottom">
-      <div class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav">
-              <li><p class="navbar-text">RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p></li>
-            </ul>
-            <ul class="nav pull-right">
+
+    <footer class="row">
+      <div class="large-12 columns"><hr>
+        <div class="row">
+
+          <div class="large-6 columns">
+            <p>RotoStarter ©2013&nbsp;&nbsp;|&nbsp;&nbsp;All Rights Reserved</p>
+          </div>
+
+          <div class="large-6 columns">
+            <ul class="inline-list right">
               <li><%= link_to "Terms", :controller => "static", :action => "terms" %></li>
               <li><%= link_to "Privacy", :controller => "static", :action => "privacy" %></li>
               <li><%= link_to "Contact Us", :controller => "static", :action => "contact" %></li>
             </ul>
           </div>
+
         </div>
       </div>
     </footer>
+
+    <script>
+    document.write('<script src=' +
+    ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') +
+    '.js><\/script>')
+    </script>
+    <script src="js/foundation/foundation.js"></script>
+    <script src="js/foundation/foundation.alerts.js"></script>
+    <script src="js/foundation/foundation.clearing.js"></script>
+    <script src="js/foundation/foundation.cookie.js"></script>
+    <script src="js/foundation/foundation.dropdown.js"></script>
+    <script src="js/foundation/foundation.forms.js"></script>
+    <script src="js/foundation/foundation.joyride.js"></script>
+    <script src="js/foundation/foundation.magellan.js"></script>
+    <script src="js/foundation/foundation.orbit.js"></script>
+    <script src="js/foundation/foundation.placeholder.js"></script>
+    <script src="js/foundation/foundation.reveal.js"></script>
+    <script src="js/foundation/foundation.section.js"></script>
+    <script src="js/foundation/foundation.tooltips.js"></script>
+    <script src="js/foundation/foundation.topbar.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
 
   </body>
 </html>

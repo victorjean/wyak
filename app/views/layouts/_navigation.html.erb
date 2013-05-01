@@ -1,45 +1,55 @@
+<div class="contain-to-grid sticky">
+  <nav class="top-bar">
+    <ul class="title-area">
+      <!-- Title Area -->
+      <li class="name">
+        <h1><a href="#"><img src="/images/RotoStarterLogoBlue200.png" style="height: 100%;" alt="Roto Starter Logo"></a></h1>
+      </li>
+      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="/"><img src="/images/RotoStarterLogoBlue200.png" alt="Roto Starter Logo"></a>
-      <div class="nav-collapse navbar-responsive-collapse collapse" style="height: 0px;">
-        <%-if (session[:user].nil?)-%>
-          <ul class="nav">
-            <li><%= link_to "Baseball", :controller => "teams", :action => "index" %></li>
-            <li><%= link_to "Football", :controller => "football_teams", :action => "index" %></li>
+    <section class="top-bar-section">
+      <!-- Left Nav Section -->
+      <ul class="left">
+        <li class="divider"></li>
+        <li class="has-dropdown">
+          <%= link_to "Baseball", :controller => "teams", :action => "index" %>
+
+          <ul class="dropdown">
+            <li><label>Manage</label></li>
+            <li><a href="#">Baseball Dashboard</a></li>
+            <li class="divider"></li>
+            <li><label>Help</label></li>
+            <li><%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %></li>
+            <li><%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %></li>
+            <li class="divider"></li>
           </ul>
-          <ul class="nav pull-right">
-            <li><%= link_to 'Log In', :controller => "user",:action => 'login' %></li>
-          </ul>
+        </li>
+        <li class="divider"></li>
+        <li><%= link_to "Football", :controller => "football_teams", :action => "index" %></li>
+        <li class="divider"></li>
+      </ul>
+
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="divider"></li>
+
+        <% if (session[:user].nil?) %>
+          <li><%= link_to 'Log In', :controller => "user",:action => 'login' %></li> 
         <% else %>
-          <ul class="nav">
-            <li><%= link_to "Football", :controller => "football_teams", :action => "index" %></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Baseball <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><%= link_to "Baseball Dashboard", :controller => "teams", :action => "index" %></li>
-                <li><%= link_to "How Does It Work?", :controller => "static", :action => "howitworks" %></li>
-                <li><%= link_to "Recommended Settings", :controller => "static", :action => "recsettings" %></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav pull-right">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session[:user] %><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><%= link_to "Change Password", :controller => "user", :action => "change_password"  %></li>
-                <li><%= link_to "Log Out", :controller => "user", :action => "logout"  %></li>
-              </ul>
-            </li>
-          </ul>
+          <li class="has-dropdown"> 
+            <a href="#"><%= session[:user] %></a>
+
+            <ul class="dropdown">
+              <li><label>Your Account</label></li>
+              <li><%= link_to "Change Password", :controller => "user", :action => "change_password" %></li>
+              <li><%= link_to "Log Out", :controller => "user", :action => "logout"  %></li>
+            </ul> 
+          </li>
         <% end %>
-      </div><!-- /.nav-collapse -->
-    </div>
-  </div><!-- /navbar-inner -->
+        <li class="divider"></li>
+      </ul>
+    </section>
+  </nav>
 </div>
