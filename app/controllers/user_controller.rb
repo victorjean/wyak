@@ -13,7 +13,7 @@ class UserController < ApplicationController
     else
       @user = UserInfo.new 
 
-      render :action => 'home'
+      render :action => 'signup'
     end
   end
   
