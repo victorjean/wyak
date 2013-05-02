@@ -53,12 +53,12 @@ function test(){
 
 function show_active_inactive(teamid, setbool, type) {
 	if (setbool) {
-		$('#switch_icon_'+type+'_'+teamid).html('&#x2714');
+		// $('#switch_icon_'+type+'_'+teamid).html('&#x2714');
 		$('#'+type+'_'+teamid+'_active').fadeIn();
 		$('#'+type+'_'+teamid+'_inactive').hide();						
 	} else {
 		$('#'+type+'_'+teamid+'_active').hide();
-		$('#switch_icon_'+type+'_'+teamid).html('&#x2718');
+		// $('#switch_icon_'+type+'_'+teamid).html('&#x2718');
 		$('#'+type+'_'+teamid+'_inactive').fadeIn();						
 	}
 }

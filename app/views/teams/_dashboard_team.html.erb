@@ -24,12 +24,15 @@
 							          <label for="<%= var_type %>_<%= team._id %>">&nbsp;&nbsp;On</label>
 							          <input id="<%= var_type %>_<%= team._id %>1" name="switch-<%= var_type %>_<%= team._id %>" type="radio" onclick="setup('<%= team._id %>',false,'<%= var_type %>');" <%= var_inactive_checked %> >
 							          <label for="<%= var_type %>_<%= team._id %>1">Off&nbsp;&nbsp;</label>
-							          <% if var_active_checked == "checked" %>
+							          <span></span>
+<!-- 							          
+												<% if var_active_checked == "checked" %>
 							          	<span id="switch_icon_<%= var_type %>_<%= team._id %>">&#x2714</span>
 							          <% else %>
 							          	<span id="switch_icon_<%= var_type %>_<%= team._id %>">&#x2718</span>
 							          <% end %>
-							        </div>
+ -->							      
+												</div>
 							      </div>
 							    </div>
 							  <% end %>
