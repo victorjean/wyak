@@ -1,81 +1,60 @@
-<div id="RSText" style="float:left; margin:0;">
-	<div class="HIWHeader">How It Works
-  		<div class="HIWHeaderBrown">Overview For Getting Started</div>
-  	</div>	   	
-	<div class="HIWText"></div>
-	  
-	<div class="HIWHeader" id="step1"> Step 1: Prioritize Your Batter and Pitchers
-    <br>
+<div class="container large-8">
+	<h1 class="no-margin">How Does RotoStarter Work</h1>
+	<h3 class="no-margin subheader">Overview For Getting Started</h3>
+
+		<h4 class="margin-top-2">Step 1: You Prioritize Your Batter and Pitchers</h4>
 	  <img style="width:750px;padding: 10px;" src="/images/HIW-step1.png" alt="Batter Settings">
-	  	<ul class="HIWText">
-	  		<li>Set up your Batter and your Pitcher preferences for each team knowing that RotoStarter will always try to maximize your lineup.</li>
-	  		<li style="margin-left:40px;">Put players you always want to start in your "Starting Lineup".<br>
+  	<ol type="a">
+  		<li>Set up your Batter and your Pitcher preferences for each team knowing that RotoStarter will always try to maximize your lineup.</li>
+  		<ol type="i">
+	  		<li>Put players you always want to start in your "Starting Lineup".<br>
 	  		</li>
-	  		<li style="margin-left:40px;">Use your "Bench" for players you could start at multiple positions or at a flex or utility spot.</li>
-	  		<li style="margin-left:40px;">Rank or prioritize your "Bench" so RotoStarter will fill your lineup using your bench.</li>
+	  		<li>Use your "Bench" for players you could start at multiple positions or at a flex or utility spot.</li>
+	  		<li>Rank or prioritize your "Bench" so RotoStarter will fill your lineup using your bench.</li>
+	  	</ol>
 			<li>To preview how RotoStarter is going to set your lineup, log in and click on a team's "Batters" or "Pitchers" and then click "Preview Tomorrow".  If you don't like how the lineup is being set, adjust the team priorities.  Make sure to save your changes before previewing.</li>
-	  	</ul>
-	</div>
+  	</ol>
 
-	<div class="HIWText"></div>
+		<h4 class="margin-top-2">Step 2: RotoStarter Starts Your Players Every Morning</h4>
+  	<img style="width:750px;padding: 10px;" src="/images/HIW-step2.png" alt="Preview Tomorrow Example">
+  	<ol type="a">
+  		<li>RotoStarter is a "Personal Assistant" or a "Basic Autopilot" for your fantasy baseball teams.</li>
+  		<li>Every morning at 6am-7am EST, RotoStarter will maximize your lineup based on the preferences and priorities you set up.</li>
+  		<li>For more on basic setup and preferences, see <a href="/static/recsettings">Recommended Settings</a>.</li>
+  	</ol>
 
-	<div class="HIWHeader" id="step2"> Step 2: RotoStarter Starts Your Players Once Every Morning
-  <br>
-    	<img style="width:750px;padding: 10px;" src="/images/HIW-step2.png" alt="Preview Tomorrow Example">
-	  	<ul class="HIWText">
-	  		<li>RotoStarter is a "Personal Assistant" or a "Basic Autopilot" for your fantasy baseball teams.</li>
-	  		<li>Every morning at 6am-7am EST, RotoStarter will maximize your lineup based on the preferences and priorities you set up.</li>
-	  		<li>For more on basic setup and preferences, see <a href="/static/recsettings">Recommended Settings</a>.</li>
-	  	</ul>
-  </div>
-
-	<div class="HIWText"></div>
-
-
-	<div class="HIWHeader" id="step3"> Step 3: Manage Your Team As Your Normally Would
-  	<br>
-    	<img style="width:750px;padding: 10px;" src="/images/HIW-step3.png" alt="Yahoo Override Example">
-	  	<ul class="HIWText">
-	  		<li>Let's face it, baseball is a really long season.<br>
-	  		RotoStarter is a "no brainer" safety net that will make sure you're not at a disadvantage if and when life gets busy.</li>
-	  		<li>The great thing about RotoStarter is that it will maximize your lineup but still allow you the manual control and flexibility to adjust your lineup when life isn't so busy. </li>
-	  		<li style="margin-left:40px;">For example, RotoStarter starts Justin Verlander in your Yahoo league because he's pitching against the Yankees today.  However, you want to bench him because you don't like the matchup.  You can log into Yahoo and bench him as you normally would.  It's as easy as that.</li>
-	  	</ul>
-  	</div>	
-
-
+		<h4 class="margin-top-2">Step 3: You Manage and Override Your Lineup</h4>
+  	<img style="width:750px;padding: 10px;" src="/images/HIW-step3.png" alt="Yahoo Override Example">
+  	<ul class="disc">
+  		<li>Baseball is a really long season and RotoStarter is here to help.  We'll make sure your lineup is active if and when life gets busy.</li>
+  		<li>If you want manual control and flexibility, you can still to adjust your lineup every day. </li>
+  		<li style="margin-left:40px;">For example, RotoStarter starts Justin Verlander in your Yahoo league because he's pitching against the Yankees today.  However, you want to bench him because you don't like the matchup.  You can log into Yahoo and bench him as you normally would.  It's as easy as that.</li>
+  	</ul>
 
 	  <%if (!@logged)%>
-	  <ul>
-		<%= form_tag '/user/signup' do %>
-		<div style="margin:0;padding:0;display:inline">
-		
-		</div>
-		<h3 class="HomeSignUp">
-		<b>Sign Up Now, It's Free</b><br><br>
-		<label for="email">Email:</label>
-		<%= text_field_tag('email', @user.email) %>
-		<br>
-		<label for="pass">Password:</label>
-		<%= password_field_tag(:pass) %>
-		<br>
-		<label for="repass">Confirm Password:</label>
-		<%= password_field_tag(:repass) %>
-		  
-		<br>
-		<br>
-		<span class="flash_message"><%= @user.errors.full_messages.first if @user.errors.any? %></span>
-		<% flash.each do |name, msg| %>
-			        <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
-			      <% end %>
-		 <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
-		                     </div><BR>
-		<input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
-		<div class="HomeTinyLinks">
-		<%= link_to 'Log In', :controller => "user",:action => 'login' %> or <%= link_to 'Forgot Your Password?', :controller => "user",:action => 'forgot_password' %>
-		</div>
-		</h3>
+      <div class="right container small-8 large-5">
+        <h3>RotoStarter Signup</h3>
+        <%= form_tag '/user/signup' do %>
+          <div style="margin:0;padding:0;display:inline">
+            <input name="utf8" type="hidden" value="&#x2713;"/>
+            <input name="authenticity_token" type="hidden" value="j7+BQAJL4+O/vxqArSm4BmwFpvMhjGmR4vBRLrcxkc4="/>
+          </div>
+          <%= label_tag(:email, "Email:") %>
+          <%= text_field_tag(:email) %>
+          <%= label_tag(:pass, "Password:") %>
+          <%= password_field_tag(:pass) %>
+          <%= label_tag(:repass, "Confirm Password:") %>
+          <%= password_field_tag(:repass) %>
+          <br>
+          <input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
+          <br><br>
+          <% flash.each do |name, msg| %>
+            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+          <% end %>
+          <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
+          </div><BR>
+        <% end %>
+      </div>
 		<% end %>
-	</ul>
-	<%end%>
+
 </div>

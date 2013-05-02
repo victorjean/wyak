@@ -15,7 +15,6 @@
 	margin-right: auto;
 }
 
-h1 { font-size: 2.25em;}
 
 
 /*  =======================  */
@@ -47,10 +46,14 @@ ol[type="i"] > li {
 	list-style: lower-roman;
 }
 
-li.disc {
+ul.disc {
 	list-style: disc;
 }
 
+ul.disc > li {
+	margin-top: 0.5em;
+
+}
 /*  =======================  */
 /*  Mixin Styles  */
 /*  =======================  */
