@@ -1,158 +1,158 @@
-		<div class="row">
-			<div class="large-12 columns">
-				<div class="panel bg-lightblue clearfix">
-					<h3 class="left no-margin"><%= var_name %> Teams</h3>
-					<% if (website.length == 0) %>
-						<h6 class="left subheader league-type-header margin-left-2">
-							<img src="/images/RSPlus10.png" alt="Add Icon">
-							<a href="javascript:teamWindow('<%= var_teamwindow %>')">Add Account</a>
-						</h6>
-					<%else%>
-						<h6 class="left subheader league-type-header margin-left-2">
-							<img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
-							<a href="javascript:updateTeams('<%= var_updateteams %>')">Refresh</a>
-						</h6>
-						<h6 class="left subheader league-type-header margin-left-1">
-							<img src="/images/editIcon.gif" alt="Edit Icon">
-							<a href="#" data-reveal-id="teamwindow-modal">Edit</a>
-						</h6>
-					<%end%>
-				</div>
-			</div>
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel bg-lightblue clearfix">
+          <h3 class="left no-margin"><%= var_name %> Teams</h3>
+          <% if (website.length == 0) %>
+            <h6 class="left subheader league-type-header margin-left-2">
+              <img src="/images/RSPlus10.png" alt="Add Icon">
+              <a href="javascript:teamWindow('<%= var_teamwindow %>')">Add Account</a>
+            </h6>
+          <%else%>
+            <h6 class="left subheader league-type-header margin-left-2">
+              <img src="/images/refresh.png" width="10" height="10" alt="Refresh Icon">
+              <a href="javascript:updateTeams('<%= var_updateteams %>')">Refresh</a>
+            </h6>
+            <h6 class="left subheader league-type-header margin-left-1">
+              <img src="/images/editIcon.gif" alt="Edit Icon">
+              <a href="#" data-reveal-id="teamwindow-modal">Edit</a>
+            </h6>
+          <%end%>
+        </div>
+      </div>
 
-			<% if (website.length > 0) %>
-				<div class="large-12 columns margin-bottom-1">
-					<% website.each do |team| %>
-			  		<ul class="panel bg-lightgray large-6 columns">
-							<h5 class="no-margin"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h5>
-							<h6 class="subheader"><%=team.league_name%></h6>
+      <% if (website.length > 0) %>
+        <div class="large-12 columns margin-bottom-1">
+          <% website.each do |team| %>
+            <ul class="panel bg-lightgray large-6 columns">
+              <h5 class="no-margin"><a href="/teams/showbatters?id=<%=team._id%>"><%=team.team_name%></a></h5>
+              <h6 class="subheader"><%=team.league_name%></h6>
 
-							<% if (team.weekly_team) %>
-								<%= render :partial => "dashboard_team", 
-									:object => team, :as => "team",
-									:locals => {
-										:var_type => "", 
-										:var_active_hide => "hide", 
-										:var_inactive_hide => "", 
-										:var_text => "Batters", 
-										:var_slug => "", 
-										:var_link_text => "",
-										:var_active_checked => "", 
-										:var_inactive_checked => "checked"
-									} 
-								%>
-								<%= render :partial => "dashboard_team", 
-									:object => team, :as => "team",
-									:locals => {
-										:var_type => "", 
-										:var_active_hide => "hide", 
-										:var_inactive_hide => "", 
-										:var_text => "Pitchers", 
-										:var_slug => "", 
-										:var_link_text => "",
-										:var_active_checked => "", 
-										:var_inactive_checked => "checked"
-									} 
-								%>
-								<%= render :partial => "dashboard_team", 
-									:object => team, :as => "team",
-									:locals => {
-										:var_type => "", 
-										:var_active_hide => "hide", 
-										:var_inactive_hide => "", 
-										:var_text => "Real Time", 
-										:var_slug => "", 
-										:var_link_text => "",
-										:var_active_checked => "", 
-										:var_inactive_checked => "checked"
-									} 
-								%>																
-							<% else %>
+              <% if (team.weekly_team) %>
+                <%= render :partial => "dashboard_team", 
+                  :object => team, :as => "team",
+                  :locals => {
+                    :var_type => "", 
+                    :var_active_hide => "hide", 
+                    :var_inactive_hide => "", 
+                    :var_text => "Batters", 
+                    :var_slug => "", 
+                    :var_link_text => "",
+                    :var_active_checked => "", 
+                    :var_inactive_checked => "checked"
+                  } 
+                %>
+                <%= render :partial => "dashboard_team", 
+                  :object => team, :as => "team",
+                  :locals => {
+                    :var_type => "", 
+                    :var_active_hide => "hide", 
+                    :var_inactive_hide => "", 
+                    :var_text => "Pitchers", 
+                    :var_slug => "", 
+                    :var_link_text => "",
+                    :var_active_checked => "", 
+                    :var_inactive_checked => "checked"
+                  } 
+                %>
+                <%= render :partial => "dashboard_team", 
+                  :object => team, :as => "team",
+                  :locals => {
+                    :var_type => "", 
+                    :var_active_hide => "hide", 
+                    :var_inactive_hide => "", 
+                    :var_text => "Real Time", 
+                    :var_slug => "", 
+                    :var_link_text => "",
+                    :var_active_checked => "", 
+                    :var_inactive_checked => "checked"
+                  } 
+                %>                                
+              <% else %>
 
-								<% if (team.daily_auto_batter) %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {
-											:var_type => "b", 
-											:var_active_hide => "", 
-											:var_inactive_hide => "hide", 
-											:var_text => "Batters", 
-											:var_slug => "showbatters", 
-											:var_link_text => "[ Edit ]",
-											:var_active_checked => "checked", 
-											:var_inactive_checked => ""
-										} 
-									%>
-				        <% else %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {
-											:var_type => "b", 
-											:var_active_hide => "hide", 
-											:var_inactive_hide => "", 
-											:var_text => "Batters", 
-											:var_slug => "showbatters", 
-											:var_link_text => "[ Edit ]",
-											:var_active_checked => "", 
-											:var_inactive_checked => "checked"
-										} 
-									%>
-				        <% end %>
+                <% if (team.daily_auto_batter) %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {
+                      :var_type => "b", 
+                      :var_active_hide => "", 
+                      :var_inactive_hide => "hide", 
+                      :var_text => "Batters", 
+                      :var_slug => "showbatters", 
+                      :var_link_text => "[ Edit ]",
+                      :var_active_checked => "checked", 
+                      :var_inactive_checked => ""
+                    } 
+                  %>
+                <% else %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {
+                      :var_type => "b", 
+                      :var_active_hide => "hide", 
+                      :var_inactive_hide => "", 
+                      :var_text => "Batters", 
+                      :var_slug => "showbatters", 
+                      :var_link_text => "[ Edit ]",
+                      :var_active_checked => "", 
+                      :var_inactive_checked => "checked"
+                    } 
+                  %>
+                <% end %>
 
-								<% if (team.daily_auto_pitcher) %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {:var_type => "p", 
-										:var_active_hide => "", 
-										:var_inactive_hide => "hide", 
-										:var_text => "Pitchers", 
-										:var_slug => "showpitchers", 
-										:var_link_text => "[ Edit ]",
-										:var_active_checked => "checked", 
-										:var_inactive_checked => ""
-									} %>
-				        <% else %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {:var_type => "p", 
-										:var_active_hide => "hide", 
-										:var_inactive_hide => "", 
-										:var_text => "Pitchers", 
-										:var_slug => "showpitcher",
-										:var_link_text => "[ Edit ]",
-										:var_active_checked => "", 
-										:var_inactive_checked => "checked"
-									} %>
-				        <% end %>
+                <% if (team.daily_auto_pitcher) %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {:var_type => "p", 
+                    :var_active_hide => "", 
+                    :var_inactive_hide => "hide", 
+                    :var_text => "Pitchers", 
+                    :var_slug => "showpitchers", 
+                    :var_link_text => "[ Edit ]",
+                    :var_active_checked => "checked", 
+                    :var_inactive_checked => ""
+                  } %>
+                <% else %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {:var_type => "p", 
+                    :var_active_hide => "hide", 
+                    :var_inactive_hide => "", 
+                    :var_text => "Pitchers", 
+                    :var_slug => "showpitcher",
+                    :var_link_text => "[ Edit ]",
+                    :var_active_checked => "", 
+                    :var_inactive_checked => "checked"
+                  } %>
+                <% end %>
 
-								<% if (team.real_time_batter) %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {:var_type => "r", 
-										:var_active_hide => "", 
-										:var_inactive_hide => "hide", 
-										:var_text => "Real Time", 
-										:var_slug => "", 
-										:var_link_text => "",
-										:var_active_checked => "checked", 
-										:var_inactive_checked => ""
-									} %>
-								<% else %>
-									<%= render :partial => "dashboard_team", 
-										:object => team, :as => "team",
-										:locals => {:var_type => "r", 
-										:var_active_hide => "hide", 
-										:var_inactive_hide => "", 
-										:var_text => "Real Time", 
-										:var_slug => "",
-										:var_link_text => "",
-										:var_active_checked => "", 
-										:var_inactive_checked => "checked"
-									} %>
-								<% end %>
-							<% end %>
-						</ul>
-					<% end %>
-				</div>
-			<% end %>
-		</div>
+                <% if (team.real_time_batter) %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {:var_type => "r", 
+                    :var_active_hide => "", 
+                    :var_inactive_hide => "hide", 
+                    :var_text => "Real Time", 
+                    :var_slug => "", 
+                    :var_link_text => "",
+                    :var_active_checked => "checked", 
+                    :var_inactive_checked => ""
+                  } %>
+                <% else %>
+                  <%= render :partial => "dashboard_team", 
+                    :object => team, :as => "team",
+                    :locals => {:var_type => "r", 
+                    :var_active_hide => "hide", 
+                    :var_inactive_hide => "", 
+                    :var_text => "Real Time", 
+                    :var_slug => "",
+                    :var_link_text => "",
+                    :var_active_checked => "", 
+                    :var_inactive_checked => "checked"
+                  } %>
+                <% end %>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
