@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
+  <head>
+    <title>RotoStarter | Dominate Your Fantasy Sports Leagues</title>
+
+ 	  <meta property="og:title" content="RotoStarter" />
+	  <meta property="og:image" content="http://www.rotostarter.com/images/RotoStarterLogoBlue200.png" /> 
+	  <meta property="og:description" content="RotoStarter saves you time and helps you dominate your Fantasy Sports leagues." /> 
+	  <meta property="og:url" content="http://www.rotostarter.com">
+	  <meta property="og:type" content="website">
+    <meta property="twitter:cards" content="summary">
+    <meta property="twitter:url" content="http://www.rotostarter.com">
+    <meta property="twitter:title" content="RotoStarter">
+	  <meta property="fb:admins" content="731131388" />
+	  <meta name="keywords" content="Fantasy,Football,Baseball,Basketball,Automate,Lineup,Auto,Start,Automatically,Set,Bench" />
+	  <meta name="description" content="RotoStarter saves you time and helps you dominate your Fantasy Sports leagues." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= javascript_include_tag "vendor/custom.modernizr" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tag %>
+    <%= yield(:head) %>
+      
+  	<script type="text/javascript">
+  	  var _gaq = _gaq || [];
+  	  _gaq.push(['_setAccount', 'UA-30965893-1']);
+  	  _gaq.push(['_trackPageview']);
+  	
+  	  (function() {
+  	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  	  })();
+  	</script>
+  </head>
+
+  <body <%= content_for?(:body_attributes) ? yield(:body_attributes) : "" %>>
+  	<div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+  	
+    <%= render 'layouts/navigation' %>
+
+    <div class="row">
+      <div class="image-background">
+        <%= yield %>
+      </div>
+    </div>
+    
+    <script>
+    $(document).foundation();
+    </script>
+
+  </body>
+</html>

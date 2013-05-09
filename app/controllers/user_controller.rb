@@ -1,16 +1,18 @@
 class UserController < ApplicationController
     
   before_filter :login_required, :only=>['change_password', 'hidden']
-  
+  layout :user_layout
   def show
     
   end
   
+
   def index
     if session[:user]
       redirect_to :controller => "teams", :action => "index"
     else
       @user = UserInfo.new 
+
       render :action => 'signup'
     end
   end
@@ -94,5 +96,9 @@ class UserController < ApplicationController
   end
 
 
+private
+  def user_layout
+    session[:user] ? "application" : "home"
+  end
 
 end
