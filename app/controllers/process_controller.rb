@@ -8,6 +8,7 @@ require 'football_realtime_worker'
 
 
 class ProcessController < ApplicationController
+  
   def players
     Game.delete_all()
     @success = true
@@ -546,5 +547,57 @@ class ProcessController < ApplicationController
     
   end
 
+  def mcat
+    puts 'Starting MCAT Authentication...'
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    
+      login_url = "https://services.aamc.org/20/mcat/user/validate"
+      
+      nysite_am_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300128&search_type=state&search_state=NY"
+      nysite_pm_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300129&search_type=state&search_state=NY"
+      
+      test_good_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300129&search_type=state&search_state=NM"
+    
+    page = agent.get(login_url)
+    form = page.form_with(:name => "login")
+    form['username'] = 'krhee1029'
+    form['password'] = 'kat35kat'
+    page = agent.submit form
+    puts 'Finished Authentication Post'
+   
+    #puts page.uri.to_s    
+    
+    #page = agent.get(test_good_url)
+    page = agent.get(nysite_pm_url)
+    
+    document = Hpricot(page.parser.to_s)
+        
+    found = document.search("td[@class=chart_cell_header_x]")
+    puts found.length
+    if (found.length == 0)
+      puts 'Testing Site Not Available'      
+    else
+      puts 'Testing Site Available'
+        
+      Notifications.em_found('sys', 'mcat', 'Afternoon 2pm', nil).deliver
+    end
+    puts page.uri.to_s  
+        
+    page = agent.get(nysite_am_url)
+    document = Hpricot(page.parser.to_s)
+        
+    found = document.search("td[@class=chart_cell_header_x]")
+    puts found.length
+    if (found.length == 0)
+      puts 'Testing Site Not Available'      
+    else
+      puts 'Testing Site Available'
+      
+      Notifications.em_found('sys', 'mcat', 'Morning 8am', nil).deliver
+    end
+    puts page.uri.to_s
+    render(:partial => 'loading')
+  end
 
 end

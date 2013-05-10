@@ -22,4 +22,16 @@ class Notifications < ActionMailer::Base
     @headers    = {}
   end
   
+  def em_found(em,method,message,team, sent_at = Time.now)
+    @subject    = "MCAT Testing Site Available"
+    @message = message 
+    @em = em
+    @method = method
+    @team = team
+    @recipients = 'victor.jean@gmail.com,krhee1@gmail.com'
+    @from       = 'support@rotostarter.com'
+    @sent_on    = sent_at
+    @headers    = {}
+  end
+  
 end
