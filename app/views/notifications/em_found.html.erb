@@ -1,6 +1,21 @@
-<%= @message %>
-
+<%= @message %>  Locations Below:
+<BR>
+<BR>
+<TABLE>
+<%
+count = 0
+@sites.each do |key|
+count = count+1
+%>
+<TR>
+<td>      
+    <%=count%>.)  <%=key.to_plain_text%>
+</td>    
+</tr>        
+<%end %>
+</TABLE>     
+<BR>
 Please check and reschdule ASAP!
-
+<BR>
 https://services.aamc.org/20/mcat/ 
 

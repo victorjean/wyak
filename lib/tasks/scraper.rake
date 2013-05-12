@@ -168,7 +168,7 @@ end
 namespace :scraper do
   desc "Fetch yahoo team from scratch"
   task :yahoofull => :environment do
-    user_info = UserInfo.find_by_email("none")
+    user_info = UserInfo.find_by_email("victor.jean@gmail.com")
     
     load_yahoo_first_time(user_info)
     
@@ -267,6 +267,7 @@ end
 namespace :scraper do
   desc "Process to Bench and Replace Scratched Players"
   task :scratch => :environment do
+    mcat_check
     t = Time.now
     puts "Current Time Hour - #{t.hour}"
     if (t.hour < 20 && t.hour >= 7)
@@ -350,12 +351,20 @@ namespace :scraper do
   end
 end
 
+namespace :scraper do
+  desc "MCAT Checker"
+  task :mcat => :environment do
+  mcat_check   
+  end
+end
+
+
 
 namespace :scraper do
   desc "Fetch players."
   task :unitest => :environment do
-                
-      parse_player_list(ALL_PITCHERS_URL, "SP")          
+      parse_player_list(ALL_BATTER_URL, "BAT")           
+      #parse_player_list(ALL_PITCHERS_URL, "SP")          
     
   end
 end
