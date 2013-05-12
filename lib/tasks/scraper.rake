@@ -267,7 +267,7 @@ end
 namespace :scraper do
   desc "Process to Bench and Replace Scratched Players"
   task :scratch => :environment do
-    mcat_check
+    
     t = Time.now
     puts "Current Time Hour - #{t.hour}"
     if (t.hour < 20 && t.hour >= 7)
