@@ -1,0 +1,21 @@
+
+    <div id="login-modal" class="reveal-modal wrapper-modal" style="display: none;">
+      <div class="container large-8"> 
+        <h3>RotoStarter Login</h3>
+        <%= form_tag do %>
+          <%= label_tag(:email, "Email:") %>
+          <%= text_field_tag(:email) %>
+          <%= label_tag(:pass, "Password:") %>
+          <%= password_field_tag(:pass) %>
+          <% flash.each do |name, msg| %>
+            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
+          <% end %>
+          <br><br>
+          <input name="commit" type="submit" class="button" value="Log In"/>
+          <br><br>
+          <p class="txt-tiny">
+            <%= link_to 'Forgot Your Password?', :action => 'forgot_password' %>
+          </p>
+        <% end %>
+      </div>
+    </div>

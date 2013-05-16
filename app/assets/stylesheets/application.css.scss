@@ -38,6 +38,11 @@ h1 {
   min-height: 50%;
 }
 
+.reveal-modal.wrapper-modal {
+	width: 60%;
+	display: block;
+	left: 60%;
+}
 
 .home-wrapper h4 {
 	color: #FFF;
@@ -46,7 +51,13 @@ h1 {
 .home-wrapper h1 {
 	color: #e0f2fe;
 	font-size: 20px;
-	margin-top: 3em;
+	margin-top: 1em;
+	font-weight: normal;
+}
+.home-wrapper h2 {
+	color: #e0f2fe;
+	font-size: 16px;
+	margin-top: 1em;
 	font-weight: normal;
 }
 
@@ -54,33 +65,39 @@ h1 {
 .home-wrapper p,
 .home-wrapper label {
 	color: #FFF;
-	font-size: 80%;
+}
+.transparent {
+	background:rgba(0,0,0,0.5);
+}
+.button {
+	margin: 0 0 1em 0;
+	border-top: 1px solid #e0f2fe;
+	border-left: 1px solid #e0f2fe;
+	border-right: 1px solid #e0f2fe;
+	border-bottom: 1px solid #e0f2fe;
+	background: #5a4a42;
+	background: -webkit-gradient(linear, left top, left bottom, from(#5a4a42), to(#5a4a42));
+	background: -webkit-linear-gradient(top, #5a4a42, #5a4a42);
+	background: -moz-linear-gradient(top, #5a4a42, #5a4a42);
+	background: -ms-linear-gradient(top, #5a4a42, #5a4a42);
+	background: -o-linear-gradient(top, #5a4a42, #5a4a42);
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	border-radius: 16px;
+	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+	box-shadow: rgba(0,0,0,1) 0 1px 0;
+	text-shadow: rgba(0,0,0,.4) 0 1px 0;
+	color: #e0f2fe;
+	font-family: Helvetica, Arial, Sans-Serif;
+	text-decoration: none;
+	vertical-align: middle;
 }
 
-.button {
-   border-top: 1px solid #e0f2fe;
-   border-left: 1px solid #e0f2fe;
-   border-right: 1px solid #e0f2fe;
-   border-bottom: 1px solid #e0f2fe;
-   background: #5a4a42;
-   background: -webkit-gradient(linear, left top, left bottom, from(#5a4a42), to(#5a4a42));
-   background: -webkit-linear-gradient(top, #5a4a42, #5a4a42);
-   background: -moz-linear-gradient(top, #5a4a42, #5a4a42);
-   background: -ms-linear-gradient(top, #5a4a42, #5a4a42);
-   background: -o-linear-gradient(top, #5a4a42, #5a4a42);
-   padding: 12px 24px;
-   -webkit-border-radius: 16px;
-   -moz-border-radius: 16px;
-   border-radius: 16px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: #e0f2fe;
-   font-family: Helvetica, Arial, Sans-Serif;
-   text-decoration: none;
-   vertical-align: middle;
-   }
+a.button {
+	padding: 12px 24px;
+}
+
 .button:hover {
    border-top-color: #e0f2fe;
    background: #e0f2fe;
@@ -132,6 +149,8 @@ ul.disc > li {
 /*  =======================  */
 /*  Mixin Styles  */
 /*  =======================  */
+
+.txt-tiny 				{ font-size: 12px;}
 
 .txt-lightbrown 	{ color: $txt-lightbrown !important; }
 .txt-green 				{ color: $txt-green !important; }

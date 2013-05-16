@@ -2,40 +2,28 @@
   <img src="/images/bg.jpg" alt="">
 </div>
 <div class="home-wrapper">
-  <div class="container large-10">
-    <div class="small-12 large-7 columns margin-bottom-2">
+  <div class="container large-10 margin-top-2">
+    <div class="transparent small-12 large-7 columns">
       <div class="small-offset-1 small-10 large-offset-1 large-10">
-        <h1>RotoStarter saves you time and gives you an edge to dominate your fantasy sports leagues.</h1>
+        <h1>RotoStarter gives you the edge you need to dominate your fantasy sports leagues.</h1>
         <ul class="disc">
-          <li>Saves you time by starting your players daily</li>
-          <li>Makes real time substitutions based on lineups</li>
+          <li>Saves you time every day</li>
+          <li>Makes game time substitutions</li>
+          <li>Works when you are on vacation</li>
         </ul>
       </div>
     </div>
 
-    <div class="small-12 large-5 columns">
-      <div class="small-offset-1 small-8 large-offset-1 large-10">
-        <h4>RotoStarter Signup</h4>
-        <%= form_tag '/user/signup' do %>
-          <div style="margin:0;padding:0;display:inline">
-            <input name="utf8" type="hidden" value="&#x2713;"/>
-            <input name="authenticity_token" type="hidden" value="j7+BQAJL4+O/vxqArSm4BmwFpvMhjGmR4vBRLrcxkc4="/>
-          </div>
-          <%= label_tag(:email, "Email:") %>
-          <%= text_field_tag(:email) %>
-          <%= label_tag(:pass, "Password:") %>
-          <%= password_field_tag(:pass) %>
-          <%= label_tag(:repass, "Confirm Password:") %>
-          <%= password_field_tag(:repass) %>
-          <br>
-          <input name="commit" class="button" type="image" value="Sign Up"/>
-          <br><br>
-          <% flash.each do |name, msg| %>
-            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
-          <% end %>
-          <p>I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
-          </p>
-        <% end %>
+    <div class="transparent small-12 large-offset-1 large-4 columns">
+      <div class="small-offset-1 small-10 large-offset-1 large-10">
+        <div class="">
+          <h2>Try It Now For Free</h2>
+          <a class="button" data-reveal-id="signup-modal">Get Started</a>
+        </div>
+        <div class="">
+          <h2>Already Roto-Powered?</h2>
+          <a class="button" data-reveal-id="login-modal">Log In</a>
+        </div>
       </div>
     </div>
   </div>

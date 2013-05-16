@@ -13,12 +13,14 @@ class UserController < ApplicationController
     else
       @user = UserInfo.new 
 
-      render :action => 'signup'
+      render :action => 'home'
     end
   end
   
   
   def signup
+    flash[:message] = ""
+
     if request.post?
       @user = UserInfo.new  
       @user.email = params[:email].downcase
@@ -36,6 +38,7 @@ class UserController < ApplicationController
   end
 
   def login
+    flash[:message] = ""
     if request.post?
       if session[:user] = UserInfo.authenticate(params[:email].downcase, params[:pass])
 
