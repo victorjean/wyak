@@ -1,49 +1,25 @@
-<div class="container large-8"> 
+<div class="container large-9"> 
 
     <div class="row">
 
-      <div class="left container small-8 large-5">
-        <h3>RotoStarter Login</h3>
+      <div class="container small-8 large-5">
+        <h3 class="margin-top-2">RotoStarter Login</h3>
         <%= form_tag do %>
           <%= label_tag(:email, "Email:") %>
           <%= text_field_tag(:email) %>
           <%= label_tag(:pass, "Password:") %>
           <%= password_field_tag(:pass) %>
           <br>
-          <input name="commit" src="/images/RSLogIn.png" type="image" value="Login"/>
+          <input name="commit" type="submit" class="button" value="Log In">          
           <br>
           <br>
-          <h6 class="subheader">
+          <p class="txt-tiny">
             <%= link_to 'Forgot Your Password?', :action => 'forgot_password' %>
-          </h6>
+          </p>
           <% flash.each do |name, msg| %>
             <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
           <% end %>
         <% end %>
       </div>
-      <div class="right container small-8 large-5">
-        <h3>RotoStarter Signup</h3>
-        <%= form_tag '/user/signup' do %>
-          <div style="margin:0;padding:0;display:inline">
-            <input name="utf8" type="hidden" value="&#x2713;"/>
-            <input name="authenticity_token" type="hidden" value="j7+BQAJL4+O/vxqArSm4BmwFpvMhjGmR4vBRLrcxkc4="/>
-          </div>
-          <%= label_tag(:email, "Email:") %>
-          <%= text_field_tag(:email) %>
-          <%= label_tag(:pass, "Password:") %>
-          <%= password_field_tag(:pass) %>
-          <%= label_tag(:repass, "Confirm Password:") %>
-          <%= password_field_tag(:repass) %>
-          <br>
-          <input name="commit" src="/images/RSSignUp.png" type="image" value="Sign Up"/>
-          <br><br>
-          <% flash.each do |name, msg| %>
-            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
-          <% end %>
-          <div class="HomeTinyLinks">I agree to the <a href="/static/terms">Terms of Service</a> and <a href="/static/privacy">Privacy Policy</a>
-          </div><BR>
-        <% end %>
-      </div>
-
     </div>
 </div>
