@@ -1,9 +1,12 @@
+
 <div class="container large-9"> 
 
     <div class="row">
 
       <div class="container small-8 large-5">
-        <h3 class="margin-top-2">RotoStarter Login</h3>
+        <%= render :partial => 'user/flashmessage' %>
+
+        <h3 class="margin-top-1">RotoStarter Login</h3>
         <%= form_tag do %>
           <%= label_tag(:email, "Email:") %>
           <%= text_field_tag(:email) %>
@@ -14,11 +17,9 @@
           <br>
           <br>
           <p class="txt-tiny">
-            <%= link_to 'Forgot Your Password?', :action => 'forgot_password' %>
+            <%= link_to 'Forgot Your Password?', :controller => 'user', :action => 'forgot_password' %>
           </p>
-          <% flash.each do |name, msg| %>
-            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message" %>
-          <% end %>
+
         <% end %>
       </div>
     </div>

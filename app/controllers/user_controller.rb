@@ -101,7 +101,7 @@ class UserController < ApplicationController
 
 private
   def user_layout
-    session[:user] ? "application" : "home"
+    session[:user] ? "application" : "application"
   end
 
 end

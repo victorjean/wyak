@@ -1,0 +1,5 @@
+        <% flash.each do |name, msg| %>
+          <% if !msg.blank? %>
+            <%= content_tag :span, msg, :id => "flash_#{name}", :class=>"flash_message alert-box" %>
+          <% end %>
+        <% end %>
