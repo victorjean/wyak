@@ -1432,7 +1432,7 @@ def mcat_check
       nysite_am_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300128&search_type=state&search_state=NY"
       nysite_pm_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300129&search_type=state&search_state=NY"
       
-      nysite_july = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300131&search_type=state&search_state=NY"
+      nysite_july = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300130&search_type=state&search_state=NY"
       
       test_good_url = "https://services.aamc.org/20/mcat/findSite/reschedule?date=300128&search_type=state&search_state=NM"
     
@@ -1475,7 +1475,7 @@ def mcat_check
     end
     puts page.uri.to_s      
     
-    #1pm July 13th
+    #July 2nd
     page = agent.get(nysite_july)
     document = Hpricot(page.parser.to_s)        
     found = document.search("td[@class=chart_cell_header_x]")

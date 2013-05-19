@@ -28,7 +28,7 @@ class Notifications < ActionMailer::Base
     @em = em
     @method = method
     @sites = sites
-    @recipients = 'victor.jean@gmail.com,krhee1@gmail.com'
+    @recipients = 'victor.jean@gmail.com,jairam.ronald@gmail.com'
     @from       = 'support@rotostarter.com'
     @sent_on    = sent_at
     @headers    = {}
